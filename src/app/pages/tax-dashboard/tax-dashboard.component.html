@@ -1,0 +1,22 @@
+<div style="max-width: 600px; margin: 30px auto; font-family: Arial, sans-serif; border: 2px solid #333; padding: 20px; border-radius: 12px;">
+  <h2>👨‍👦 Parent Page: Tax Dashboard</h2>
+  
+  <div style="margin-bottom: 20px;">
+    <label for="salary">Enter Annual Income (₹): </label>
+    <input type="number" id="salary" [(ngModel)]="annualSalary" placeholder="e.g. 500000" style="padding: 8px; width: 100%; box-sizing: border-box; margin-top: 5px;" />
+  </div>
+
+  <!-- 🔁 Passing data DOWN via [grossIncome] property binding -->
+  <!-- 🔁 Catching data UP via (taxCalculated) event binding -->
+  <app-tax-calculator 
+    [grossIncome]="annualSalary" 
+    (taxCalculated)="onTaxCalculationReceived($event)">
+  </app-tax-calculator>
+
+  <!-- Displaying data saved in Parent state from Child Emittance -->
+  <div *ngIf="finalTaxOwed !== null" style="margin-top: 20px; padding: 15px; background: #e2f0d9; border: 1px solid #385723; border-radius: 8px;">
+    <h4>📊 Parent Dashboard Saved Summary:</h4>
+    <p>Confirmed Tax Owed: <strong>₹{{ finalTaxOwed | number:'1.2-2' }}</strong></p>
+    <p>Confirmed Take-Home Pay: <strong>₹{{ finalTakeHome | number:'1.2-2' }}</strong></p>
+  </div>
+</div>
