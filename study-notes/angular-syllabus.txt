@@ -1,0 +1,22 @@
+Angular
+---------------
+ 
+1) Parent Component to child component using @input and @output
+2) Using Rxjs Subjects and Behavious Subjects
+    a) Difference between Subject and Behaviour Subject
+3) Angular routing
+4) Angular pipes - Async, Date, Time, uppercase, lowercase, title case etc 
+5) Subscription management
+    a) using SubSink
+    b) using Subscription array
+    c) takeUntilDestroyed with DestroyRef 
+6) Using pipe syntax with subscription
+    a) use tap, filter operators for practice
+7) Practice forkJoin, switchMap, MergeMap, ConcatMap, withLatestFrom, combineLatest
+8) Api calling using a service and rxjs 
+9) Ngxs - state management 
+10) Performance optimization
+    a) ahead of time compilation (npm run build --configuration production)
+    b) lazy loading 
+    c) OnPush - change detection
+11) Smart vs Dumb Components
