@@ -1,0 +1,11 @@
+<div style="border: 2px dashed red; padding: 15px; margin-top: 15px; border-radius: 6px;">
+  <h3>🔴 Child Component</h3>
+  
+  <!-- 📥 Reading the data pushed down from the parent -->
+  <p>Data from Parent: <strong>{{ dataFromParent }}</strong></p>
+
+  <!-- Click triggers the local component TS method -->
+  <button (click)="sendToParent()" style="padding: 6px 12px; cursor: pointer;">
+    Send Message to Parent ⬆️
+  </button>
+</div>

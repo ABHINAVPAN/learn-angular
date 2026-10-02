@@ -1,0 +1,21 @@
+<div style="border: 2px solid blue; padding: 20px; max-width: 400px; margin: 20px auto; border-radius: 8px; font-family: sans-serif;">
+  <h2>🔵 Parent Component</h2>
+  <p>State in Parent: <strong>{{ parentText }}</strong></p>
+
+  <button (click)="updateParentText()" style="padding: 6px 12px; cursor: pointer; margin-right: 5px;">
+    Change Parent Text
+  </button>
+
+  <!-- 🔁 The Communication Bridge -->
+  <!-- 1. [dataFromParent] binds parent data DOWN to the child's @Input -->
+  <!-- 2. (childEvent) catches the child's @Output action UP in the parent -->
+  <app-child 
+    [dataFromParent]="parentText" 
+    (childEvent)="handleChildEvent($event)">
+  </app-child>
+
+  <!-- Displaying received child data if it exists -->
+  <div *ngIf="messageFromChild" style="margin-top: 15px; padding: 10px; background: #e6f7ff; border: 1px solid #91d5ff; border-radius: 4px;">
+    Received in Parent: "<strong>{{ messageFromChild }}</strong>"
+  </div>
+</div>

@@ -1,13 +1,15 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
+  // Redirect empty URL path directly to the parent-child demonstration page
   {
     path: '',
-    redirectTo: 'tax-dashboard',
+    redirectTo: 'demo',
     pathMatch: 'full'
   },
+  // Route accessing the Parent Component
   {
-    path: 'tax-dashboard',
-    loadComponent: () => import('./pages/tax-dashboard/tax-dashboard.component').then(m => m.TaxDashboardComponent)
+    path: 'demo',
+    loadComponent: () => import('./features/parent-child-demo/parent/parent.component').then(m => m.ParentComponent)
   }
 ];

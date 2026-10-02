@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TaxCalculatorComponent } from './tax-calculator.component';
+import { ParentComponent } from './parent.component';
 
-describe('TaxCalculatorComponent', () => {
-  let component: TaxCalculatorComponent;
-  let fixture: ComponentFixture<TaxCalculatorComponent>;
+describe('ParentComponent', () => {
+  let component: ParentComponent;
+  let fixture: ComponentFixture<ParentComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TaxCalculatorComponent],
+      imports: [ParentComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TaxCalculatorComponent);
+    fixture = TestBed.createComponent(ParentComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

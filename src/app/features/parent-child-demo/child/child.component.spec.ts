@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TaxDashboardComponent } from './tax-dashboard.component';
+import { ChildComponent } from './child.component';
 
-describe('TaxDashboardComponent', () => {
-  let component: TaxDashboardComponent;
-  let fixture: ComponentFixture<TaxDashboardComponent>;
+describe('ChildComponent', () => {
+  let component: ChildComponent;
+  let fixture: ComponentFixture<ChildComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TaxDashboardComponent],
+      imports: [ChildComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TaxDashboardComponent);
+    fixture = TestBed.createComponent(ChildComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
