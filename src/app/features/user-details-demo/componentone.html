@@ -1,0 +1,32 @@
+<section class="card">
+  <h2>Component One — send user details</h2>
+  <div class="controls">
+    <input
+      #firstName
+      id="first-name"
+      type="text"
+      placeholder="First name"
+      aria-label="First name"
+      autocomplete="given-name"
+    />
+    <input
+      #lastName
+      id="last-name"
+      type="text"
+      placeholder="Last name"
+      aria-label="Last name"
+      autocomplete="family-name"
+    />
+    <input
+      #email
+      id="email"
+      type="email"
+      placeholder="Email address"
+      aria-label="Email address"
+      autocomplete="email"
+    />
+    <button type="button" (click)="send(firstName.value, lastName.value, email.value)">
+      Send details
+    </button>
+  </div>
+</section>

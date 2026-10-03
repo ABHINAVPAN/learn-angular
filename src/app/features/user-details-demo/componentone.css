@@ -1,0 +1,25 @@
+.card {
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: 0.5rem;
+}
+
+input {
+  padding: 0.55rem;
+}
+
+button {
+  cursor: pointer;
+  padding: 0.55rem 1rem;
+}

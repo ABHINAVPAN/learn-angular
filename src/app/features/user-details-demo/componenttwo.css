@@ -1,0 +1,21 @@
+.card {
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.message {
+  min-height: 1.5rem;
+  overflow-wrap: anywhere;
+}
+
+.user-details {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.4rem 1rem;
+}
+
+.user-details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}

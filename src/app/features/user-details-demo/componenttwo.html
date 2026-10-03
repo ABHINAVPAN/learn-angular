@@ -1,0 +1,14 @@
+<section class="card" aria-live="polite">
+  <h2>Component Two — receive user details</h2>
+  <p>Subscription cleanup: <strong>{{ cleanupLabel }}</strong></p>
+  @if (userDetails; as details) {
+    <dl class="user-details">
+      <dt>Name</dt>
+      <dd>{{ details.firstName }} {{ details.lastName }}</dd>
+      <dt>Email</dt>
+      <dd>{{ details.email }}</dd>
+    </dl>
+  } @else {
+    <p class="message">No user details received yet.</p>
+  }
+</section>

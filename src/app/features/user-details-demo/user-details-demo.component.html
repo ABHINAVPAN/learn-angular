@@ -1,0 +1,43 @@
+<main class="page">
+  <header>
+    <p class="eyebrow">Angular learning example</p>
+    <h1>RxJS user details transfer</h1>
+    <p>
+      Component One sends user details through a shared RxJS Subject;
+      Component Two receives them using the selected cleanup approach.
+    </p>
+  </header>
+
+  <nav aria-label="Subscription cleanup examples">
+    <a
+      routerLink="/rxjs-user-details/subsink"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >SubSink</a>
+    <a
+      routerLink="/rxjs-user-details/subscription-array"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >Subscription array</a>
+    <a
+      routerLink="/rxjs-user-details/take-until-destroyed"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >takeUntilDestroyed</a>
+  </nav>
+
+  <section class="explanation">
+    <h2>How it works</h2>
+    <ol>
+      <li>Component One calls <code>UserDetailsService.sendUserDetails()</code>.</li>
+      <li>The service emits a typed user-details object through a plain RxJS <code>Subject</code>.</li>
+      <li>Component Two subscribes and cleans up using the selected method.</li>
+    </ol>
+    <p><strong>Note:</strong> A plain Subject does not replay messages sent before subscribing.</p>
+  </section>
+
+  <div class="components">
+    <app-component-one />
+    <app-component-two [cleanup]="cleanup" />
+  </div>
+</main>

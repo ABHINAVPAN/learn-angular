@@ -1,2 +1,9 @@
+<header class="app-header">
+	<span class="app-title">Learn Angular</span>
+	<nav aria-label="Main navigation">
+		<a routerLink="/demo" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Parent / child</a>
+		<a routerLink="/rxjs-user-details/subsink" routerLinkActive="active">RxJS user details</a>
+	</nav>
+</header>
 
 <router-outlet />
