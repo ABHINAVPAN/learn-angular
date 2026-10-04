@@ -1,0 +1,405 @@
+Java Notes:
+
+Inheritance : Inheritance is a mechanism where one class acquires the properties and behaviors of another class.
+
+1. Single Inheritance.
+2. Multilevel (chain of inheritance)
+3. Hierarchical
+4. Multiple(Interface)
+
+Polymorphism:  means "One Interface, Many Forms".
+
+It allows the same method call to perform different actions depending on the object.
+
+1. Compile time.(Method Overloading).
+2. Runtime (Method overriding).
+
+a. method Overloading:
+1. by changing the types of parameters.
+2. by changing the order of parameters.
+3. by number of parameters.
+
+b. method overriding:
+1. Child class overriding parent class method.
+2. Child class overriding abstract class method(extends).
+3. Child class overriding interface method(implements).
+
+Java Inner class:
+
+class OuterClass(){
+
+int x = 10;
+
+} 
+class InnerClass(){
+
+int y = 15;
+
+}
+
+public class Main(){
+
+public static void main(String[] args){
+
+OuterClass o = new OuterClass();
+
+OuterClass.InnerClass i = OuterClass.new InnerClass();
+
+System.out.println("Outer variable:"+ o.x +"Inner variable:" + i.y);
+
+}
+}
+
+Static Inner Class:
+
+class OuterClass(){
+
+int x = 10;
+
+} 
+static class InnerClass(){
+
+int y = 15;
+
+}
+
+public class Main(){
+
+public static void main(String[] args){
+
+OuterClass o = new OuterClass();
+
+OuterClass.InnerClass i = new OuterClass.InnerClass();
+
+System.out.println("Outer variable:"+ o.x +"Inner variable:" + i.y);
+
+}
+}
+
+
+Private Inner class:
+class OuterClass(){
+
+int x = 10;
+
+} 
+prvate class InnerClass(){
+
+int y = 15;
+
+}
+
+public class Main(){
+
+public static void main(String[] args){
+
+OuterClass o = new OuterClass();
+
+OuterClass.InnerClass i = OuterClass.new InnerClass();
+
+System.out.println("Outer variable:"+ o.x +"Inner variable:" + i.y);
+
+}
+}
+
+
+Access Outer Class From Inner Class:
+
+class OuterClass(){
+
+int x = 10;
+
+} 
+class InnerClass(){
+
+void outerVar(){
+x = 11;
+}
+}
+
+public class Main(){
+
+public static void main(String[] args){
+
+OuterClass o = new OuterClass();
+
+OuterClass.InnerClass i = OuterClass.new InnerClass();
+
+System.out.println("Outer variable:"+ o.x +"Inner variable:" + i.outerVar());
+
+}
+}
+
+Java File Handling:
+
+The File class from the java.io package, allows us to work with files.
+
+To use the File class, create an object of the class, and specify the filename or directory name:
+
+canRead()	Boolean	Tests whether the file is readable or not
+canWrite()	Boolean	Tests whether the file is writable or not
+createNewFile()	Boolean	Creates an empty file
+delete()	Boolean	Deletes a file
+exists()	Boolean	Tests whether the file exists
+getName()	String	Returns the name of the file
+getAbsolutePath()	String	Returns the absolute pathname of the file
+length()	Long	Returns the size of the file in bytes
+list()	String[]	Returns an array of the files in the directory
+mkdir()	Boolean	Creates a directory
+
+public class M1{
+public static void main(String[] args){
+try{
+Flie myFile = new FIle("Text1.txt");
+if(myFile.createNewFile()) System.out.println("file created");
+else System.out.println("file not created");
+}
+catch(IOException ex){
+System.out.println("error occured");
+ex.printStackTrace();
+}
+} 
+}
+
+Writing to a file:
+public class M2{
+public static void main(String[] args){
+try{
+FileWriter myWriter = new FileWriter("NewTextFile.txt");
+myWriter.write("don't want write anything");
+myWriter.close();
+System.out.println("successfully wrote to file");
+}
+catch(IOException ex){
+System.out.println("error occured");
+ex.printStackTrace();
+}
+} 
+}
+
+Reading from a file:
+public class M3{
+public static void main(String[] args){
+try{
+File myFile = new File("NewTextFile.txt");
+Scanner sc = new Scanner(myFile);
+if(sc.hasNextLine()){
+String s1 = sc.nextLine();
+System.out.println(s1);
+System.out.println("successfully read from file");
+}
+}
+catch(IOException ex){
+System.out.println("error occured");
+ex.printStackTrace();
+}
+} 
+}
+
+Java Delete Files:
+
+public class DeleteFile {
+  public static void main(String[] args) { 
+    File myObj = new File("filename.txt"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    } 
+  } 
+}
+
+Java I/O Streams:
+
+I/O Streams are more flexible, because they work with text and binary data (like images, audio, PDFs).
+
+Types of Streams
+
+Byte Streams:
+
+Work with raw binary data (like images, audio, and PDF files).
+Examples: FileInputStream, FileOutputStream.
+
+Character Streams
+
+Work with text (characters and strings). These streams automatically handle character encoding.
+Examples: FileReader, FileWriter, BufferedReader, BufferedWriter.
+
+FileInputStream:
+
+Read a Text File
+
+import java.io.FileInputStream;  // Import FileInputStream
+import java.io.IOException;      // Import IOException
+
+public class Main {
+  public static void main(String[] args) {
+    // try-with-resources: FileInputStream will be closed automatically
+    try (FileInputStream input = new FileInputStream("filename.txt")) {
+
+      int i;  // variable to store each byte that is read
+
+      // Read one byte at a time until end of file (-1 means "no more data")
+      while ((i = input.read()) != -1) {
+        // Convert the byte to a character and print it to the console
+        System.out.print((char) i);
+      }
+
+    } catch (IOException e) {
+      // If an error happens (e.g. file not found), print an error message
+      System.out.println("Error reading file.");
+    }
+  }
+}
+
+Copy a Binary File
+
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class CopyFile {
+  public static void main(String[] args) {
+    // Copy image.jpg into copy.jpg
+    try (FileInputStream input = new FileInputStream("image.jpg");
+         FileOutputStream output = new FileOutputStream("copy.jpg")) {
+
+      int i;
+      while ((i = input.read()) != -1) {
+        output.write(i);  // write the raw byte to the new file
+      }
+
+      System.out.println("File copied successfully.");
+
+    } catch (IOException e) {
+      System.out.println("Error handling file.");
+    }
+  }
+}
+
+FileOutputStream
+
+Write a Text File:
+
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class Main {
+  public static void main(String[] args) {
+    // The text we want to write
+    String text = "Hello World!";
+
+    // try-with-resources: stream will be closed automatically
+    try (FileOutputStream output = new FileOutputStream("filename.txt")) {
+      output.write(text.getBytes());  // convert text to bytes and write
+      System.out.println("Successfully wrote to file.");
+    } catch (IOException e) {
+      System.out.println("Error writing file.");
+      e.printStackTrace();
+    }
+  }
+}
+
+Copy a Binary File
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class CopyFile {
+  public static void main(String[] args) {
+    // Copy image.jpg into copy.jpg
+    try (FileInputStream input = new FileInputStream("image.jpg");
+         FileOutputStream output = new FileOutputStream("copy.jpg")) {
+
+      int b;
+      while ((b = input.read()) != -1) {
+        output.write(b);  // write each raw byte to the new file
+      }
+      System.out.println("File copied successfully.");
+    } catch (IOException e) {
+      System.out.println("Error handling file.");
+    }
+  }
+}
+
+
+Java BufferedReader
+
+Read a Text File
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class Main {
+  public static void main(String[] args) {
+    try (BufferedReader br = new BufferedReader(new FileReader("filename.txt"))) {
+      String line;
+      while ((line = br.readLine()) != null) {
+        System.out.println(line);
+      }
+    } catch (IOException e) {
+      System.out.println("Error reading file.");
+    }
+  }
+}
+
+BufferedWriter
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Main {
+  public static void main(String[] args) {
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter("filename.txt"))) {
+      bw.write("First line");
+      bw.newLine();  // add line break
+      bw.write("Second line");
+      System.out.println("Successfully wrote to the file.");
+    } catch (IOException e) {
+      System.out.println("Error writing file.");
+    }
+  }
+}
+
+Append to a Text File
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Main {
+  public static void main(String[] args) {
+    // true = append mode
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter("filename.txt", true))) {
+      bw.newLine();                      // move to a new line
+      bw.write("Appended line");         // add new text at the end
+      System.out.println("Successfully appended to the file.");
+    } catch (IOException e) {
+      System.out.println("Error writing file.");
+    }
+  }
+}
+
+Java Lambda:
+
+A lambda expression is a short block of code that takes in parameters and returns a value.
+Lambdas look similar to methods, but they do not need a name, and they can be written right inside a method body.
+
+need to see
+1. difference between HashMap and ConcurrenHashmap(others all see).
+2. Java Concurrency
+3. What is Volatile
+4. Difference between synchronized and ReentrantLock?
+5. Explain Thread Pool.
+6. JVM
+7. Garbage Collector
+8. Memory Leak in Java
+9. Heap And Stack
+10. Stream And Lambda.
+12. Factory and Strategy pattern
+13 Synchronization and dead lock

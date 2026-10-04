@@ -20,3 +20,209 @@ Angular
     b) lazy loading 
     c) OnPush - change detection
 11) Smart vs Dumb Components
+
+
+Angular LifeCycle hooks:
+
+Lifecycle hooks are methods provided by Angular that allow you to
+execute code at specific stages of a component's life, from creation to
+destruction.
+
+Component Phases:
+
+1. Creation
+2. Input Property Changes
+3. Rendering/View Initialization
+4. Change Detection
+5. Destruction
+
+Constructor
+↓
+ngOnChanges()
+↓
+ngOnInit()
+↓
+ngDoCheck()
+↓
+ngAfterContentInit()
+↓
+ngAfterContentChecked()
+↓
+ngAfterViewInit()
+↓
+ngAfterViewChecked()
+↓
+(Repeated Change Detection)
+ngDoCheck()
+ngAfterContentChecked()
+ngAfterViewChecked()
+↓
+ngOnDestroy()
+
+
+1. Constructor
+used for dependecy injection.
+variable Initialization.
+Do not call APIs in constructor.
+Use ngOnInit() for API calls.
+
+2. ngOnChanges()
+Called whenever an @Input() property changes.
+
+Parent Component:
+<app-child [username]="name"></app-child>
+Child Component:
+
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+ 
+export class ChildComponent implements OnChanges {
+ 
+@Input() username!: string;
+ 
+ngOnChanges(changes: SimpleChanges) {
+console.log(changes);
+}
+}
+
+Use Cases
+React when parent sends new data
+Refresh component state
+Perform validation
+
+3. ngOnInit()
+Called only once after component initialization.
+
+export class UserComponent implements OnInit {
+
+  ngOnInit() {
+    console.log("Component Initialized");
+  }
+}
+
+Common Uses
+
+✅ API Calls
+
+✅ Load Data
+
+✅ Initialize Form
+
+✅ Retrieve Route Parameters
+
+ngOnInit() {
+this.userService.getUsers().subscribe(data => {
+this.users = data;
+});
+}
+
+4. ngDoCheck()
+Called during every Angular change detection cycle.
+
+ngDoCheck() {
+   console.log("Change Detection Running");
+}
+
+Whenever:
+
+Button Click
+Input Change
+HTTP Response
+Timer Event
+
+This hook gets executed.
+
+5. ngAfterContentInit()
+Called once after content projection (ng-content) is initialized.
+
+Parent:
+
+<app-card>
+   <h2>Hello Angular</h2>
+</app-card>
+
+Child:
+
+<div class="card">
+   <ng-content></ng-content>
+</div>
+
+ngAfterContentInit() {
+console.log("Content Initialized");
+}
+
+6. ngAfterContentChecked()
+Called after projected content is checked.
+
+ngAfterContentChecked() {
+console.log("Content Checked");
+}
+
+Use Case
+
+Validate projected content changes.
+
+7. ngAfterViewInit()
+
+Called once after component view and child views are initialized.
+
+<input #userInput>
+
+@ViewChild('userInput')
+inputElement!: ElementRef;
+ 
+ngAfterViewInit() {
+this.inputElement.nativeElement.focus();
+}
+
+Use Cases
+
+✅ Access DOM Elements
+
+✅ Access Child Components
+
+✅ Initialize Charts
+
+✅ Initialize Third-party Libraries
+
+@ViewChild(ChartComponent)
+chart!: ChartComponent;
+
+ngAfterViewInit() {
+   this.chart.loadData();
+}
+
+8. ngAfterViewChecked()
+Called after Angular checks component views.
+
+ngAfterViewChecked() {
+   console.log("View Checked");
+}
+
+Use Case
+
+Rarely used for:
+
+Monitoring view updates
+Debugging
+
+9. ngOnDestroy()
+
+Called just before component is destroyed.
+
+Very important hook.
+
+ngOnDestroy() {
+   console.log("Component Destroyed");
+}
+
+subscription!: Subscription;
+
+ngOnInit() {
+  this.subscription =
+      this.userService.getUsers()
+      .subscribe();
+}
+
+ngOnDestroy() {
+  this.subscription.unsubscribe();
+}
