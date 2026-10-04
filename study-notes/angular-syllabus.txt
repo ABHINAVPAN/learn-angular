@@ -19,6 +19,7 @@ Angular
     a) ahead of time compilation (npm run build --configuration production)
     b) lazy loading 
     c) OnPush - change detection
+	d) TrackBy
 11) Smart vs Dumb Components
 
 
@@ -544,3 +545,302 @@ new BehaviorSubject('default')
 Stores latest value.
 
 
+Reactive Forms
+Reactive Forms are a model-driven approach to handling forms in Angular.
+Instead of writing most logic in HTML, we create and manage the form structure in the TypeScript component.
+
+Step 1: Import ReactiveFormsModule
+
+import { ReactiveFormsModule } from '@angular/forms';
+
+@NgModule({
+  imports: [
+    ReactiveFormsModule
+  ]
+})
+export class AppModule {}
+``
+
+Step 2: Create FormGroup
+
+import { Component } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
+
+@Component({
+  selector: 'app-user-registration',
+  templateUrl: './user-registration.component.html'
+})
+export class UserRegistrationComponent {
+
+  registrationForm = new FormGroup({
+    username: new FormControl(''),
+    email: new FormControl(''),
+    password: new FormControl('')
+  });
+
+  onSubmit() {
+    console.log(this.registrationForm.value);
+  }
+}
+
+Step 3: HTML Binding
+
+<form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+
+  <label>Username</label>
+  <input type="text" formControlName="username">
+
+  <br><br>
+
+  <label>Email</label>
+  <input type="email" formControlName="email">
+
+  <br><br>
+
+  <label>Password</label>
+  <input type="password" formControlName="password">
+
+  <br><br>
+
+  <button type="submit">Submit</button>
+
+</form>
+
+Important Terminologies
+
+1. FormControl
+Represents a single input field.
+username = new FormControl('');
+email = new FormControl('');
+password = new FormControl('');
+
+2. FormGroup
+Group of multiple controls.
+registrationForm = new FormGroup({
+username: new FormControl(''),
+email: new FormControl('')
+});
+
+3. FormBuilder
+Reduces boilerplate code
+
+import { FormBuilder } from '@angular/forms';
+
+constructor(private fb: FormBuilder) {}
+
+form = this.fb.group({
+  username: [''],
+  email: [''],
+  password: ['']
+});
+
+Validations in Reactive Forms
+import { Validators } from '@angular/forms';
+
+form = this.fb.group({
+  username: ['', Validators.required],
+  email: ['', [Validators.required, Validators.email]],
+  password: ['', [Validators.required, Validators.minLength(6)]]
+});
+
+HTML Validation Messages
+
+<input formControlName="username">
+ 
+<div *ngIf="form.get('username')?.errors*.['required']">
+Username is re*uired
+</div>
+
+Complete Validation Example
+
+Component:
+
+form = this.fb.group(*
+  username: ['', Validators.required],
+  email: ['', [Validators.required, Validators.email]],
+  passwo*d: ['', [Validators.required, Validators.minLength(6)]]
+});
+
+submit()*{
+  if(this.form.valid){
+    conso*e.log(this.form.value);
+  }
+}
+
+HTML
+
+<form [form*roup]="form" (ngSubmit)="submit()"*
+
+<input formControlName="username*>
+
+<div *ngIf="form.get('username'*?.touched &&
+            form.get(*username')?.errors?.['required']">*
+    Username Required
+</div>
+
+<bu*ton type="submit">Submit</button>
+*</form>
+
+setValue()
+Must provide all controls.
+✅ All fields required.
+❌ Missing field throws error.
+
+this.form.setValue({
+  username: '*ohn',
+  email: 'john@gmail.com',
+ *password: '123456'
+});
+
+patchValue()
+Can update partial fields.
+✅ Only selected fields updated.
+
+this.form.patchValue({
+  em*il: 'john@gmail.com'
+});
+
+valueChanges Observable
+Used to capture changes in real time.
+
+this.form.get('username')?.valueChanges.subscribe(value => {
+  console.log(value);
+});
+
+Useful for:
+Search boxes
+Auto suggestions
+Dynamic validation
+
+FormArray
+
+Used when controls are dynamic.
+Example: Employee can have multiple skills.
+
+import { FormArray } from '@angular/forms';
+
+form = this.fb.group({
+  skills: this.fb.array([])
+});
+
+Add Skills Dynamically
+
+get skills() {
+  return this.form.get('skills') as FormArray;
+}
+
+addSkill() {
+  this.skills.push(new FormControl(''));
+}
+
+HTML
+
+<div formArrayName="skills">
+
+  <div *ngFor="let skill of skills.controls; let i=index">
+
+    <input [formControlName]="i">
+
+  </div>
+
+</div>
+
+<button (click)="addSkill()">
+Add Skill
+</button>
+
+How Do You Call REST APIs
+
+constructor(
+private http:HttpClient
+){}
+not recommended
+this.http.get("/api/users")
+ .subscribe(res=>{
+   console.log(res);
+ });
+ not recommended in ngOnInit()
+ 
+Explain HTTP Interceptors
+
+Used for:
+JWT token
+Logging
+Error Handling
+
+intercept(req,next){
+ const cloned =
+ req.clone({
+ setHeaders:{
+   Authorization:
+   `Bearer ${token}`
+ }
+});
+return next.handle(cloned);
+}
+
+How Do You Handle Global Errors
+@Injectable()
+export class GlobalErrorHandler
+implements ErrorHandler{
+
+ handleError(error:any){
+   console.log(error);
+ }
+}
+
+
+Standalone Component
+No NgModule required.
+
+@Component({
+ standalone:true
+})
+export class UserComponent{}
+
+
+State Management in Angular
+
+Popular solutions:
+
+BehaviorSubject
+NgRx
+Signals (Angular 16+)
+
+
+Q1. How did you secure Angular application?
+
+Answer:
+
+JWT Authentication
+Route Guards
+Interceptors
+HTTPS
+Role-based access control
+Q2. How did you improve Angular performance?
+
+Answer:
+
+Lazy loading
+OnPush strategy
+TrackBy
+RxJS optimization
+Virtual scrolling
+Q3. Explain one end-to-end feature you developed.
+
+Prepare a real project example:
+
+Spring Boot REST API → Angular Service → Component → Reactive Form → Validation → JWT Authentication → Database Save
+
+For your 4+ years experience, focus especially on:
+
+RxJS (switchMap, mergeMap, BehaviorSubject)
+Reactive Forms
+Parent-Child Communication
+Routing & Guards
+Interceptors
+Lazy Loading
+Signals
+Standalone Components
+Change Detection
+Performance Optimization
