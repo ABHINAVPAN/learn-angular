@@ -226,3 +226,321 @@ ngOnInit() {
 ngOnDestroy() {
   this.subscription.unsubscribe();
 }
+
+What is Data Binding in Angular?
+Data Binding in Angular is a mechanism that enables communication 
+between the component class and the HTML template. It helps display data
+in the UI and respond to user actions without manually manipulating the DOM.
+
+Types
+
+1. Interpolation
+Used to display component data in HTML.
+{{ expression }}
+<p>{{ name.toUpperCase() }}</p>
+<p>{{ isActive }}</p>
+
+2. Property Binding
+Used to bind component data to HTML element properties.
+[property]="value"
+
+Component:
+imageUrl = "assets/user.png";
+
+template:
+<img [src]="imageUrl">
+
+component:
+isDisbled = true;
+
+template:
+<button [disabled]="isDisabled">
+   Submit
+</button>
+
+component:
+color = 'red';
+
+template:
+<p [style.color]="color">
+   Welcome
+</p>
+
+3. Event Binding
+Used to handle user events.
+(event)="method()"
+
+component:
+showMessage() {
+alert("Button Clicked");
+}
+
+template:
+<button (click)="showMessage()">
+   Click Me
+</button>
+
+component:
+onType(event:any) {
+   console.log(event.
+   
+template:
+<input (input)="onType($event)">   
+
+4. Two-Way Binding
+Property Binding
++
+Event Binding
+
+component:
+name = '';
+
+template:
+<input [(ngModel)]="name">
+<p>{{name}}</p>
+
+Angular internally converts it to:
+[value]="name"
+(input)="name = $event.target.value"
+
+
+What are Directives(written old new also to be added)
+Directives are special classes in Angular that allow you to manipulate
+the DOM (Document Object Model) and add behavior to HTML elements.
+
+Types of Directives:
+1. Component Directive
+Every Angular Component is actually a directive with a template.
+
+@Component({
+  selector: 'app-user',
+  template: '<h1>User Component</h1>'
+})
+export class UserComponent {}
+
+<app-user></app-user>
+
+Directive + Template = Component
+
+2. Structural Directive
+Structural directives change the structure of the DOM by:
+Adding elements
+Removing elements
+Repeating elements
+
+They are identified by *.
+
+EX:
+*ngIf
+*ngFor
+*ngSwitch
+
+component:
+isLoggedIn = true;
+
+template:
+<h2 *ngIf="isLoggedIn">
+  Welcome User
+</h2>
+
+component:
+users = ['John', 'David', 'Mike'];
+
+template:
+<ul>
+  <li *ngFor="let user of users">
+     {{user}}
+  </li>
+</ul>
+
+other way:
+<li *ngFor="let user of users; let i = index">
+   {{i}} - {{user}}
+</li>
+
+component:
+role = 'Admin';
+
+template:
+<div [ngSwitch]="role">
+
+  <p**ngSwitchCase="'Admin'">
+     Admi* Dashboard
+  </p>
+
+  <p *ngSwitchC*se="'User'">
+     User Dashboard
+ *</p>
+
+  <p *ngSwitchDefault>
+     *o Access
+  </p>
+
+</div>
+
+3. Attribute Directive
+Attribute directives change the appearance or behavior of an element.
+They do NOT add or remove elements.
+
+Ex:
+ngClass
+ngStyle
+ngModel
+
+component:
+isError = true;
+
+template:
+<p [ngClass]="{'error': isError*">
+  Invalid Data
+</p>
+
+css:
+.error {
+  color: red;
+}
+
+component:
+color = 'blue';
+*
+template:
+<p [ngStyle]="{'*olor': color}">
+  Angular
+</p>
+```*
+
+component:
+name = '';
+
+template:
+<input [(ngModel)]="nam*">
+
+<p>{{name}}</p>
+
+Can we create Custom Directives
+
+using:
+@Directive()
+
+Content Projection
+
+Parent:
+<app-card>
+  <h2>Hello</h2>
+</app-card>
+
+Child:
+<div class="card">
+   <ng-content></ng-content>
+</div>
+
+Difference between ViewChild and ContentChild(Need to see)
+
+
+Performance optimization techniques:
+
+a) ahead of time compilation (npm run build --configuration production)
+
+
+b) lazy loading 
+Loads modules when needed.
+{
+ path:'admin',
+ loadChildren:() =>
+ import('./admin/admin.module')
+ .then(m=>m.AdminModule)
+}
+Benefits:
+
+Faster application startup
+Reduced bundle size
+
+Difference between Eager and Lazy Loading
+Eager	           Lazy
+Loads initially	Loads on demand
+Slower startup	Faster startup
+Large bundle	Smaller bundle
+
+
+c) OnPush - change detection
+
+
+
+Angular Routing
+generally in app.routes.ts
+const routes: Routes = [
+ {
+   path:'users',
+   component:UserComponent
+ }
+];
+
+navigates to
+
+this.router.navigate(['/users']);
+
+
+What are Route Guards(Need to see)
+Used for authorization.
+
+canActivate():boolean{
+ return this.authService.isLoggedIn();
+}
+
+Types
+CanActivate
+CanDeactivate
+Resolve
+CanLoad
+
+
+Difference between Promise and Observable(Need to see Promise)
+
+Promise            Observable
+SingleValue       Multiple Values
+Cannot cancel     Can cancel
+Async Operation   Stream Data
+No RxJS operators RxJS operators
+
+ex: 
+this.http.get('/users')
+.subscribe(data=>{
+console.log(data);
+});
+
+RxJS:
+
+Operators:
+
+map()
+filter()
+forkJoin()
+mergeMap()
+switchMap()
+tap()
+catchError()
+withLatestFrom
+combineLatest
+
+
+Subject:
+A Subject acts as both:
+Observable
+Observer
+
+userSubject =
+ new Subject<string>();
+
+userSubject.next("John");
+
+Difference between Subject and BehaviorSubject
+
+Subject:
+new Subject()
+No initial value.
+
+BehaviorSubject:
+new BehaviorSubject('default')
+Stores latest value.
+
+
