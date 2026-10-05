@@ -1,0 +1,125 @@
+<main class="registration-page">
+  <section class="page-heading" aria-labelledby="page-title">
+    <div>
+      <p class="eyebrow">REGISTRATION DESK / ADMIN</p>
+      <h1 id="page-title">User registrations</h1>
+      <p class="intro">Create and manage course registrations from one place.</p>
+    </div>
+    <div class="record-count" aria-live="polite">
+      <strong>{{ registrations.length }}</strong>
+      <span>{{ registrations.length === 1 ? 'record' : 'records' }}</span>
+    </div>
+  </section>
+
+  <div class="workspace">
+    <section class="form-panel" aria-labelledby="form-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">{{ editingId === null ? 'NEW ENTRY' : 'EDIT ENTRY' }}</p>
+          <h2 id="form-title">{{ editingId === null ? 'Add a registration' : 'Update registration' }}</h2>
+        </div>
+      </div>
+
+      <form #registrationForm="ngForm" (ngSubmit)="save()">
+        <div class="name-fields">
+          <label>
+            <span>First name</span>
+            <input name="firstName" [(ngModel)]="form.firstName" required maxlength="80" autocomplete="given-name" />
+          </label>
+          <label>
+            <span>Last name</span>
+            <input name="lastName" [(ngModel)]="form.lastName" required maxlength="80" autocomplete="family-name" />
+          </label>
+        </div>
+        <label>
+          <span>Email address</span>
+          <input name="email" [(ngModel)]="form.email" required email maxlength="160" type="email" autocomplete="email" />
+        </label>
+        <label>
+          <span>Phone number</span>
+          <input name="phone" [(ngModel)]="form.phone" required maxlength="30" type="tel" autocomplete="tel" />
+        </label>
+        <label>
+          <span>Course</span>
+          <select name="course" [(ngModel)]="form.course" required>
+            <option value="" disabled>Select a course</option>
+            <option value="Angular Fundamentals">Angular Fundamentals</option>
+            <option value="Spring Boot Essentials">Spring Boot Essentials</option>
+            <option value="Full-stack Development">Full-stack Development</option>
+          </select>
+        </label>
+
+        <p class="form-note">All fields are required. Email addresses must be unique.</p>
+        <div class="form-actions">
+          @if (editingId !== null) {
+            <button class="button button-quiet" type="button" (click)="cancelEdit()">Cancel</button>
+          }
+          <button class="button button-primary" type="submit" [disabled]="registrationForm.invalid || isSaving">
+            {{ isSaving ? 'Saving…' : editingId === null ? 'Create registration' : 'Save changes' }}
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="directory" aria-labelledby="directory-title">
+      <div class="directory-heading">
+        <div>
+          <p class="eyebrow">DIRECTORY</p>
+          <h2 id="directory-title">Registered users</h2>
+        </div>
+        <button class="refresh-button" type="button" (click)="loadRegistrations()" [disabled]="isLoading" aria-label="Refresh registrations" title="Refresh registrations">
+          <span aria-hidden="true">↻</span>
+        </button>
+      </div>
+
+      @if (errorMessage) {
+        <p class="notice notice-error" role="alert">{{ errorMessage }}</p>
+      }
+      @if (successMessage) {
+        <p class="notice notice-success" role="status">{{ successMessage }}</p>
+      }
+
+      @if (isLoading) {
+        <p class="empty-state">Loading registrations…</p>
+      } @else if (registrations.length === 0) {
+        <div class="empty-state">
+          <strong>No registrations yet</strong>
+          <span>Your new entries will appear here.</span>
+        </div>
+      } @else {
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">User</th>
+                <th scope="col">Contact</th>
+                <th scope="col">Course</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (registration of registrations; track registration.id) {
+                <tr>
+                  <td data-label="User">
+                    <strong>{{ registration.firstName }} {{ registration.lastName }}</strong>
+                    <span class="secondary">#{{ registration.id }}</span>
+                  </td>
+                  <td data-label="Contact">
+                    <span>{{ registration.email }}</span>
+                    <span class="secondary">{{ registration.phone }}</span>
+                  </td>
+                  <td data-label="Course"><span class="course-tag">{{ registration.course }}</span></td>
+                  <td class="row-actions">
+                    <button type="button" class="text-action" (click)="edit(registration)" [attr.aria-label]="'Edit ' + registration.firstName + ' ' + registration.lastName">Edit</button>
+                    <button type="button" class="text-action delete-action" (click)="delete(registration)" [attr.aria-label]="'Delete ' + registration.firstName + ' ' + registration.lastName">Delete</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  </div>
+</main>

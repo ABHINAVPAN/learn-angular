@@ -1,0 +1,32 @@
+<main class="auth-page">
+  <section class="auth-panel" aria-labelledby="auth-title">
+    <p class="eyebrow">LEARN ANGULAR / REGISTRATION DESK</p>
+    <h1 id="auth-title">{{ mode === 'login' ? 'Welcome back' : 'Create your account' }}</h1>
+    <p class="intro">{{ mode === 'login' ? 'Sign in to manage course registrations.' : 'Set up an account to access the registration desk.' }}</p>
+
+    <form #authForm="ngForm" (ngSubmit)="submit()">
+      <label>
+        <span>Email address</span>
+        <input name="email" [(ngModel)]="form.email" required email maxlength="160" type="email" autocomplete="email" />
+      </label>
+      <label>
+        <span>Password</span>
+        <input name="password" [(ngModel)]="form.password" required minlength="8" maxlength="72" type="password" [autocomplete]="mode === 'login' ? 'current-password' : 'new-password'" />
+      </label>
+      @if (errorMessage) {
+        <p class="error-message" role="alert">{{ errorMessage }}</p>
+      }
+      <button class="submit-button" type="submit" [disabled]="authForm.invalid || isSubmitting">
+        {{ isSubmitting ? 'Please wait…' : mode === 'login' ? 'Sign in' : 'Create account' }}
+        <span aria-hidden="true">→</span>
+      </button>
+    </form>
+
+    <p class="mode-switch">
+      {{ mode === 'login' ? 'New to the registration desk?' : 'Already have an account?' }}
+      <button type="button" (click)="mode = mode === 'login' ? 'register' : 'login'; errorMessage = ''">
+        {{ mode === 'login' ? 'Create an account' : 'Sign in' }}
+      </button>
+    </p>
+  </section>
+</main>

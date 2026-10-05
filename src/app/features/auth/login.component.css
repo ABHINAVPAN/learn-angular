@@ -1,0 +1,125 @@
+:host {
+  color: #172a2a;
+  display: block;
+  font-family: "Aptos", "Segoe UI", sans-serif;
+}
+
+.auth-page {
+  align-items: center;
+  background: linear-gradient(115deg, #edf1e9 0%, #f8f7ef 54%, #e6eee8 100%);
+  display: flex;
+  justify-content: center;
+  min-height: calc(100vh - 58px);
+  padding: 2rem 1rem;
+}
+
+.auth-panel {
+  background: #fffefa;
+  border: 1px solid #d9ded4;
+  border-top: 4px solid #356b5d;
+  max-width: 440px;
+  padding: clamp(1.5rem, 6vw, 3rem);
+  width: 100%;
+}
+
+.eyebrow {
+  color: #56726d;
+  font-size: 0.7rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  margin: 0 0 0.8rem;
+}
+
+h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2.3rem;
+  font-weight: 500;
+  margin: 0 0 0.55rem;
+}
+
+.intro {
+  color: #63736e;
+  margin: 0 0 2rem;
+}
+
+form,
+label {
+  display: grid;
+  gap: 0.6rem;
+}
+
+form {
+  gap: 1.15rem;
+}
+
+label span {
+  color: #344a46;
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+input {
+  background: #fff;
+  border: 1px solid #bfcac2;
+  border-radius: 3px;
+  color: #172a2a;
+  font: inherit;
+  min-height: 2.85rem;
+  padding: 0.65rem 0.75rem;
+  width: 100%;
+}
+
+input:focus {
+  border-color: #356b5d;
+  outline: 2px solid #a9c6b7;
+  outline-offset: 1px;
+}
+
+.submit-button {
+  align-items: center;
+  background: #28584c;
+  border: 0;
+  border-radius: 3px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  justify-content: space-between;
+  margin-top: 0.25rem;
+  min-height: 2.9rem;
+  padding: 0.65rem 0.9rem;
+}
+
+.submit-button:hover:not(:disabled) {
+  background: #1e443a;
+}
+
+.submit-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.error-message {
+  color: #a33224;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.mode-switch {
+  color: #63736e;
+  font-size: 0.85rem;
+  margin: 1.5rem 0 0;
+  text-align: center;
+}
+
+.mode-switch button {
+  background: none;
+  border: 0;
+  color: #28584c;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 0.25rem;
+}

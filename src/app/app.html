@@ -3,6 +3,12 @@
 	<nav aria-label="Main navigation">
 		<a routerLink="/demo" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Parent / child</a>
 		<a routerLink="/rxjs-user-details/subsink" routerLinkActive="active">RxJS user details</a>
+		@if (auth.isAuthenticated()) {
+			<a routerLink="/user-registration" routerLinkActive="active">User registration</a>
+			<button type="button" class="nav-action" (click)="logout()">Sign out</button>
+		} @else {
+			<a routerLink="/login" routerLinkActive="active">Sign in</a>
+		}
 	</nav>
 </header>
 

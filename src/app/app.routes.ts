@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/auth.guard';
 
 export const routes: Routes = [
   // Redirect empty URL path directly to the parent-child demonstration page
@@ -11,6 +12,15 @@ export const routes: Routes = [
   {
     path: 'demo',
     loadComponent: () => import('./features/parent-child-demo/parent/parent.component').then(m => m.ParentComponent)
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./features/auth/login.component').then(m => m.LoginComponent)
+  },
+  {
+    path: 'user-registration',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/user-registration/user-registration.component').then(m => m.UserRegistrationComponent)
   },
   // RxJS user-details transfer: route data selects the cleanup example.
   {

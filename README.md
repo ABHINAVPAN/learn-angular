@@ -57,3 +57,9 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## User registration CRUD example
+
+The `/user-registration` route provides an Angular interface for creating, listing, editing, and deleting course registrations. Its REST API is implemented in the `backend/` Spring Boot Maven project and persists data in MySQL.
+
+See [backend/README.md](backend/README.md) for database setup, startup commands, and the API endpoints. Start the Spring Boot API and Angular app in separate terminals, then open `http://localhost:4200/user-registration`.

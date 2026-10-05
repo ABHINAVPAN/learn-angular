@@ -1,0 +1,29 @@
+CREATE DATABASE IF NOT EXISTS app_user
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_0900_ai_ci;
+
+USE app_user;
+
+CREATE TABLE IF NOT EXISTS auth_users (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  email VARCHAR(160) NOT NULL,
+  password_hash VARCHAR(100) NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT uk_auth_users_email UNIQUE (email)
+) ENGINE=InnoDB
+  DEFAULT CHARACTER SET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS registrations (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  first_name VARCHAR(80) NOT NULL,
+  last_name VARCHAR(80) NOT NULL,
+  email VARCHAR(160) NOT NULL,
+  phone VARCHAR(30) NOT NULL,
+  course VARCHAR(100) NOT NULL,
+  registered_at DATETIME(6) NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT uk_registrations_email UNIQUE (email)
+) ENGINE=InnoDB
+  DEFAULT CHARACTER SET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
