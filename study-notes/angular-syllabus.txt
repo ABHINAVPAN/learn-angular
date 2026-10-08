@@ -465,6 +465,42 @@ Large bundle	Smaller bundle
 
 c) OnPush - change detection
 
+Parent Component:
+export class ParentComponent {
+
+  user = {
+    name: 'John'
+  };
+
+  updateUser() {
+    this.user = {
+      ...this.user,
+      name: 'David'
+    };
+  }
+}
+
+HTML:
+<app-child [user]="user"></app-child>
+
+<button (click)="updateUser()">
+Update
+</button>
+
+Child Component:
+@Component({
+  selector: 'app-child',
+  template: `
+    <h2>{{user.name}}</h2>
+  `,
+  changeDetection:
+    ChangeDetectionStrategy.OnPush
+})
+export class ChildComponent {
+
+  @Input() user: any;
+
+}
 
 
 Angular Routing

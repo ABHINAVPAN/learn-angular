@@ -1,0 +1,97 @@
+<section class="page">
+  <div class="panel form-panel">
+    <h2>{{ editingId === null ? 'Add employee' : 'Edit employee' }}</h2>
+
+    <form #employeeForm="ngForm" (ngSubmit)="save()">
+      <div class="grid two-col">
+        <label>First name
+          <input name="firstName" [(ngModel)]="form.firstName" required />
+        </label>
+        <label>Last name
+          <input name="lastName" [(ngModel)]="form.lastName" required />
+        </label>
+      </div>
+
+      <div class="grid two-col">
+        <label>Email
+          <input name="email" [(ngModel)]="form.email" type="email" required />
+        </label>
+        <label>Status
+          <select name="status" [(ngModel)]="form.status">
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="INACTIVE">INACTIVE</option>
+            <option value="ON_LEAVE">ON_LEAVE</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="grid two-col">
+        <label>Department
+          <input name="department" [(ngModel)]="form.department" required />
+        </label>
+        <label>Position
+          <input name="position" [(ngModel)]="form.position" required />
+        </label>
+      </div>
+
+      <div class="grid two-col">
+        <label>Salary
+          <input name="salary" [(ngModel)]="form.salary" type="number" min="0" required />
+        </label>
+        <label>Hire date
+          <input name="hireDate" [(ngModel)]="form.hireDate" type="date" required />
+        </label>
+      </div>
+
+      @if (errorMessage) {
+        <p class="message error">{{ errorMessage }}</p>
+      }
+      @if (successMessage) {
+        <p class="message success">{{ successMessage }}</p>
+      }
+
+      <div class="actions">
+        <button type="submit" [disabled]="employeeForm.invalid">{{ editingId === null ? 'Add employee' : 'Update employee' }}</button>
+        @if (editingId !== null) {
+          <button type="button" class="secondary" (click)="cancelEdit()">Cancel</button>
+        }
+      </div>
+    </form>
+  </div>
+
+  <div class="panel list-panel">
+    <h2>Employees</h2>
+
+    @if (isLoading) {
+      <p>Loading...</p>
+    } @else {
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Position</th>
+            <th>Salary</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (employee of employees; track employee.id) {
+            <tr>
+              <td>{{ employee.firstName }} {{ employee.lastName }}</td>
+              <td>{{ employee.department }}</td>
+              <td>{{ employee.position }}</td>
+              <td>{{ employee.salary }}</td>
+              <td>{{ employee.status }}</td>
+              <td>
+                <button type="button" class="small" (click)="edit(employee)">Edit</button>
+                <button type="button" class="small danger" (click)="delete(employee)">Delete</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</section>
