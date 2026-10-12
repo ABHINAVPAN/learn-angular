@@ -11,6 +11,7 @@ Need to see examples on synchronization, deadlock
 some common java problems
 
 JVM, Heap and stack
+Functional INterfaces
 
 
 
@@ -495,3 +496,1045 @@ John
 Sam
 
 Example: Sort Employee by Salary
+
+class SalaryComparator
+        implements Comparator<Employee> {
+
+    @Override
+    public int compare(Employee e1,
+                       Employee e2) {
+
+        return Double.compare(
+                e1.salary,
+                e2.salary);
+    }
+}
+
+Collections.sort(
+        employees,
+        new SalaryComparator());
+
+Java 8 Comparator Example (Lambda)
+
+Collections.sort(
+    employees,
+    (e1, e2) -> e1.name.compareTo(e2.name)
+);
+
+
+What is a Lambda Expression in Java?
+
+A Lambda Expression is a feature introduced in Java 8 that allows you to write anonymous functions (functions without a name) in a concise way.
+
+It is mainly used to implement Functional Interfaces and enables functional programming in Java.
+
+Syntax:
+(parameters) -> { body }
+
+Runnable r = new Runnable() {
+    @Override
+    public void run() {
+        System.out.println("Thread Running");
+    }
+};
+
+Runnable r = () -> {
+    System.out.println("Thread Running");
+};
+
+
+Real Meaning of Lambda:
+A Lambda Expression represents the implementation of a method.
+
+interface Greeting {
+    void sayHello();
+}
+
+Greeting g = new Greeting() {
+    @Override
+    public void sayHello() {
+        System.out.println("Hello");
+    }
+};
+
+Greeting g = () -> System.out.println("Hello");
+Calling:
+g.sayHello();
+
+What is a Functional Interface?
+
+A Lambda can only be used with a Functional Interface.
+A Functional Interface contains exactly one abstract method.
+Runnable
+Callable
+Comparator
+Consumer
+Supplier
+Predicate
+Function
+
+@FunctionalInterface
+interface Calculator {
+    int add(int a, int b);
+}
+
+Calculator c = (a, b) -> a + b;
+
+System.out.println(c.add(10,20));
+
+1. No Parameter
+
+() -> System.out.println("Hello");
+
+public void display() {
+    System.out.println("Hello");
+}
+
+2. One Parameter
+
+x -> System.out.println(x);
+
+public void print(int x) {
+    System.out.println(x);
+}
+
+3. Multiple Parameters
+
+(a, b) -> a + b
+
+public int add(int a, int b) {
+    return a + b;
+}
+
+4. Multiple Statements
+
+(a, b) -> {
+    int sum = a + b;
+    return sum;
+}
+
+Lambda with Collections
+
+Sorting a List
+
+Collections.sort(list, new Comparator<String>() {
+    @Override
+    public int compare(String a, String b) {
+        return a.compareTo(b);
+    }
+});
+
+Collections.sort(list,
+        (a, b) -> a.compareTo(b));
+		
+Lambda with Comparator
+
+List<Employee> employees = new ArrayList<>();
+
+employees.sort(
+    (e1, e2) -> e1.getSalary() - e2.getSalary()
+);
+
+Lambda in Threads
+
+Thread t = new Thread(new Runnable() {
+    @Override
+    public void run() {
+        System.out.println("Running");
+    }
+});
+
+Thread t = new Thread(
+    () -> System.out.println("Running")
+);
+
+
+Lambda with Stream API
+Filter Even Numbers
+
+List<Integer> nums =
+Arrays.asList(10,11,12,13,14);
+
+nums.stream()
+    .filter(n -> n % 2 == 0)
+    .forEach(System.out::println);
+	
+
+
+Difference between map() and flatMap()?
+
+MAP() vs FLATMAP() IN JAVA 8
+
+1. map()
+
+Definition:
+- map() is used for one-to-one transformation.
+- Each input element produces exactly one output element.
+- It transforms data but does not flatten it.
+
+Syntax:
+
+Stream<R> map(Function<T, R> mapper)
+
+Example:
+
+List<String> names =
+Arrays.asList("java", "spring", "angular");
+
+List<String> result = names.stream()
+                           .map(String::toUpperCase)
+                           .collect(Collectors.toList());
+
+Output:
+
+[JAVA, SPRING, ANGULAR]
+
+Flow:
+
+java    -> JAVA
+spring  -> SPRING
+angular -> ANGULAR
+
+One Input -> One Output
+
+
+--------------------------------------------------
+
+2. flatMap()
+
+Definition:
+- flatMap() is used when each element contains multiple elements.
+- It transforms and flattens nested structures.
+- Converts multiple streams into a single stream.
+
+Syntax:
+
+Stream<R> flatMap(
+    Function<T, Stream<R>> mapper
+)
+
+Example:
+
+List<List<String>> list = Arrays.asList(
+    Arrays.asList("Java", "Spring"),
+    Arrays.asList("Angular", "React"),
+    Arrays.asList("SQL", "MongoDB")
+);
+
+List<String> result = list.stream()
+                          .flatMap(x -> x.stream())
+                          .collect(Collectors.toList());
+
+Output:
+
+[Java, Spring, Angular, React, SQL, MongoDB]
+
+Flow:
+
+Input:
+
+[
+ [Java, Spring],
+ [Angular, React],
+ [SQL, MongoDB]
+]
+
+After flatMap:
+
+Java
+Spring
+Angular
+React
+SQL
+MongoDB
+
+Nested Lists -> Single Stream
+
+
+--------------------------------------------------
+
+3. map() vs flatMap()
+
+Using map():
+
+List<String> words =
+Arrays.asList("Java", "Spring");
+
+List<String[]> result =
+words.stream()
+     .map(word -> word.split(""))
+     .collect(Collectors.toList());
+
+Output:
+
+[
+ [J,a,v,a],
+ [S,p,r,i,n,g]
+]
+
+Result remains nested.
+
+
+Using flatMap():
+
+List<String> result =
+words.stream()
+     .flatMap(word ->
+         Arrays.stream(word.split("")))
+     .collect(Collectors.toList());
+
+Output:
+
+[J, a, v, a, S, p, r, i, n, g]
+
+Result becomes a single flattened list.
+
+
+--------------------------------------------------
+
+KEY DIFFERENCES
+
+map()
+------
+- One-to-One Transformation
+- Returns Stream<R>
+- Does not flatten data
+- Used for simple conversions
+- Maintains original structure
+
+flatMap()
+----------
+- One-to-Many Transformation
+- Returns Flattened Stream<R>
+- Flattens nested data
+- Used for nested collections
+- Removes one level of nesting
+
+
+--------------------------------------------------
+
+RETURN TYPES
+
+map():
+
+Stream<String>
+      |
+      V
+map(String::length)
+      |
+      V
+Stream<Integer>
+
+
+flatMap():
+
+Stream<List<String>>
+          |
+          V
+       flatMap()
+          |
+          V
+Stream<String>
+
+
+--------------------------------------------------
+
+COMMON USE CASES OF flatMap()
+
+1. List<List<Integer>>
+
+2. Department -> List<Employee>
+
+3. Stream<String[]>
+
+4. Optional<User>
+
+5. Nested Collections
+
+
+--------------------------------------------------
+
+INTERVIEW ANSWER
+
+map() is used for one-to-one transformation where each input element is converted into exactly one output element.
+
+flatMap() is used when each element itself contains multiple values. It converts each element into a stream and then flattens all streams into one single stream.
+
+In simple words:
+
+map()     = Transform
+
+flatMap() = Transform + Flatten
+
+
+MEMORY TRICK
+
+map()     -> One Input  -> One Output
+
+flatMap() -> One Input  -> Multiple Outputs
+             + Flatten Everything
+			 
+			 
+=========================================
+JAVA STREAM API (JAVA 8) COMPLETE NOTES
+=========================================
+
+1. WHAT IS STREAM API?
+
+Stream API was introduced in Java 8 to process collections of data in a functional and declarative way.
+
+Stream does not store data.
+It processes data from a source such as:
+
+- List
+- Set
+- Array
+- Map
+- File
+
+Example:
+
+List<Integer> nums =
+Arrays.asList(1,2,3,4,5);
+
+nums.stream()
+    .forEach(System.out::println);
+
+Output:
+
+1
+2
+3
+4
+5
+
+--------------------------------------------------
+
+2. WHY STREAM API?
+
+Before Java 8:
+
+List<String> names =
+Arrays.asList("Java","Spring","Angular");
+
+for(String name : names){
+    System.out.println(name);
+}
+
+Java 8:
+
+names.stream()
+     .forEach(System.out::println);
+
+Benefits:
+- Less code
+- Better readability
+- Functional programming
+- Parallel processing
+- Improved performance
+
+--------------------------------------------------
+
+3. STREAM PIPELINE
+
+A stream pipeline consists of:
+
+Source
+   |
+Intermediate Operations
+   |
+Terminal Operation
+
+Example:
+
+list.stream()
+    .filter(x -> x > 10)
+    .map(x -> x * 2)
+    .collect(Collectors.toList());
+
+Source:
+List
+
+Intermediate Operations:
+filter()
+map()
+
+Terminal Operation:
+collect()
+
+--------------------------------------------------
+
+4. HOW TO CREATE STREAMS
+
+From List
+
+List<String> list =
+Arrays.asList("A","B","C");
+
+Stream<String> stream =
+list.stream();
+
+--------------------------------------------------
+
+From Array
+
+String[] arr =
+{"Java","Spring"};
+
+Stream<String> stream =
+Arrays.stream(arr);
+
+--------------------------------------------------
+
+Using Stream.of()
+
+Stream<String> stream =
+Stream.of("Java","Spring","Angular");
+
+--------------------------------------------------
+
+Using Stream.generate()
+
+Stream<Integer> stream =
+Stream.generate(() -> 10);
+
+--------------------------------------------------
+
+Using Stream.iterate()
+
+Stream<Integer> stream =
+Stream.iterate(1,n -> n+1);
+
+--------------------------------------------------
+
+5. INTERMEDIATE OPERATIONS
+
+These operations return another stream.
+
+Examples:
+
+filter()
+map()
+flatMap()
+sorted()
+distinct()
+limit()
+skip()
+peek()
+
+Intermediate operations are lazy.
+
+They execute only when terminal operation is called.
+
+--------------------------------------------------
+
+6. FILTER
+
+Used to filter data.
+
+Example:
+
+List<Integer> nums =
+Arrays.asList(10,15,20,25,30);
+
+nums.stream()
+    .filter(n -> n % 2 == 0)
+    .forEach(System.out::println);
+
+Output:
+
+10
+20
+30
+
+--------------------------------------------------
+
+7. MAP
+
+Used for one-to-one transformation.
+
+Example:
+
+List<String> names =
+Arrays.asList("java","spring");
+
+names.stream()
+     .map(String::toUpperCase)
+     .forEach(System.out::println);
+
+Output:
+
+JAVA
+SPRING
+
+Transformation:
+
+java -> JAVA
+spring -> SPRING
+
+--------------------------------------------------
+
+8. FLATMAP
+
+Used for nested collections.
+
+Example:
+
+List<List<String>> list =
+Arrays.asList(
+ Arrays.asList("Java","Spring"),
+ Arrays.asList("Angular","React")
+);
+
+list.stream()
+    .flatMap(x -> x.stream())
+    .forEach(System.out::println);
+
+Output:
+
+Java
+Spring
+Angular
+React
+
+flatMap = Transform + Flatten
+
+--------------------------------------------------
+
+9. DISTINCT
+
+Removes duplicates.
+
+Example:
+
+List<Integer> nums =
+Arrays.asList(1,2,2,3,3,4);
+
+nums.stream()
+    .distinct()
+    .forEach(System.out::println);
+
+Output:
+
+1
+2
+3
+4
+
+--------------------------------------------------
+
+10. SORTED
+
+Sort data.
+
+Example:
+
+List<Integer> nums =
+Arrays.asList(5,3,2,1,4);
+
+nums.stream()
+    .sorted()
+    .forEach(System.out::println);
+
+Output:
+
+1
+2
+3
+4
+5
+
+--------------------------------------------------
+
+Custom Sorting
+
+employees.stream()
+         .sorted((e1,e2) ->
+             e1.getSalary() -
+             e2.getSalary());
+
+--------------------------------------------------
+
+11. LIMIT
+
+Limits elements.
+
+Example:
+
+Stream.iterate(1,n->n+1)
+      .limit(5)
+      .forEach(System.out::println);
+
+Output:
+
+1
+2
+3
+4
+5
+
+--------------------------------------------------
+
+12. SKIP
+
+Skips elements.
+
+Example:
+
+List<Integer> nums =
+Arrays.asList(1,2,3,4,5);
+
+nums.stream()
+    .skip(2)
+    .forEach(System.out::println);
+
+Output:
+
+3
+4
+5
+
+--------------------------------------------------
+
+13. PEEK
+
+Used for debugging.
+
+Example:
+
+nums.stream()
+    .peek(System.out::println)
+    .collect(Collectors.toList());
+
+--------------------------------------------------
+
+14. TERMINAL OPERATIONS
+
+Terminal operations produce final results.
+
+Examples:
+
+forEach()
+collect()
+count()
+reduce()
+findFirst()
+findAny()
+anyMatch()
+allMatch()
+noneMatch()
+min()
+max()
+
+--------------------------------------------------
+
+15. FOREACH
+
+Print elements.
+
+Example:
+
+nums.stream()
+    .forEach(System.out::println);
+
+--------------------------------------------------
+
+16. COLLECT
+
+Convert stream to collection.
+
+Example:
+
+List<Integer> result =
+nums.stream()
+    .filter(n -> n > 10)
+    .collect(Collectors.toList());
+
+--------------------------------------------------
+
+17. COUNT
+
+Count elements.
+
+Example:
+
+long count =
+nums.stream().count();
+
+--------------------------------------------------
+
+18. FINDFIRST
+
+Returns first element.
+
+Example:
+
+Optional<Integer> result =
+nums.stream()
+    .findFirst();
+
+--------------------------------------------------
+
+19. FINDANY
+
+Returns any element.
+
+Example:
+
+Optional<Integer> result =
+nums.stream()
+    .findAny();
+
+--------------------------------------------------
+
+20. ANYMATCH
+
+Checks condition.
+
+Example:
+
+boolean result =
+nums.stream()
+    .anyMatch(n -> n > 10);
+
+--------------------------------------------------
+
+21. ALLMATCH
+
+Example:
+
+boolean result =
+nums.stream()
+    .allMatch(n -> n > 0);
+
+--------------------------------------------------
+
+22. NONEMATCH
+
+Example:
+
+boolean result =
+nums.stream()
+    .noneMatch(n -> n < 0);
+
+--------------------------------------------------
+
+23. MIN
+
+Example:
+
+Integer min =
+nums.stream()
+    .min(Integer::compare)
+    .get();
+
+--------------------------------------------------
+
+24. MAX
+
+Example:
+
+Integer max =
+nums.stream()
+    .max(Integer::compare)
+    .get();
+
+--------------------------------------------------
+
+25. REDUCE
+
+Used to combine elements into a single result.
+
+Example: Sum
+
+List<Integer> nums =
+Arrays.asList(1,2,3,4,5);
+
+int sum =
+nums.stream()
+    .reduce(0,(a,b)->a+b);
+
+Output:
+
+15
+
+--------------------------------------------------
+
+26. COLLECTORS
+
+Collectors are used with collect().
+
+Common Collectors:
+
+toList()
+toSet()
+joining()
+groupingBy()
+partitioningBy()
+counting()
+
+--------------------------------------------------
+
+27. GROUPINGBY
+
+Group data.
+
+Example:
+
+Map<String,List<Employee>>
+map = employees.stream()
+.collect(
+Collectors.groupingBy(
+Employee::getDepartment
+));
+
+--------------------------------------------------
+
+28. PARTITIONINGBY
+
+Splits data into true and false.
+
+Example:
+
+Map<Boolean,List<Integer>> map =
+nums.stream()
+.collect(
+Collectors.partitioningBy(
+n -> n % 2 == 0
+));
+
+--------------------------------------------------
+
+29. PARALLEL STREAM
+
+Processes data using multiple threads.
+
+Example:
+
+nums.parallelStream()
+    .forEach(System.out::println);
+
+Benefits:
+
+- Faster for large data
+- Uses ForkJoinPool
+
+--------------------------------------------------
+
+30. SEQUENTIAL VS PARALLEL STREAM
+
+Sequential Stream:
+One thread processes data.
+
+Parallel Stream:
+Multiple threads process data simultaneously.
+
+Sequential:
+
+list.stream()
+
+Parallel:
+
+list.parallelStream()
+
+--------------------------------------------------
+
+31. LAZY EVALUATION
+
+Intermediate operations are not executed immediately.
+
+Example:
+
+nums.stream()
+    .filter(n -> n > 10)
+    .map(n -> n * 2);
+
+Nothing executes until terminal operation is added.
+
+--------------------------------------------------
+
+32. STREAM CHARACTERISTICS
+
+- Does not store data
+- Processes data on demand
+- Supports functional programming
+- Supports parallelism
+- Consumed only once
+
+Example:
+
+Stream<Integer> stream =
+nums.stream();
+
+stream.forEach(System.out::println);
+
+stream.forEach(System.out::println);
+
+Throws:
+
+IllegalStateException
+
+Because stream can be consumed only once.
+
+--------------------------------------------------
+
+33. STREAM VS COLLECTION
+
+COLLECTION
+----------
+Stores data
+Works on data
+Eager execution
+Can be traversed multiple times
+
+STREAM
+-------
+Does not store data
+Processes data
+Lazy execution
+Can be traversed only once
+
+--------------------------------------------------
+
+34. COMMON INTERVIEW QUESTIONS
+
+Q1. What is Stream API?
+A:
+Stream API is a feature introduced in Java 8 for processing collections in a functional and declarative manner.
+
+Q2. Stream vs Collection?
+A:
+Collection stores data while Stream processes data.
+
+Q3. What are intermediate operations?
+A:
+filter(), map(), flatMap(), sorted(), distinct(), limit(), skip()
+
+Q4. What are terminal operations?
+A:
+forEach(), collect(), reduce(), count(), max(), min()
+
+Q5. Difference between map() and flatMap()?
+A:
+map() = Transform
+flatMap() = Transform + Flatten
+
+Q6. What is reduce()?
+A:
+Used to combine stream elements into a single value.
+
+Q7. What is parallelStream()?
+A:
+A stream that processes data using multiple threads.
+
+Q8. Are streams lazy?
+A:
+Yes, intermediate operations are lazy.
+
+Q9. Can a stream be reused?
+A:
+No, a stream can be consumed only once.
+
+Q10. What is the benefit of Stream API?
+A:
+Less code, better readability, functional programming support, and parallel processing.
