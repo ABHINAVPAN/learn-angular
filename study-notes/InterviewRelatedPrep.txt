@@ -1538,3 +1538,2526 @@ No, a stream can be consumed only once.
 Q10. What is the benefit of Stream API?
 A:
 Less code, better readability, functional programming support, and parallel processing.
+
+
+=========================================
+DIFFERENCE BETWEEN THREAD AND RUNNABLE
+=========================================
+
+1. THREAD
+
+- Thread is a class present in java.lang package.
+- Used to create and manage a thread.
+- Contains methods like start(), sleep(), join(), etc.
+- A class must extend Thread to create a thread.
+
+Example:
+
+class MyThread extends Thread {
+
+    @Override
+    public void run() {
+        System.out.println("Thread Running");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+
+        MyThread t = new MyThread();
+        t.start();
+    }
+}
+
+--------------------------------------------------
+
+2. RUNNABLE
+
+- Runnable is an interface present in java.lang package.
+- Contains only one method:
+
+void run();
+
+- A class implements Runnable and provides task logic.
+- Thread object executes the Runnable task.
+
+Example:
+
+class MyTask implements Runnable {
+
+    @Override
+    public void run() {
+        System.out.println("Task Running");
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Runnable r = new MyTask();
+
+        Thread t = new Thread(r);
+
+        t.start();
+    }
+}
+
+--------------------------------------------------
+
+3. INTERNAL WORKING
+
+Using Thread:
+
+MyThread t = new MyThread();
+
+t.start();
+
+JVM creates a new thread and internally calls:
+
+t.run();
+
+--------------------------------------------------
+
+Using Runnable:
+
+Runnable r = new MyTask();
+
+Thread t = new Thread(r);
+
+t.start();
+
+Internally:
+
+Thread executes:
+
+r.run();
+
+--------------------------------------------------
+
+4. MAJOR DIFFERENCE
+
+THREAD
+------
+- Defines both Thread and Task.
+- Class must extend Thread.
+- Cannot extend another class.
+
+RUNNABLE
+--------
+- Defines only Task.
+- Thread executes the task.
+- Class can still extend another class.
+
+Example:
+
+class Employee extends Person
+               implements Runnable
+
+This is possible.
+
+class Employee extends Person
+               extends Thread
+
+Not possible.
+
+--------------------------------------------------
+
+5. WHICH IS BETTER?
+
+Runnable is preferred because:
+
+1. Supports Multiple Inheritance
+
+class Employee extends Person
+               implements Runnable
+
+2. Better Object-Oriented Design
+
+Task and Thread are separated.
+
+3. Recommended in Real Projects
+
+Most frameworks use Runnable.
+
+--------------------------------------------------
+
+6. MEMORY VIEW
+
+Using Thread:
+
+MyThread
+   |
+   --> run()
+
+Task and Thread are tightly coupled.
+
+--------------------------------------------------
+
+Using Runnable:
+
+Runnable Task
+      |
+      V
+
+Thread
+      |
+      V
+
+run()
+
+Task and Execution are separate.
+
+--------------------------------------------------
+
+7. JAVA 8 LAMBDA EXAMPLE
+
+Runnable r = () -> {
+    System.out.println("Task Running");
+};
+
+Thread t = new Thread(r);
+
+t.start();
+
+Or
+
+new Thread(
+    () -> System.out.println("Running")
+).start();
+
+--------------------------------------------------
+
+8. INTERVIEW QUESTION
+
+Q. What happens when start() is called?
+
+t.start();
+
+Answer:
+
+- JVM creates a new thread.
+- Thread moves to Runnable state.
+- JVM Thread Scheduler allocates CPU.
+- Scheduler invokes run() method.
+
+--------------------------------------------------
+
+Q. What happens if run() is called directly?
+
+t.run();
+
+Answer:
+
+No new thread is created.
+
+The method executes like a normal method call in the main thread.
+
+Example:
+
+MyThread t = new MyThread();
+
+t.run();
+
+Output:
+
+Executed by main thread only.
+
+--------------------------------------------------
+
+Q. Why is Runnable preferred over Thread?
+
+Answer:
+
+- Supports multiple inheritance.
+- Separates task from execution.
+- Better design.
+- Reusable task implementation.
+- Used by Executor Framework and Thread Pool.
+
+---------------------------------
+
+=========================================
+WHAT IS SYNCHRONIZATION IN JAVA?
+=========================================
+
+Definition:
+
+Synchronization is a mechanism that allows only one thread to access a shared resource at a time.
+
+It prevents data inconsistency and race conditions when multiple threads access the same resource simultaneously.
+
+--------------------------------------------------
+
+WHY DO WE NEED SYNCHRONIZATION?
+
+Suppose two threads are accessing the same bank account.
+
+Without Synchronization:
+
+Balance = 1000
+
+Thread-1 withdraws 500
+Thread-2 withdraws 700
+
+Both threads read:
+
+Balance = 1000
+
+Thread-1 updates:
+Balance = 500
+
+Thread-2 updates:
+Balance = 300
+
+Final Balance may become incorrect because both threads modified the shared resource concurrently.
+
+This problem is called:
+
+RACE CONDITION
+
+--------------------------------------------------
+
+WHAT IS A RACE CONDITION?
+
+A race condition occurs when multiple threads access and modify shared data simultaneously, causing unexpected results.
+
+Example:
+
+class Counter {
+
+    int count = 0;
+
+    public void increment() {
+        count++;
+    }
+}
+
+Two threads execute:
+
+count++;
+
+Expected Output:
+
+2000
+
+Actual Output:
+
+May be 1500, 1800, 1950, etc.
+
+Reason:
+count++ is not an atomic operation.
+
+--------------------------------------------------
+
+INTERNAL WORKING OF count++
+
+count++;
+
+Actually performs:
+
+1. Read count
+2. Increment count
+3. Write count
+
+Example:
+
+count = 5
+
+Thread-1 reads 5
+Thread-2 reads 5
+
+Thread-1 increments to 6
+Thread-2 increments to 6
+
+Final Value = 6
+
+Expected Value = 7
+
+This causes data inconsistency.
+
+--------------------------------------------------
+
+SOLUTION: SYNCHRONIZATION
+
+class Counter {
+
+    int count = 0;
+
+    public synchronized void increment() {
+        count++;
+    }
+}
+
+Now only one thread can execute increment() at a time.
+
+Result:
+
+Correct Output = 2000
+
+--------------------------------------------------
+
+HOW SYNCHRONIZATION WORKS?
+
+Every Java object has an intrinsic lock (monitor lock).
+
+When a thread enters a synchronized block:
+
+1. Thread acquires lock
+2. Executes code
+3. Releases lock
+
+Other threads must wait until the lock is released.
+
+--------------------------------------------------
+
+EXAMPLE
+
+class Test {
+
+    synchronized void print() {
+
+        for(int i=1;i<=5;i++) {
+            System.out.println(i);
+        }
+    }
+}
+
+Thread-1 acquires lock
+
+Thread-2 waits
+
+After Thread-1 finishes:
+
+Thread-2 acquires lock
+
+--------------------------------------------------
+
+TYPES OF SYNCHRONIZATION
+
+1. Synchronized Method
+
+2. Synchronized Block
+
+3. Static Synchronization
+
+--------------------------------------------------
+
+1. SYNCHRONIZED METHOD
+
+class Counter {
+
+    private int count;
+
+    public synchronized void increment() {
+        count++;
+    }
+}
+
+Lock is acquired on:
+
+this object
+
+Equivalent to:
+
+synchronized(this){
+
+    count++;
+
+}
+
+--------------------------------------------------
+
+2. SYNCHRONIZED BLOCK
+
+class Counter {
+
+    int count;
+
+    public void increment() {
+
+        synchronized(this) {
+            count++;
+        }
+    }
+}
+
+Used when only a small part of code needs synchronization.
+
+Better performance than synchronized method.
+
+--------------------------------------------------
+
+EXAMPLE
+
+public void display() {
+
+    System.out.println("Non Critical");
+
+    synchronized(this) {
+
+        System.out.println("Critical Section");
+    }
+
+    System.out.println("Non Critical");
+}
+
+Only critical section is locked.
+
+--------------------------------------------------
+
+3. STATIC SYNCHRONIZATION
+
+class Test {
+
+    static synchronized void print() {
+
+    }
+}
+
+Lock is obtained on:
+
+Test.class
+
+Not on object.
+
+--------------------------------------------------
+
+MEMORY VIEW
+
+Object Synchronization
+
+Thread-1
+    |
+    v
+ Object Lock
+    ^
+    |
+Thread-2 waits
+
+--------------------------------------------------
+
+Static Synchronization
+
+Thread-1
+    |
+    v
+Class Lock
+    ^
+    |
+Thread-2 waits
+
+--------------------------------------------------
+
+OBJECT LOCK vs CLASS LOCK
+
+Object Lock
+
+synchronized void show() { }
+
+Lock:
+Current Object
+
+Multiple objects can execute simultaneously.
+
+--------------------------------------------------
+
+Class Lock
+
+static synchronized void show() { }
+
+Lock:
+Class Object
+
+Only one thread for entire class.
+
+--------------------------------------------------
+
+EXAMPLE
+
+class Test {
+
+    synchronized void show() {
+
+    }
+
+    static synchronized void print() {
+
+    }
+}
+
+show() uses Object Lock
+
+print() uses Class Lock
+
+--------------------------------------------------
+
+CAN SYNCHRONIZATION BE APPLIED TO VARIABLES?
+
+No.
+
+Invalid:
+
+synchronized int count;
+
+Synchronization can be applied only to:
+
+- Methods
+- Blocks
+
+--------------------------------------------------
+
+WHAT IS A CRITICAL SECTION?
+
+The part of code that accesses shared resources.
+
+Example:
+
+count++;
+
+balance = balance - amount;
+
+These require synchronization.
+
+--------------------------------------------------
+
+ADVANTAGES OF SYNCHRONIZATION
+
+1. Thread Safety
+
+2. Data Consistency
+
+3. Prevents Race Conditions
+
+4. Safe Access to Shared Resources
+
+--------------------------------------------------
+
+DISADVANTAGES OF SYNCHRONIZATION
+
+1. Performance Overhead
+
+2. Threads Wait For Lock
+
+3. Reduced Parallelism
+
+4. May Cause Deadlock
+
+--------------------------------------------------
+
+WHAT IS DEADLOCK?
+
+A deadlock occurs when two or more threads wait indefinitely for each other's locks.
+
+Example:
+
+Thread-1 holds Lock-A and waits for Lock-B
+
+Thread-2 holds
+
+
+=========================================
+SYNCHRONIZED vs REENTRANTLOCK
+=========================================
+
+Both synchronized and ReentrantLock are used to achieve thread safety and prevent multiple threads from accessing shared resources simultaneously.
+
+--------------------------------------------------
+
+1. SYNCHRONIZED
+
+- Keyword provided by Java.
+- Introduced from the beginning of Java.
+- JVM manages locking automatically.
+- Lock is acquired automatically.
+- Lock is released automatically.
+
+Example:
+
+class Counter {
+
+    public synchronized void increment() {
+        // critical section
+    }
+}
+
+--------------------------------------------------
+
+2. REENTRANTLOCK
+
+- Class present in java.util.concurrent.locks package.
+- Introduced in Java 5.
+- Provides explicit locking.
+- Programmer manually acquires and releases lock.
+
+Example:
+
+import java.util.concurrent.locks.ReentrantLock;
+
+class Counter {
+
+    ReentrantLock lock =
+        new ReentrantLock();
+
+    public void increment() {
+
+        lock.lock();
+
+        try {
+            // critical section
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+
+--------------------------------------------------
+
+3. INTERNAL WORKING
+
+SYNCHRONIZED
+
+Thread-1
+   |
+Acquires Monitor Lock
+   |
+Executes Critical Section
+   |
+Releases Lock Automatically
+
+--------------------------------------------------
+
+REENTRANTLOCK
+
+Thread-1
+   |
+lock.lock()
+   |
+Executes Critical Section
+   |
+lock.unlock()
+
+Lock management is manual.
+
+--------------------------------------------------
+
+4. LOCK ACQUISITION
+
+Synchronized:
+
+synchronized(this) {
+
+}
+
+Lock acquired automatically.
+
+--------------------------------------------------
+
+ReentrantLock:
+
+lock.lock();
+
+try {
+
+} finally {
+    lock.unlock();
+}
+
+Lock acquired manually.
+
+--------------------------------------------------
+
+5. LOCK RELEASE
+
+Synchronized:
+
+Automatic
+
+Even if exception occurs, JVM releases lock automatically.
+
+--------------------------------------------------
+
+ReentrantLock:
+
+Manual
+
+Must call:
+
+lock.unlock();
+
+inside finally block.
+
+Otherwise lock is never released.
+
+--------------------------------------------------
+
+Example
+
+lock.lock();
+
+try {
+
+    // critical code
+
+} finally {
+
+    lock.unlock();
+}
+
+--------------------------------------------------
+
+6. FAIRNESS POLICY
+
+Synchronized:
+
+No fairness support.
+
+Thread scheduling depends on JVM.
+
+--------------------------------------------------
+
+ReentrantLock:
+
+Supports fairness.
+
+ReentrantLock lock =
+    new ReentrantLock(true);
+
+true = Fair Lock
+
+Threads get lock in FIFO order.
+
+--------------------------------------------------
+
+7. TRY LOCK FEATURE
+
+Synchronized:
+
+Not Available
+
+Thread waits indefinitely.
+
+--------------------------------------------------
+
+ReentrantLock:
+
+Available
+
+if(lock.tryLock()){
+
+    try{
+
+        // critical section
+
+    } finally{
+
+        lock.unlock();
+    }
+}
+
+else{
+
+    System.out.println(
+        "Lock not available"
+    );
+}
+
+Thread does not wait forever.
+
+--------------------------------------------------
+
+8. TIMED LOCK
+
+Synchronized:
+
+Not Available
+
+--------------------------------------------------
+
+ReentrantLock:
+
+Available
+
+if(lock.tryLock(
+    5,
+    TimeUnit.SECONDS
+)){
+
+    try{
+
+    } finally{
+
+        lock.unlock();
+    }
+}
+
+Thread waits only for specified time.
+
+--------------------------------------------------
+
+9. INTERRUPTIBLE LOCK
+
+Synchronized:
+
+Thread cannot be interrupted while waiting.
+
+--------------------------------------------------
+
+ReentrantLock:
+
+Supports interruption.
+
+lock.lockInterruptibly();
+
+Waiting thread can be interrupted.
+
+--------------------------------------------------
+
+10. MULTIPLE CONDITION SUPPORT
+
+Synchronized:
+
+Uses only one condition queue.
+
+Methods:
+
+wait()
+notify()
+notifyAll()
+
+--------------------------------------------------
+
+ReentrantLock:
+
+Supports multiple condition variables.
+
+Condition c1 =
+lock.newCondition();
+
+Condition c2 =
+lock.newCondition();
+
+More flexible.
+
+--------------------------------------------------
+
+11. PERFORMANCE
+
+Java 6 and later:
+
+Performance difference is very small.
+
+For basic synchronization:
+
+Use synchronized.
+
+For advanced locking:
+
+Use ReentrantLock.
+
+--------------------------------------------------
+
+12. REENTRANCY
+
+Both are reentrant.
+
+Means:
+
+A thread holding a lock can acquire the same lock again.
+
+Example:
+
+synchronized void methodA(){
+
+    methodB();
+}
+
+synchronized void methodB(){
+
+}
+
+Same thread can enter both methods.
+
+No deadlock.
+
+--------------------------------------------------
+
+13. EXAMPLE OF REENTRANTLOCK
+
+import java.util.concurrent.locks.ReentrantLock;
+
+class Counter {
+
+    private int count = 0;
+
+    private ReentrantLock lock =
+        new ReentrantLock();
+
+    public void increment() {
+
+        lock.lock();
+
+        try {
+
+            count++;
+
+        } finally {
+
+            lock.unlock();
+        }
+    }
+}
+
+--------------------------------------------------
+
+14. WHEN TO USE SYNCHRONIZED?
+
+Use when:
+
+- Basic thread safety required
+- Simpler code preferred
+- No advanced locking features needed
+
+Example:
+
+public synchronized void update(){
+
+}
+
+--------------------------------------------------
+
+15. WHEN TO USE REENTRANTLOCK?
+
+Use when:
+
+- Need tryLock()
+- Need timeout
+- Need interruptible locking
+- Need fairness policy
+- Need multiple conditions
+
+Example:
+
+lock.tryLock();
+
+lock.lockInterruptibly();
+
+--------------------------------------------------
+
+16. COMPARISON TABLE
+
+Feature                    synchronized        ReentrantLock
+
+Type                       Keyword             Class
+
+Package                    Language Feature    java.util.concurrent.locks
+
+Lock Acquire               Automatic           Manual
+
+Lock Release               Automatic           Manual
+
+tryLock()                  No                  Yes
+
+Timed Lock                 No                  Yes
+
+Interruptible Lock         No                  Yes
+
+Fairness Policy            No                  Yes
+
+Multiple Conditions        No                  Yes
+
+Code Complexity            Simple              More Complex
+
+Risk of Forgetting Lock    No                  Yes
+
+Performance                Good                Good
+
+--------------------------------------------------
+
+17. INTERVIEW QUESTIONS
+
+Q1. Which is better: synchronized or ReentrantLock?
+
+Answer:
+For basic synchronization use synchronized.
+For advanced features like tryLock(), fairness, timeout, and interruptible locking use ReentrantLock.
+
+--------------------------------------------------
+
+Q2. Why ReentrantLock is called Reentrant?
+
+Answer:
+The same thread can acquire the lock multiple times without causing deadlock.
+
+--------------------------------------------------
+
+Q3. What happens if unlock() is not called?
+
+Answer:
+Lock remains held forever and other threads keep waiting.
+
+--------------------------------------------------
+
+Q4. Is synchronized reentrant?
+
+Answer:
+Yes.
+
+A thread holding the monitor lock can re-enter synchronized code protected by the same lock.
+
+--------------------------------------------------
+
+Q5. Which one is preferred in interviews?
+
+Answer:
+Mention that synchronized is preferred for simplicity.
+ReentrantLock is preferred when advanced locking features are required.
+
+--------------------------------------------------
+
+INTERVIEW ANSWER (1 MINUTE)
+
+Both synchronized and ReentrantLock provide thread safety by allowing only one thread to access 
+a critical section at a time. synchronized is a Java keyword where lock acquisition and release
+ are handled automatically by the JVM. ReentrantLock is a class from java.util.concurrent.locks
+ that provides advanced features such as tryLock(), timed lock acquisition, interruptible locking,
+ fairness policy, and multiple condition variables. For simple locking requirements synchronized 
+ is preferred due to its simplicity, whereas ReentrantLock is used when advanced locking control is required.
+ 
+ 
+
+=========================================
+EXECUTOR FRAMEWORK IN JAVA
+=========================================
+
+1. WHAT IS EXECUTOR FRAMEWORK?
+
+Executor Framework is a high-level API introduced in Java 5 for managing and controlling thread execution.
+
+Package:
+
+java.util.concurrent
+
+It separates:
+
+Task Submission
+and
+Thread Management
+
+--------------------------------------------------
+
+BEFORE EXECUTOR FRAMEWORK
+
+Creating a new thread for every task:
+
+class MyTask implements Runnable {
+
+    @Override
+    public void run() {
+        System.out.println(
+            Thread.currentThread().getName()
+        );
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        for(int i=1;i<=100;i++) {
+
+            Thread t =
+                new Thread(new MyTask());
+
+            t.start();
+        }
+    }
+}
+
+Problems:
+
+- Too many thread objects created
+- Increased memory usage
+- Increased CPU overhead
+- Poor performance
+
+--------------------------------------------------
+
+AFTER EXECUTOR FRAMEWORK
+
+ExecutorService executor =
+    Executors.newFixedThreadPool(5);
+
+for(int i=1;i<=100;i++) {
+
+    executor.submit(new MyTask());
+}
+
+Only 5 threads are created.
+
+The same threads are reused.
+
+--------------------------------------------------
+
+2. WHY EXECUTOR FRAMEWORK?
+
+Benefits:
+
+1. Thread Reusability
+
+2. Better Performance
+
+3. Reduced Memory Usage
+
+4. Thread Pool Management
+
+5. Easy Task Scheduling
+
+6. Result Handling Using Future
+
+--------------------------------------------------
+
+3. REAL WORLD EXAMPLE
+
+Imagine a restaurant.
+
+Without Executor Framework:
+
+For every customer,
+a new waiter is hired.
+
+Very expensive.
+
+--------------------------------------------------
+
+With Executor Framework:
+
+5 waiters already exist.
+
+Customers arrive.
+
+Tasks are assigned to existing waiters.
+
+Waiters are reused.
+
+This is Thread Pooling.
+
+--------------------------------------------------
+
+4. IMPORTANT COMPONENTS
+
+Executor
+
+ExecutorService
+
+Executors
+
+Future
+
+Callable
+
+ThreadPool
+
+--------------------------------------------------
+
+5. EXECUTOR INTERFACE
+
+Root Interface.
+
+Contains:
+
+void execute(Runnable task)
+
+Example:
+
+Executor executor =
+Executors.newSingleThreadExecutor();
+
+executor.execute(
+    () -> System.out.println("Task")
+);
+
+--------------------------------------------------
+
+6. EXECUTORS CLASS
+
+Utility class used to create thread pools.
+
+Examples:
+
+Executors.newFixedThreadPool()
+
+Executors.newCachedThreadPool()
+
+Executors.newSingleThreadExecutor()
+
+Executors.newScheduledThreadPool()
+
+--------------------------------------------------
+
+7. EXECUTORS ARCHITECTURE
+
+Task
+  |
+  V
+ExecutorService
+  |
+  V
+Thread Pool
+  |
+  V
+Worker Threads
+
+--------------------------------------------------
+
+8. EXECUTORSERVICE
+
+Most commonly used interface.
+
+Methods:
+
+submit()
+
+shutdown()
+
+shutdownNow()
+
+invokeAll()
+
+invokeAny()
+
+--------------------------------------------------
+
+Example
+
+ExecutorService executor =
+Executors.newFixedThreadPool(3);
+
+executor.submit(
+    () -> System.out.println("Hello")
+);
+
+executor.shutdown();
+
+--------------------------------------------------
+
+9. FIXED THREAD POOL
+
+Creates fixed number of threads.
+
+Example:
+
+ExecutorService executor =
+Executors.newFixedThreadPool(3);
+
+--------------------------------------------------
+
+Visualization
+
+Tasks:
+
+T1
+T2
+T3
+T4
+T5
+T6
+
+Threads:
+
+Thread-1
+Thread-2
+Thread-3
+
+Tasks wait in queue when all threads are busy.
+
+--------------------------------------------------
+
+10. SINGLE THREAD EXECUTOR
+
+Creates only one worker thread.
+
+Example:
+
+ExecutorService executor =
+Executors.newSingleThreadExecutor();
+
+Tasks execute sequentially.
+
+--------------------------------------------------
+
+11. CACHED THREAD POOL
+
+ExecutorService executor =
+Executors.newCachedThreadPool();
+
+Creates threads as needed.
+
+Idle threads are reused.
+
+Suitable for:
+
+Short-lived tasks
+
+--------------------------------------------------
+
+12. SCHEDULED THREAD POOL
+
+Used for delayed or periodic tasks.
+
+Example:
+
+ScheduledExecutorService scheduler =
+Executors.newScheduledThreadPool(2);
+
+scheduler.schedule(
+    () -> System.out.println("Hello"),
+    5,
+    TimeUnit.SECONDS
+);
+
+Task executes after 5 seconds.
+
+--------------------------------------------------
+
+13. RUNTIME FLOW
+
+executor.submit(task);
+
+Step 1:
+Task enters queue
+
+Step 2:
+Available worker thread picks task
+
+Step 3:
+Task executes
+
+Step 4:
+Thread returns to pool
+
+Step 5:
+Same thread reused
+
+--------------------------------------------------
+
+14. RUNNABLE vs CALLABLE
+
+Runnable
+
+- Introduced in Java 1.0
+- No return value
+- Cannot throw checked exceptions
+
+Method:
+
+void run()
+
+--------------------------------------------------
+
+Callable
+
+- Introduced in Java 5
+- Returns result
+- Can throw checked exceptions
+
+Method:
+
+V call()
+
+--------------------------------------------------
+
+Runnable Example
+
+Runnable task = () -> {
+
+    System.out.println("Task");
+};
+
+executor.submit(task);
+
+--------------------------------------------------
+
+Callable Example
+
+Callable<Integer> task =
+    () -> 100;
+
+Future<Integer> result =
+    executor.submit(task);
+
+System.out.println(
+    result.get()
+);
+
+Output:
+
+100
+
+--------------------------------------------------
+
+15. FUTURE
+
+Future represents result of an asynchronous task.
+
+Example:
+
+Callable<Integer> task =
+    () -> 500;
+
+Future<Integer> future =
+    executor.submit(task);
+
+System.out.println(
+    future.get()
+);
+
+Output:
+
+500
+
+--------------------------------------------------
+
+Common Methods
+
+future.get()
+
+future.isDone()
+
+future.cancel(true)
+
+--------------------------------------------------
+
+16. THREAD POOL
+
+A collection of reusable worker threads.
+
+Benefits:
+
+- Reduced thread creation cost
+- Better performance
+- Better resource utilization
+
+--------------------------------------------------
+
+WITHOUT THREAD POOL
+
+100 Tasks
+
+100 Threads
+
+High memory consumption
+
+--------------------------------------------------
+
+WITH THREAD POOL
+
+100 Tasks
+
+5 Threads
+
+Tasks reused
+
+Better performance
+
+--------------------------------------------------
+
+17. SHUTDOWN
+
+Always close ExecutorService.
+
+executor.shutdown();
+
+Stops accepting new tasks.
+
+Completes existing tasks.
+
+--------------------------------------------------
+
+shutdownNow()
+
+executor.shutdownNow();
+
+Attempts to stop all running tasks immediately.
+
+--------------------------------------------------
+
+18. COMMON INTERVIEW QUESTIONS
+
+Q1. What is Executor Framework?
+
+Answer:
+
+Executor Framework is a Java concurrency framework that manages thread creation, execution, and lifecycle using thread pools.
+
+--------------------------------------------------
+
+Q2. Why use Executor Framework instead of Thread?
+
+Answer:
+
+- Thread Reuse
+- Better Performance
+- Less Memory Consumption
+- Simpler Thread Management
+
+--------------------------------------------------
+
+Q3. Difference between execute() and submit()?
+
+execute()
+
+- Accepts Runnable
+- No return value
+
+submit()
+
+- Accepts Runnable or Callable
+- Returns Future
+
+--------------------------------------------------
+
+Q4. Difference between Runnable and Callable?
+
+Runnable:
+void run()
+
+Callable:
+V call()
+
+Callable can return result and throw checked exceptions.
+
+--------------------------------------------------
+
+Q5. What is Future?
+
+Answer:
+
+Future represents the result of an asynchronous computation.
+
+Methods:
+
+get()
+isDone()
+cancel()
+
+--------------------------------------------------
+
+Q6. What is Thread Pool?
+
+Answer:
+
+A group of reusable threads used to execute multiple tasks efficiently.
+
+--------------------------------------------------
+
+Q7. What happens if all threads are busy?
+
+Answer:
+
+New tasks are placed in a queue and wait until a thread becomes available.
+
+--------------------------------------------------
+
+Q8. Difference between shutdown() and shutdownNow()?
+
+shutdown()
+
+- Gracefully stops executor
+- Existing tasks complete
+
+shutdownNow()
+
+- Attempts immediate termination
+
+--------------------------------------------------
+
+19. INTERVIEW ANSWER (2 MINUTES)
+
+Executor Framework is a Java concurrency framework introduced in Java 5 under the java.util.concurrent package.
+ It simplifies multithreading by separating task submission from thread management. Instead of creating a new 
+ thread for every task, it uses a pool of reusable threads called a Thread Pool. Tasks are submitted to an 
+ ExecutorService, which assigns them to available worker threads. It improves performance, reduces memory overhead,
+ and provides advanced features such as thread pooling, scheduling, Callable, Future, and asynchronous task execution.
+ Common implementations include FixedThreadPool, CachedThreadPool, SingleThreadExecutor, and ScheduledThreadPool.
+ 
+ 
+=========================================
+DIFFERENCE BETWEEN CALLABLE AND RUNNABLE
+=========================================
+
+1. RUNNABLE
+
+- Runnable is a Functional Interface.
+- Introduced in Java 1.0.
+- Used to execute tasks in a separate thread.
+- Does not return any result.
+- Cannot throw checked exceptions.
+
+Method:
+
+public interface Runnable {
+    void run();
+}
+
+--------------------------------------------------
+
+Example
+
+class MyTask implements Runnable {
+
+    @Override
+    public void run() {
+
+        System.out.println(
+            "Task Executed"
+        );
+    }
+}
+
+Thread t = new Thread(new MyTask());
+
+t.start();
+
+--------------------------------------------------
+
+2. CALLABLE
+
+- Callable is a Functional Interface.
+- Introduced in Java 5.
+- Used when a task needs to return a result.
+- Can throw checked exceptions.
+
+Method:
+
+public interface Callable<V> {
+
+    V call() throws Exception;
+}
+
+--------------------------------------------------
+
+Example
+
+import java.util.concurrent.Callable;
+
+class MyTask
+implements Callable<Integer> {
+
+    @Override
+    public Integer call() {
+
+        return 100;
+    }
+}
+
+--------------------------------------------------
+
+3. WHY CALLABLE WAS INTRODUCED?
+
+Runnable has limitations:
+
+1. No return value.
+
+2. Cannot throw checked exceptions.
+
+Example:
+
+Runnable task = () -> {
+
+    return 100;     // Not Allowed
+};
+
+To overcome these limitations:
+
+Callable was introduced.
+
+--------------------------------------------------
+
+4. RETURN VALUE
+
+Runnable
+
+public void run()
+
+Returns:
+
+Nothing
+
+--------------------------------------------------
+
+Callable
+
+public Integer call()
+
+Returns:
+
+Any Type
+
+Example:
+
+Callable<String> c =
+    () -> "Java";
+
+Callable<Integer> c =
+    () -> 100;
+
+Callable<Employee> c =
+    () -> new Employee();
+
+--------------------------------------------------
+
+5. EXCEPTION HANDLING
+
+Runnable
+
+public void run()
+
+Cannot throw checked exceptions.
+
+Example:
+
+public void run() {
+
+    throw new IOException(); // Error
+}
+
+--------------------------------------------------
+
+Callable
+
+public Integer call()
+throws Exception
+
+Can throw checked exceptions.
+
+Example:
+
+public Integer call()
+throws Exception {
+
+    throw new IOException();
+}
+
+--------------------------------------------------
+
+6. EXECUTION
+
+Runnable
+
+Can execute using:
+
+Thread
+
+or
+
+ExecutorService
+
+--------------------------------------------------
+
+Example
+
+Runnable task =
+() -> System.out.println("Task");
+
+new Thread(task).start();
+
+--------------------------------------------------
+
+Callable
+
+Cannot execute directly using Thread.
+
+Must execute using:
+
+ExecutorService
+
+--------------------------------------------------
+
+Example
+
+Callable<Integer> task =
+() -> 100;
+
+ExecutorService executor =
+Executors.newFixedThreadPool(2);
+
+Future<Integer> future =
+executor.submit(task);
+
+--------------------------------------------------
+
+7. HOW TO GET RESULT FROM CALLABLE?
+
+Callable returns result through Future.
+
+Example:
+
+Callable<Integer> task =
+() -> 500;
+
+ExecutorService executor =
+Executors.newSingleThreadExecutor();
+
+Future<Integer> future =
+executor.submit(task);
+
+Integer result =
+future.get();
+
+System.out.println(result);
+
+Output:
+
+500
+
+--------------------------------------------------
+
+8. FUTURE
+
+Future represents the result of an asynchronous task.
+
+Common Methods:
+
+future.get();
+
+future.isDone();
+
+future.cancel(true);
+
+--------------------------------------------------
+
+Example
+
+Callable<String> task =
+() -> "Java";
+
+Future<String> future =
+executor.submit(task);
+
+System.out.println(
+    future.get()
+);
+
+Output:
+
+Java
+
+--------------------------------------------------
+
+9. INTERNAL WORKING
+
+Runnable
+
+Runnable Task
+      |
+      V
+ Thread
+      |
+      V
+ run()
+
+No result returned.
+
+--------------------------------------------------
+
+Callable
+
+Callable Task
+      |
+      V
+ExecutorService
+      |
+      V
+Future
+      |
+      V
+Result
+
+Result can be retrieved later.
+
+--------------------------------------------------
+
+10. REAL-TIME EXAMPLE
+
+Runnable Example
+
+Sending Email
+
+Runnable task =
+() -> sendEmail();
+
+No result needed.
+
+--------------------------------------------------
+
+Callable Example
+
+Calculate Employee Salary
+
+Callable<Double> task =
+() -> calculateSalary();
+
+Result required.
+
+--------------------------------------------------
+
+11. EXECUTOR FRAMEWORK USAGE
+
+Runnable
+
+executor.submit(
+    () -> System.out.println("Task")
+);
+
+--------------------------------------------------
+
+Callable
+
+Future<Integer> future =
+executor.submit(
+    () -> 100
+);
+
+--------------------------------------------------
+
+12. MULTIPLE CALLABLE TASKS
+
+ExecutorService executor =
+Executors.newFixedThreadPool(3);
+
+List<Callable<Integer>> tasks =
+Arrays.asList(
+
+    () -> 100,
+
+    () -> 200,
+
+    () -> 300
+);
+
+List<Future<Integer>> futures =
+executor.invokeAll(tasks);
+
+--------------------------------------------------
+
+13. COMPARISON TABLE
+
+Feature                  Runnable             Callable
+
+Package                  java.lang            java.util.concurrent
+
+Introduced In            Java 1.0             Java 5
+
+Method                   run()                call()
+
+Return Type              void                 Generic Result
+
+Returns Result           No                   Yes
+
+Checked Exception        No                   Yes
+
+Thread Support           Yes                  No
+
+ExecutorService          Yes                  Yes
+
+Future Support           No                   Yes
+
+Use Case                 Fire-and-Forget      Result-Oriented Task
+
+--------------------------------------------------
+
+14. WHEN TO USE RUNNABLE?
+
+Use Runnable when:
+
+- No result needed
+- Background tasks
+- Logging
+- Sending Emails
+- Notifications
+
+Example:
+
+Runnable task =
+() -> sendMail();
+
+--------------------------------------------------
+
+15. WHEN TO USE CALLABLE?
+
+Use Callable when:
+
+- Result is required
+- Database operations
+- API calls
+- Complex calculations
+- File processing
+
+Example:
+
+Callable<List<Employee>> task =
+() -> getEmployees();
+
+--------------------------------------------------
+
+16. INTERVIEW QUESTIONS
+
+Q1. What is the main difference between Runnable and Callable?
+
+Answer:
+
+Runnable does not return a result and cannot throw checked exceptions.
+
+Callable returns a result and can throw checked exceptions.
+
+--------------------------------------------------
+
+Q2. Which method does Runnable contain?
+
+Answer:
+
+void run()
+
+--------------------------------------------------
+
+Q3. Which method does Callable contain?
+
+Answer:
+
+V call()
+
+--------------------------------------------------
+
+Q4. Can Callable be executed using Thread?
+
+Answer:
+
+No.
+
+Callable must be executed using ExecutorService.
+
+--------------------------------------------------
+
+Q5. How do you get return value from Callable?
+
+Answer:
+
+Using Future.
+
+Future<Integer> future =
+executor.submit(callable);
+
+future.get();
+
+--------------------------------------------------
+
+Q6. Which is preferred in modern applications?
+
+Answer:
+
+Callable with ExecutorService because it supports result retrieval and exception handling.
+
+--------------------------------------------------
+
+17. INTERVIEW ANSWER (1 MINUTE)
+
+Runnable and Callable are both Functional Interfaces used for concurrent task execution. Runnable was
+ introduced in Java 1.0 and contains the run() method, which does not return a result and cannot throw
+ checked exceptions. Callable was introduced in Java 5 and contains the call() method, which can return
+ a value and throw checked exceptions. Callable is generally used with ExecutorService and Future when
+ the task result is required, whereas Runnable is suitable for fire-and-forget tasks where no result is expected.
+ 
+=========================================
+FINALIZE() METHOD IN JAVA
+(GARBAGE COLLECTION RELATED)
+=========================================
+
+1. WHAT IS finalize()?
+
+finalize() is a method of the Object class that was originally designed to perform cleanup operations before an object is garbage collected.
+
+Method:
+
+protected void finalize() throws Throwable
+
+Package:
+
+java.lang.Object
+
+--------------------------------------------------
+
+2. PURPOSE OF finalize()
+
+Before an object is removed from memory by the Garbage Collector (GC), JVM may call finalize().
+
+Typical Use Cases:
+
+- Closing file resources
+- Releasing database connections
+- Cleaning native resources
+
+Example:
+
+class Employee {
+
+    @Override
+    protected void finalize() {
+
+        System.out.println(
+            "Object is about to be destroyed"
+        );
+    }
+}
+
+--------------------------------------------------
+
+3. HOW finalize() WORKS?
+
+Step 1:
+
+Object Created
+
+Employee e =
+new Employee();
+
+--------------------------------------------------
+
+Step 2:
+
+Object becomes eligible for GC
+
+e = null;
+
+--------------------------------------------------
+
+Step 3:
+
+Garbage Collector detects unused object.
+
+--------------------------------------------------
+
+Step 4:
+
+JVM may invoke
+
+finalize()
+
+--------------------------------------------------
+
+Step 5:
+
+Object memory is reclaimed.
+
+--------------------------------------------------
+
+Flow:
+
+Object Created
+      |
+      V
+Object Unreachable
+      |
+      V
+finalize() Called (May Be)
+      |
+      V
+Garbage Collection
+
+--------------------------------------------------
+
+4. EXAMPLE
+
+class Test {
+
+    @Override
+    protected void finalize() {
+
+        System.out.println(
+            "Finalize Called"
+        );
+    }
+
+    public static void main(
+        String[] args) {
+
+        Test t = new Test();
+
+        t = null;
+
+        System.gc();
+
+        System.out.println("End");
+    }
+}
+
+Possible Output:
+
+End
+Finalize Called
+
+OR
+
+End
+
+Reason:
+
+JVM does not guarantee finalize() execution.
+
+--------------------------------------------------
+
+5. IMPORTANT POINT
+
+System.gc();
+
+does NOT guarantee:
+
+- Garbage Collection
+- finalize() execution
+
+It is only a request to the JVM.
+
+--------------------------------------------------
+
+6. WHY finalize() WAS A BAD DESIGN?
+
+Problems:
+
+1. Unpredictable Execution
+
+No guarantee about when it runs.
+
+--------------------------------------------------
+
+2. May Never Execute
+
+Program may terminate before GC runs.
+
+--------------------------------------------------
+
+3. Performance Overhead
+
+Objects with finalize() require extra processing.
+
+--------------------------------------------------
+
+4. Resource Leaks
+
+Cleanup may not happen on time.
+
+--------------------------------------------------
+
+5. Security Risks
+
+Object resurrection is possible.
+
+--------------------------------------------------
+
+7. OBJECT RESURRECTION
+
+An object can make itself reachable again inside finalize().
+
+Example:
+
+class Test {
+
+    static Test obj;
+
+    @Override
+    protected void finalize() {
+
+        obj = this;
+
+        System.out.println(
+            "Object Resurrected"
+        );
+    }
+}
+
+This makes garbage collection complicated.
+
+--------------------------------------------------
+
+8. DEPRECATED STATUS
+
+Java 9:
+
+finalize() was officially deprecated.
+
+Reason:
+
+Unpredictable behavior and poor performance.
+
+--------------------------------------------------
+
+Oracle Recommendation:
+
+Do NOT use finalize().
+
+--------------------------------------------------
+
+9. WHAT SHOULD BE USED INSTEAD?
+
+Use:
+
+1. try-with-resources
+
+2. AutoCloseable
+
+3. Closeable
+
+4. Cleaner API
+
+--------------------------------------------------
+
+10. TRY-WITH-RESOURCES
+
+Recommended approach.
+
+Example:
+
+try(FileInputStream fis =
+    new FileInputStream("a.txt")) {
+
+    // use file
+
+}
+
+File closes automatically.
+
+--------------------------------------------------
+
+11. AUTOCLOSEABLE
+
+interface AutoCloseable {
+
+    void close()
+        throws Exception;
+}
+
+Example:
+
+class DatabaseConnection
+implements AutoCloseable {
+
+    @Override
+    public void close() {
+
+        System.out.println(
+            "Connection Closed"
+        );
+    }
+}
+
+--------------------------------------------------
+
+12. CLEANER API
+
+Introduced as a safer replacement for finalize().
+
+Example:
+
+Cleaner cleaner =
+Cleaner.create();
+
+Provides controlled cleanup.
+
+--------------------------------------------------
+
+13. finalize() vs close()
+
+finalize()
+
+- Called by JVM
+- Unpredictable
+- Deprecated
+- No guarantee of execution
+
+--------------------------------------------------
+
+close()
+
+- Called by programmer
+- Predictable
+- Recommended
+- Immediate cleanup
+
+--------------------------------------------------
+
+14. INTERVIEW QUESTIONS
+
+Q1. What is finalize()?
+
+Answer:
+
+finalize() is a method of the Object class that was intended to perform cleanup operations before an object is garbage collected.
+
+--------------------------------------------------
+
+Q2. Is finalize() guaranteed to execute?
+
+Answer:
+
+No.
+
+JVM does not guarantee when or even if finalize() will be called.
+
+--------------------------------------------------
+
+Q3. Which class contains finalize()?
+
+Answer:
+
+java.lang.Object
+
+--------------------------------------------------
+
+Q4. Is finalize() still used?
+
+Answer:
+
+No.
+
+It is deprecated since Java 9 and should not be used in modern applications.
+
+--------------------------------------------------
+
+Q5. What is recommended instead of finalize()?
+
+Answer:
+
+- try-with-resources
+- AutoCloseable
+- Closeable
+- Cleaner API
+
+--------------------------------------------------
+
+Q6. Can an object be revived inside finalize()?
+
+Answer:
+
+Yes.
+
+This is called Object Resurrection.
+
+--------------------------------------------------
+
+Q7. Does System.gc() guarantee finalize() execution?
+
+Answer:
+
+No.
+
+It only requests the JVM to perform garbage collection.
+
+--------------------------------------------------
+
+INTERVIEW ANSWER (1 MINUTE)
+
+finalize() is a method defined in java.lang.Object that was originally intended to perform cleanup
+ operations before an object is garbage collected. When an object becomes unreachable,
+ the JVM may invoke finalize() before reclaiming its memory. However, there is no guarantee that
+ finalize() will execute or when it will execute. Due to its unpredictable behavior, performance issues, 
+ and object resurrection problems, finalize() was deprecated in Java 9. Modern Java applications should use
+ try-with-resources, AutoCloseable, or the Cleaner API instead of finalize().
