@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+  labels:
+    app: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysqlDb
+        image: mysql:5.0
+        ports:
+        - containerPort: //3306
+        env:
+        - name: MYSQL_ROOT_USER
+          valueFrom:
+            secretKeyRef:
+            name: mysql-secret
+            key: mysql-user
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+spec:
+  selector:
+    app.kubernetes.io/name: mysql
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3306
+
+
+      

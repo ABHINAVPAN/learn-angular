@@ -1,0 +1,497 @@
+Interview ralated prep:
+points to remember for completing: String Pool, Thread Pool and Patterns, memory leak and volatile keyword
+Q23. Explain a production issue you resolved.
+Structure:
+Problem
+Root cause
+Fix
+Prevention
+
+Need to see examples on synchronization, deadlock
+some common java problems
+
+JVM, Heap and stack
+
+
+
+
+== : it comapres the references of two objects not value.
+equals : it works like == operator until you override the eqauls method.
+point to be noted 1: all wrapper classes and collection API internally override the equals method.
+point to be noted 2: Integer
+
+
+O(1), O(n), O(log n) etc. represent Time Complexity in programming.
+They describe how the execution time of an algorithm grows as the input size (n) increases. 
+
+O(1): constant time.
+O(n): linear time.
+O(n2): quadratic.
+
+Fail-Fast Behavior: 
+
+ArrayList<Integer> list = new ArrayList<>();
+list.add(1);
+list.add(2);
+
+for(Integer i : list) {
+    list.add(3); // Exception
+}
+ //ConcurrentModificationException
+ 
+ 
+internal working of HashMap():
+first
+  |
+  V
+
++------+------+------+
+|prev | 10   | next |----+
++------+------+------+   |
+                          |
+                          V
+
+                 +------+------+------+
+                 |prev | 20   | next |----+
+                 +------+------+------+   |
+                                           |
+                                           V
+
+                                +------+------+------+
+                                |prev | 30   | null |
+                                +------+------+------+
+
+last ----------------------------^
+
+How add() Works:
+
+list.add(10);
+
+Node newNode = new Node(null,10,null);
+
+first = newNode;
+last = newNode;
+size++;
+
+list.add(20);
+
+Node newNode = new Node(last,20,null);
+
+last.next = newNode;
+
+last = newNode;
+
+result:
+10 <--> 20
+
+list.add(30);
+result:
+10 <--> 20 <--> 30
+
+Time Complexity:O(1)
+
+How add(index, element) Works
+
+list = [10,20,30]
+
+list.add(1,15);
+
+Node newNode =
+new Node(pred,15,succ);
+
+Time Complexity : O(n)
+
+How get(index) Works:
+
+list.get(2);
+
+Java traverses from:
+Front if index is closer to beginning
+Back if index is closer to end
+if(index < size/2)
+
+Fail-Fast Mechanism
+
+for(Integer i : list) {
+    list.add(100);
+}
+
+ConcurrentModificationException
+
+
+What is Immutability?
+
+An immutable object is an object whose state cannot be changed after it is created.
+
+Once an immutable object is created:
+
+✅ Values cannot be modified
+ ✅ New values require creating a new object
+ ✅ Thread-safe by nature
+ ✅ Safe to share across multiple threads
+ 
+String str = "Hello";
+str.concat(" World");
+
+System.out.println(str);
+output:
+Hello
+
+
+Immutable Object
+String str = "Hello";
+
+str = str.concat(" World");
+
+System.out.println(str);
+output:
+Hello World
+
+creates a new object and the reference is updated.
+
+Why is String Immutable?
+Java designers made String immutable primarily for:
+
+String Pool Optimization
+Security
+Thread Safety
+HashMap Performance
+Class Loading Safety
+
+String s1 = "Java";
+String s2 = "Java";
+
+Java stores literals inside the String Pool.
+
+                   String Pool
+                +-----------+
+s1 -----------> |  "Java"   |
+                +-----------+
+s2 -----------> |
+
+Reason 1: String Constant Pool
+If String Were Mutable
+
+s1.toUpperCase();
+
+s1 -> "JAVA"
+s2 -> "JAVA"
+
+Now s2 is unexpectedly changed.
+
+This would break String Pooling completely.
+
+Therefore String must be immutable.
+
+Reason 2: Security
+
+Java uses Strings extensively in:
+
+Database URLs
+File Paths
+Network Connections
+Usernames
+Passwords
+
+
+Reason 3: Thread Safety
+
+String str = "Java";
+
+Shared among multiple threads.
+
+Thread-1
+Thread-2
+Thread-3
+
+All threads safely access the same object.
+
+No synchronization needed.
+
+
+
+
+Reason 4: HashMap Performance
+
+HashMap<String, Integer> map = new HashMap<>();
+
+map.put("India", 100);
+
+hashCode("India")
+
+Problem if String Was Mutable
+
+String country = "India";
+
+map.put(country,100);
+
+country = "USA";
+
+
+Reason 5: Cached HashCode
+
+String caches its hash code.
+
+Internal String class:
+
+private int hash;
+
+When:
+
+str.hashCode();
+
+is called first time,
+
+Java calculates and stores:
+
+hash = computed value;
+
+Next call:
+
+str.hashCode();
+
+O(1)
+
+
+What is HashMap?
+
+HashMap stores data in Key-Value pairs.
+O(1)
+
+Internal Structure
+
+transient Node<K,V>[] table;
+
+static class Node<K,V> {
+    final int hash;
+    final K key;
+    V value;
+    Node<K,V> next;
+}
+
+Each node stores:
+
+hash value
+key
+value
+next pointer
+
+1. Hashing
+
+Hashing converts a key into a numeric value.
+
+String str = "Java";
+
+str.hashCode();
+This hash value is used to identify the bucket.
+
+Formula:
+index = hash & (n - 1)
+n = table size
+hash = 2301506
+capacity = 16
+then:
+2301506 & 15
+result may be: 2
+so, bucket is 2
+
+2. Bucket
+
+A bucket is simply an index location in the internal array.
+
+Default capacity: 16
+
+Each bucket can store:
+
+One node
+Multiple nodes (collision)
+
+Ex:
+map.put("Java",100);
+
+Step 1
+hashCode("Java") 
+:2301506
+
+Step 2:
+
+Determine bucket
+
+hash & (n-1) like :Bucket 2
+
+Step 3:
+Store node
+
+Bucket[2]
+    |
+    V
+(Java,100)
+
+3. hashCode()
+
+hashCode()
+String str = "Java";
+
+System.out.println(str.hashCode());
+
+Equal objects must have equal hashCode.
+obj1.equals(obj2)
+
+4. equals()
+
+HashMap uses:
+hashCode()
+
+to find bucket
+and
+
+equals()
+to find exact key within bucket.
+
+Ex:
+map.put("Java",100);
+map.put("Java",200);
+
+Step 1
+
+Same hashCode
+
+Step 2
+
+Same bucket
+
+Step 3
+
+equals() check
+
+"Java".equals("Java")
+
+value updated:
+{Java=200}
+
+5. Collision Handling
+
+What is Collision?
+
+Two different keys generate same bucket.
+
+Key1 -> Bucket 5
+Key2 -> Bucket 5
+
+Before Collision:
+Bucket[5]
+
+(Java,100)
+      |
+      V
+(Spring,200)
+
+Example:
+
+map.put("A",10);
+map.put("B",20);
+
+Bucket[3]
+
+(A,10)
+   |
+   V
+
+(B,20)
+
+map.get("B");
+
+HashMap:
+
+Goes to bucket 3
+Traverses linked list
+Uses equals()
+Finds key B
+
+
+Comparable vs Comparator in Java
+1. Comparable
+
+Comparable is used when a class has a natural ordering.
+public interface Comparable<T> {
+    int compareTo(T o);
+}
+
+
+class Employee implements Comparable<Employee> {
+
+    int id;
+    String name;
+
+    Employee(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    @Override
+    public int compareTo(Employee e) {
+        return this.id - e.id;
+    }
+}
+
+
+List<Employee> list = new ArrayList<>();
+
+list.add(new Employee(103,"John"));
+list.add(new Employee(101,"David"));
+list.add(new Employee(102,"Sam"));
+
+Collections.sort(list);
+
+Output:
+101 David
+102 Sam
+103 John
+
+How compareTo() Works
+
+@Override
+public int compareTo(Employee e) {
+    return this.id - e.id;
+}
+
+Returns:
+
+< 0  => current object is smaller
+= 0  => both are equal
+> 0  => current object is greater
+
+100 - 200 = -100 (some assumption)
+Current object comes before.
+
+
+2. Comparator
+
+Used when we need custom sorting.
+
+public interface Comparator<T> {
+    int compare(T o1, T o2);
+}
+
+Example: Sort Employee by Name
+
+class NameComparator
+        implements Comparator<Employee> {
+
+    @Override
+    public int compare(Employee e1,
+                       Employee e2) {
+
+        return e1.name.compareTo(e2.name);
+    }
+}
+
+Collections.sort(list,
+                 new NameComparator());
+				 
+Output:
+David
+John
+Sam
+
+Example: Sort Employee by Salary
