@@ -17,7 +17,7 @@ Functional INterfaces
 
 
 == : it comapres the references of two objects not value.
-equals : it works like == operator until you override the eqauls method.
+equals : it works like == operator until you override the equals method.
 point to be noted 1: all wrapper classes and collection API internally override the equals method.
 point to be noted 2: Integer
 
@@ -501,7 +501,7 @@ class SalaryComparator
         implements Comparator<Employee> {
 
     @Override
-    public int compare(Employee e1,
+    public double compare(Employee e1,
                        Employee e2) {
 
         return Double.compare(
@@ -858,7 +858,8 @@ INTERVIEW ANSWER
 
 map() is used for one-to-one transformation where each input element is converted into exactly one output element.
 
-flatMap() is used when each element itself contains multiple values. It converts each element into a stream and then flattens all streams into one single stream.
+flatMap() is used when each element itself contains multiple values. It converts each element into a stream and
+then flattens all streams into one single stream.
 
 In simple words:
 
@@ -899,6 +900,8 @@ Arrays.asList(1,2,3,4,5);
 
 nums.stream()
     .forEach(System.out::println);
+	
+nums.stream().forEach(n->System.out.println(n));
 
 Output:
 
@@ -4061,3 +4064,446 @@ finalize() is a method defined in java.lang.Object that was originally intended 
  finalize() will execute or when it will execute. Due to its unpredictable behavior, performance issues, 
  and object resurrection problems, finalize() was deprecated in Java 9. Modern Java applications should use
  try-with-resources, AutoCloseable, or the Cleaner API instead of finalize().
+ 
+ 
+ 
+=========================================
+HASHMAP vs CONCURRENTHASHMAP
+=========================================
+
+Both HashMap and ConcurrentHashMap store data as Key-Value pairs.
+
+The main difference is:
+
+HashMap is NOT thread-safe.
+ConcurrentHashMap is thread-safe.
+
+--------------------------------------------------
+
+1. HASHMAP
+
+Package:
+
+java.util.HashMap
+
+Features:
+
+- Not synchronized
+- Not thread-safe
+- Faster in single-threaded applications
+- Multiple threads can modify data simultaneously
+
+Example:
+
+HashMap<Integer,String> map =
+new HashMap<>();
+
+map.put(1,"Java");
+
+--------------------------------------------------
+
+2. CONCURRENTHASHMAP
+
+Package:
+
+java.util.concurrent.ConcurrentHashMap
+
+Features:
+
+- Thread-safe
+- Supports concurrent read/write
+- Used in multi-threaded applications
+- Better performance than Hashtable
+
+Example:
+
+ConcurrentHashMap<Integer,String> map =
+new ConcurrentHashMap<>();
+
+map.put(1,"Java");
+
+--------------------------------------------------
+
+3. PROBLEM WITH HASHMAP
+
+Suppose:
+
+Thread-1:
+map.put(1,"Java");
+
+Thread-2:
+map.put(2,"Spring");
+
+Both threads modify the map simultaneously.
+
+Result:
+
+- Data inconsistency
+- Race conditions
+- Corrupted internal structure
+
+HashMap is unsafe in multithreaded environments.
+
+--------------------------------------------------
+
+4. HOW HASHMAP WORKS?
+
+HashMap uses:
+
+- Array of Buckets
+- Linked List
+- Red Black Tree (Java 8)
+
+No synchronization exists.
+
+Multiple threads can access the same bucket simultaneously.
+
+--------------------------------------------------
+
+5. HOW CONCURRENTHASHMAP WORKS?
+
+Java 7:
+
+Segment-Based Locking
+
+Map divided into multiple segments.
+
+Only affected segment is locked.
+
+--------------------------------------------------
+
+Java 8:
+
+Segment concept removed.
+
+Uses:
+
+- CAS (Compare And Swap)
+- Synchronized at bucket level
+- Fine-grained locking
+
+Multiple threads can work on different buckets simultaneously.
+
+--------------------------------------------------
+
+6. NULL SUPPORT
+
+HashMap:
+
+Allows:
+
+1 Null Key
+
+Multiple Null Values
+
+Example:
+
+map.put(null,"Java");
+
+map.put(1,null);
+
+Valid.
+
+--------------------------------------------------
+
+ConcurrentHashMap:
+
+Null Key NOT allowed
+
+Null Value NOT allowed
+
+Example:
+
+map.put(null,"Java");
+
+Throws:
+
+NullPointerException
+
+--------------------------------------------------
+
+Reason:
+
+ConcurrentHashMap cannot distinguish between:
+
+map.get(key)
+
+Returning:
+
+null
+
+because:
+
+1. Key absent
+
+OR
+
+2. Value is null
+
+To avoid ambiguity, nulls are prohibited.
+
+--------------------------------------------------
+
+7. SYNCHRONIZATION
+
+HashMap:
+
+No synchronization
+
+--------------------------------------------------
+
+ConcurrentHashMap:
+
+Thread-safe synchronization
+
+Uses:
+
+Node level locking
+CAS operations
+
+--------------------------------------------------
+
+8. FAIL-FAST vs FAIL-SAFE
+
+HashMap Iterator:
+
+Fail-Fast
+
+Example:
+
+for(Integer key : map.keySet()) {
+
+    map.put(5,"Angular");
+}
+
+Throws:
+
+ConcurrentModificationException
+
+--------------------------------------------------
+
+ConcurrentHashMap Iterator:
+
+Fail-Safe
+
+Example:
+
+for(Integer key : map.keySet()) {
+
+    map.put(5,"Angular");
+}
+
+No Exception
+
+Iterator works on a snapshot of data.
+
+--------------------------------------------------
+
+9. PERFORMANCE
+
+HashMap
+
+Single Thread:
+
+Faster
+
+Because:
+
+No locking overhead
+
+--------------------------------------------------
+
+ConcurrentHashMap
+
+Multi Thread:
+
+Faster
+
+Because:
+
+Supports concurrent access.
+
+--------------------------------------------------
+
+10. INTERNAL LOCKING
+
+HashMap:
+
+No Lock
+
+Thread-1
+   |
+   V
+ Map
+
+Thread-2
+   |
+   V
+ Map
+
+Both modify data simultaneously.
+
+--------------------------------------------------
+
+ConcurrentHashMap:
+
+Bucket Lock
+
+Thread-1 -> Bucket-1
+
+Thread-2 -> Bucket-5
+
+Both can execute at same time.
+
+Higher throughput.
+
+--------------------------------------------------
+
+11. EXAMPLE
+
+HashMap
+
+Map<Integer,String> map =
+new HashMap<>();
+
+Runnable task = () -> {
+
+    for(int i=1;i<=1000;i++) {
+
+        map.put(i,"Java");
+    }
+};
+
+Can lead to inconsistent results.
+
+--------------------------------------------------
+
+ConcurrentHashMap
+
+Map<Integer,String> map =
+new ConcurrentHashMap<>();
+
+Runnable task = () -> {
+
+    for(int i=1;i<=1000;i++) {
+
+        map.put(i,"Java");
+    }
+};
+
+Safe for multithreading.
+
+--------------------------------------------------
+
+12. DOES CONCURRENTHASHMAP LOCK ENTIRE MAP?
+
+No.
+
+Very Important Interview Question
+
+Hashtable:
+
+Entire table locked.
+
+--------------------------------------------------
+
+ConcurrentHashMap:
+
+Only affected bucket/node locked.
+
+Multiple threads work simultaneously.
+
+Higher performance.
+
+--------------------------------------------------
+
+13. HASHMAP vs HASHTABLE vs CONCURRENTHASHMAP
+
+HashMap
+-------
+Not Thread Safe
+Fast
+Allows Null
+
+Hashtable
+---------
+Thread Safe
+Locks Entire Table
+Allows No Null
+
+ConcurrentHashMap
+-----------------
+Thread Safe
+Fine-Grained Locking
+No Null Allowed
+
+--------------------------------------------------
+
+14. COMPARISON TABLE
+
+Feature                 HashMap             ConcurrentHashMap
+
+Package                 java.util           java.util.concurrent
+
+Thread Safe             No                  Yes
+
+Synchronization         No                  Yes
+
+Performance (Single)    Fast                Slightly Slower
+
+Performance (Multi)     Unsafe              Fast
+
+Null Key                Yes (1)             No
+
+Null Value              Yes                 No
+
+Iterator                Fail-Fast           Fail-Safe
+
+Locking                 No Lock             Bucket/Node Level
+
+Concurrent Reads        No Guarantee        Supported
+
+Concurrent Writes       Unsafe              Supported
+
+Used In                 Single Thread       Multi Thread
+
+--------------------------------------------------
+
+15. INTERVIEW QUESTIONS
+
+Q1. Why HashMap is not Thread Safe?
+
+Answer:
+
+Because multiple threads can modify the map simultaneously without synchronization, causing race conditions and inconsistent data.
+
+--------------------------------------------------
+
+Q2. Why ConcurrentHashMap does not allow null?
+
+Answer:
+
+To avoid ambiguity between:
+
+- Key not present
+- Value is null
+
+Both would return null from get().
+
+--------------------------------------------------
+
+Q3. Is ConcurrentHashMap fully synchronized?
+
+Answer:
+
+No.
+
+It uses fine-grained locking and CAS operations rather than locking the entire map.
+
+--------------------------------------------------
+
+Q4. Difference between Hashtable and ConcurrentHashMap?
+
+Answer:
+
+Hashtable
