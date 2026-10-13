@@ -1,0 +1,51 @@
+angular Interview questions:
+
+ANGULAR INTERVIEW QUESTIONS (3-5 YEARS EXPERIENCE)
+
+1. What is Angular?
+
+2. What are the key features of Angular?
+
+3. Difference between AngularJS and Angular?
+
+4. What is TypeScript and why does Angular use it?
+
+5. What is a Component in Angular?
+
+6. What are the parts of a Component?
+
+7. Explain Angular Architecture.
+
+8. What is a Module (NgModule)?
+
+9. What is AppModule?
+
+10. Difference between Component and Directive?
+
+--------------------------------------------------
+LIFECYCLE HOOKS
+--------------------------------------------------
+
+11. What are Angular Lifecycle Hooks?
+
+12. Explain ngOnInit().
+
+13. Explain ngOnChanges().
+
+14. Explain ngDoCheck().
+
+15. Explain ngAfterContentInit().
+
+16. Explain ngAfterViewInit().
+
+17. Explain ngOnDestroy().
+
+18. What is the lifecycle hook execution order?
+
+19. Difference between Constructor and ngOnInit()?
+
+20. When would you use ngOnDestroy()?
+
+--------------------------------------------------
+DATA BINDING
+---------------------------------------------
