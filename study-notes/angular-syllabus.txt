@@ -1,26 +1,26 @@
 Angular
 ---------------
  
-1) Parent Component to child component using @input and @output
-2) Using Rxjs Subjects and Behavious Subjects
+1) Parent Component to child component using @input and @output(covered)
+2) Using Rxjs Subjects and Behavious Subjects(covered)
     a) Difference between Subject and Behaviour Subject
-3) Angular routing
+3) Angular routing(covered)
 4) Angular pipes - Async, Date, Time, uppercase, lowercase, title case etc 
-5) Subscription management
+5) Subscription management(covered)
     a) using SubSink
     b) using Subscription array
     c) takeUntilDestroyed with DestroyRef 
 6) Using pipe syntax with subscription
-    a) use tap, filter operators for practice
-7) Practice forkJoin, switchMap, MergeMap, ConcatMap, withLatestFrom, combineLatest
-8) Api calling using a service and rxjs 
+    a) use tap, filter operators for practice(covered)
+7) Practice forkJoin, switchMap, MergeMap, ConcatMap, withLatestFrom, combineLatest(covered)
+8) Api calling using a service and rxjs (covered)
 9) Ngxs - state management 
-10) Performance optimization
+10) Performance optimization(covered)
     a) ahead of time compilation (npm run build --configuration production)
     b) lazy loading 
     c) OnPush - change detection
 	d) TrackBy
-11) Smart vs Dumb Components
+11) Smart vs Dumb Components(all components done)
 
 
 Angular LifeCycle hooks:
@@ -305,123 +305,431 @@ Angular internally converts it to:
 (input)="name = $event.target.value"
 
 
-What are Directives(written old new also to be added)
-Directives are special classes in Angular that allow you to manipulate
-the DOM (Document Object Model) and add behavior to HTML elements.
+=========================
+ANGULAR DIRECTIVES NOTES
+=========================
 
-Types of Directives:
-1. Component Directive
-Every Angular Component is actually a directive with a template.
+1. WHAT IS A DIRECTIVE?
+-----------------------
+
+Directives are classes that add behavior to HTML elements or modify the DOM.
+
+In simple words:
+"Directives tell Angular how to manipulate or render HTML."
+
+Example:
+
+<p appHighlight>Hello</p>
+
+Here appHighlight is a directive.
+
+--------------------------------------------------
+
+2. TYPES OF DIRECTIVES
+----------------------
+
+1. Component Directives
+2. Structural Directives
+3. Attribute Directives
+
+--------------------------------------------------
+
+3. COMPONENT DIRECTIVE
+----------------------
+
+A Component is also a directive with a template.
+
+Example:
 
 @Component({
   selector: 'app-user',
   template: '<h1>User Component</h1>'
 })
+
 export class UserComponent {}
+
+Usage:
 
 <app-user></app-user>
 
-Directive + Template = Component
+Creates its own view/template.
 
-2. Structural Directive
-Structural directives change the structure of the DOM by:
-Adding elements
-Removing elements
-Repeating elements
+--------------------------------------------------
 
-They are identified by *.
+4. STRUCTURAL DIRECTIVES
+------------------------
 
-EX:
+Structural directives change the DOM structure by adding or removing elements.
+
+Identified using * symbol.
+
+Examples:
 *ngIf
 *ngFor
 *ngSwitch
 
-component:
+--------------------------------------------------
+
+5. ngIf
+--------
+
+Adds or removes elements from DOM based on condition.
+
+Component:
+
 isLoggedIn = true;
 
-template:
-<h2 *ngIf="isLoggedIn">
+HTML:
+
+<div *ngIf="isLoggedIn">
+    Welcome User
+</div>
+
+Output:
+
+Welcome User
+
+If false:
+
+Nothing displayed.
+
+--------------------------------------------------
+
+6. ngIf with else
+-----------------
+
+HTML:
+
+<div *ngIf="isLoggedIn; else loginBlock">
   Welcome User
-</h2>
+</div>
 
-component:
-users = ['John', 'David', 'Mike'];
+<ng-template #loginBlock>
+  Please Login
+</ng-template>
 
-template:
+--------------------------------------------------
+
+7. ngFor
+---------
+
+Used to iterate over a collection.
+
+Component:
+
+employees = ['John', 'David', 'Sam'];
+
+HTML:
+
 <ul>
-  <li *ngFor="let user of users">
-     {{user}}
+  <li *ngFor="let emp of employees">
+      {{emp}}
   </li>
 </ul>
 
-other way:
-<li *ngFor="let user of users; let i = index">
-   {{i}} - {{user}}
+Output:
+
+John
+David
+Sam
+
+--------------------------------------------------
+
+8. ngFor with Index
+-------------------
+
+<li *ngFor="let emp of employees; let i=index">
+   {{i}} - {{emp}}
 </li>
 
-component:
-role = 'Admin';
+Output:
 
-template:
+0 - John
+1 - David
+2 - Sam
+
+--------------------------------------------------
+
+9. trackBy in ngFor
+-------------------
+
+Used for performance optimization.
+
+HTML:
+
+<li *ngFor="let emp of employees; trackBy: trackById">
+    {{emp.name}}
+</li>
+
+Component:
+
+trackById(index:any,item:any){
+   return item.id;
+}
+
+Interview Point:
+trackBy prevents Angular from recreating entire DOM elements.
+
+--------------------------------------------------
+
+10. ngSwitch
+------------
+
+Similar to switch case in Java.
+
+Component:
+
+role='Admin';
+
+HTML:
+
 <div [ngSwitch]="role">
 
-  <p**ngSwitchCase="'Admin'">
-     Admi* Dashboard
-  </p>
+  <div *ngSwitchCase="'Admin'">
+      Admin Dashboard
+  </div>
 
-  <p *ngSwitchC*se="'User'">
-     User Dashboard
- *</p>
+  <div *ngSwitchCase="'User'">
+      User Dashboard
+  </div>
 
-  <p *ngSwitchDefault>
-     *o Access
-  </p>
+  <div *ngSwitchDefault>
+      Guest Dashboard
+  </div>
 
 </div>
 
-3. Attribute Directive
-Attribute directives change the appearance or behavior of an element.
-They do NOT add or remove elements.
+Output:
 
-Ex:
+Admin Dashboard
+
+--------------------------------------------------
+
+11. ATTRIBUTE DIRECTIVES
+------------------------
+
+Changes appearance or behavior of existing elements.
+
+Examples:
+
 ngClass
 ngStyle
-ngModel
 
-component:
-isError = true;
+Custom Directives
 
-template:
-<p [ngClass]="{'error': isError*">
-  Invalid Data
-</p>
+--------------------------------------------------
 
-css:
-.error {
-  color: red;
+12. ngClass
+-----------
+
+Adds or removes CSS classes dynamically.
+
+Component:
+
+isActive=true;
+
+HTML:
+
+<button [ngClass]="{'active':isActive}">
+   Submit
+</button>
+
+CSS:
+
+.active{
+   background:green;
+   color:white;
 }
 
-component:
-color = 'blue';
-*
-template:
-<p [ngStyle]="{'*olor': color}">
-  Angular
+--------------------------------------------------
+
+13. ngStyle
+-----------
+
+Applies styles dynamically.
+
+Component:
+
+color='red';
+
+HTML:
+
+<p [ngStyle]="{'color':color}">
+   Welcome
 </p>
-```*
 
-component:
-name = '';
+Output:
 
-template:
-<input [(ngModel)]="nam*">
+Text appears in red.
 
-<p>{{name}}</p>
+--------------------------------------------------
 
-Can we create Custom Directives
+14. CUSTOM ATTRIBUTE DIRECTIVE
+------------------------------
 
-using:
-@Directive()
+highlight.directive.ts
+
+import { Directive, ElementRef } from '@angular/core';
+
+@Directive({
+  selector:'[appHighlight]'
+})
+
+export class HighlightDirective{
+
+  constructor(private element: ElementRef){
+      element.nativeElement.style.background='yellow';
+  }
+}
+
+Usage:
+
+<p appHighlight>
+   Highlighted Text
+</p>
+
+Output:
+Background becomes yellow.
+
+--------------------------------------------------
+
+15. HOSTLISTENER EXAMPLE
+------------------------
+
+import {
+ Directive,
+ ElementRef,
+ HostListener
+} from '@angular/core';
+
+@Directive({
+ selector:'[appHover]'
+})
+export class HoverDirective{
+
+ constructor(private el:ElementRef){}
+
+ @HostListener('mouseenter')
+ onMouseEnter(){
+    this.el.nativeElement.style.color='red';
+ }
+
+ @HostListener('mouseleave')
+ onMouseLeave(){
+    this.el.nativeElement.style.color='black';
+ }
+
+}
+
+Usage:
+
+<p appHover>
+   Hover Over Me
+</p>
+
+--------------------------------------------------
+
+16. STRUCTURAL VS ATTRIBUTE DIRECTIVE
+-------------------------------------
+
+Structural Directive:
+- Changes layout.
+- Adds/removes elements.
+- Uses * symbol.
+- Examples: ngIf, ngFor, ngSwitch.
+
+Attribute Directive:
+- Changes behavior/appearance.
+- Works on existing element.
+- No * symbol.
+- Examples: ngClass, ngStyle.
+
+--------------------------------------------------
+
+17. INTERVIEW QUESTIONS
+-----------------------
+
+Q1. What is a directive?
+
+A:
+A directive is a TypeScript class that modifies the behavior,
+appearance, or structure of DOM elements.
+
+--------------------------------------------------
+
+Q2. How many types of directives are there?
+
+A:
+1. Component Directives
+2. Structural Directives
+3. Attribute Directives
+
+--------------------------------------------------
+
+Q3. What are structural directives?
+
+A:
+Directives that add or remove elements from DOM.
+
+Examples:
+*ngIf
+*ngFor
+*ngSwitch
+
+--------------------------------------------------
+
+Q4. Difference between ngIf and hidden?
+
+ngIf:
+- Removes element from DOM.
+
+hidden:
+- Keeps element in DOM and only hides it.
+
+Example:
+
+<div *ngIf="false">Hello</div>
+
+Element removed completely.
+
+<div [hidden]="true">Hello</div>
+
+Element exists but hidden.
+
+--------------------------------------------------
+
+Q5. Why use trackBy in ngFor?
+
+A:
+To improve performance by preventing unnecessary DOM re-rendering.
+
+--------------------------------------------------
+
+Q6. Can we use multiple structural directives on same element?
+
+Wrong:
+
+<div *ngIf="true" *ngFor="let e of employees">
+</div>
+
+Correct:
+
+<ng-container *ngIf="true">
+   <div *ngFor="let e of employees">
+      {{e}}
+   </div>
+</ng-container>
+
+--------------------------------------------------
+
+INTERVIEW ONE-LINER
+-------------------
+
+Angular Directives are classes that allow Angular to modify the
+behavior, appearance, or layout of DOM elements. The three types are
+Component, Structural, and Attribute Directives.
+
+
 
 Content Projection
 
@@ -480,6 +788,7 @@ export class ParentComponent {
   }
 }
 
+
 HTML:
 <app-child [user]="user"></app-child>
 
@@ -501,6 +810,248 @@ export class ChildComponent {
   @Input() user: any;
 
 }
+
+
+d)ANGULAR TRACKBY NOTES
+
+
+1. WHAT IS TRACKBY?
+-------------------
+
+trackBy is a function used with *ngFor to uniquely identify each item
+in a list.
+
+It helps Angular reuse existing DOM elements instead of recreating them.
+
+This improves performance, especially for large lists.
+
+Syntax:
+
+<li *ngFor="let emp of employees; trackBy: trackById">
+</li>
+
+--------------------------------------------------
+
+2. WHY DO WE NEED TRACKBY?
+--------------------------
+
+Without trackBy:
+- Angular recreates all DOM elements when list changes.
+- More rendering.
+- Poor performance for large data.
+
+With trackBy:
+- Angular identifies items using unique id.
+- Only changed items are updated.
+- Existing DOM elements are reused.
+
+--------------------------------------------------
+
+3. EXAMPLE WITHOUT TRACKBY
+--------------------------
+
+employees = [
+ {id:1,name:'John'},
+ {id:2,name:'David'},
+ {id:3,name:'Sam'}
+];
+
+HTML:
+
+<li *ngFor="let emp of employees">
+   {{emp.name}}
+</li>
+
+Suppose a new employee is added:
+
+employees = [
+ {id:4,name:'Tom'},
+ {id:1,name:'John'},
+ {id:2,name:'David'},
+ {id:3,name:'Sam'}
+];
+
+Angular may recreate multiple DOM elements.
+
+--------------------------------------------------
+
+4. EXAMPLE WITH TRACKBY
+-----------------------
+
+HTML:
+
+<li *ngFor="let emp of employees; trackBy: trackById">
+   {{emp.name}}
+</li>
+
+Component:
+
+trackById(index:number,item:any){
+   return item.id;
+}
+
+When a new employee is added:
+
+employees = [
+ {id:4,name:'Tom'},
+ {id:1,name:'John'},
+ {id:2,name:'David'},
+ {id:3,name:'Sam'}
+];
+
+Angular identifies:
+
+1 -> Existing
+2 -> Existing
+3 -> Existing
+4 -> New
+
+Only new record is rendered.
+
+--------------------------------------------------
+
+5. HOW TRACKBY WORKS
+--------------------
+
+Angular compares:
+
+Without trackBy:
+--------------
+Object References
+
+Old List:
+John
+David
+Sam
+
+New List:
+John
+David
+Sam
+
+Even if data is same but object references change,
+Angular may re-render.
+
+With trackBy:
+-------------
+Angular compares unique IDs.
+
+1
+2
+3
+
+If IDs are same, Angular reuses DOM elements.
+
+--------------------------------------------------
+
+6. REAL-TIME EXAMPLE
+--------------------
+
+Employee Management System
+
+API Response:
+
+[
+ {id:1,name:'John'},
+ {id:2,name:'David'},
+ {id:3,name:'Sam'}
+]
+
+Every refresh returns new object references.
+
+Without trackBy:
+Angular recreates all rows.
+
+With trackBy:
+Angular matches ids and updates only changed rows.
+
+Performance improves significantly.
+
+--------------------------------------------------
+
+7. TRACKBY USING ID
+-------------------
+
+trackById(index:number,item:any){
+   return item.id;
+}
+
+Most commonly used approach.
+
+--------------------------------------------------
+
+8. TRACKBY USING INDEX
+----------------------
+
+trackByIndex(index:number,item:any){
+   return index;
+}
+
+HTML:
+
+<li *ngFor="let emp of employees; trackBy: trackByIndex">
+</li>
+
+Note:
+Using id is preferred over index.
+
+--------------------------------------------------
+
+9. INTERVIEW QUESTIONS
+----------------------
+
+Q1. What is trackBy in Angular?
+
+A:
+trackBy is a function used with ngFor to uniquely identify list items
+and improve rendering performance.
+
+--------------------------------------------------
+
+Q2. Why use trackBy?
+
+A:
+To avoid unnecessary DOM recreation and improve performance for large
+lists.
+
+--------------------------------------------------
+
+Q3. What happens without trackBy?
+
+A:
+Angular may recreate all DOM elements whenever the list changes,
+even if only one item is updated.
+
+--------------------------------------------------
+
+Q4. What does trackBy return?
+
+A:
+A unique identifier for each item.
+
+Example:
+
+trackById(index,item){
+   return item.id;
+}
+
+--------------------------------------------------
+
+Q5. Which is better: trackBy id or trackBy index?
+
+A:
+trackBy id is better because ids remain constant even when items are
+reordered.
+
+--------------------------------------------------
+
+10. INTERVIEW ONE-LINER
+-----------------------
+
+trackBy is used with *ngFor to uniquely identify list items so Angular
+can reuse existing DOM elements and update only changed records,
+improving application performance.
+
 
 
 Angular Routing
@@ -548,16 +1099,992 @@ console.log(data);
 RxJS:
 
 Operators:
+===============================
+RxJS OPERATORS - QUICK NOTES
+===============================
+
+1. map()
+--------------------------------
+Purpose:
+- Transform data.
+- Changes emitted value.
+
+Example:
+
+of(1,2,3)
+.pipe(
+  map(num => num * 10)
+)
+.subscribe(console.log);
+
+Output:
+10
+20
+30
+
+Use Cases:
+- Modify API response
+- Convert object structure
+- Format data
+
+
+2. filter()
+--------------------------------
+Purpose:
+- Filters values based on condition.
+
+Example:
+
+of(10,20,30,40)
+.pipe(
+  filter(num => num > 20)
+)
+.subscribe(console.log);
+
+Output:
+30
+40
+
+Use Cases:
+- Active users only
+- Valid records only
+- Search filtering
+
+
+3. tap()
+--------------------------------
+Purpose:
+- Perform side effects.
+- Does NOT modify data.
+
+Example:
+
+of('Angular')
+.pipe(
+  tap(data => console.log('Received:', data))
+)
+.subscribe();
+
+Output:
+Received: Angular
+
+Use Cases:
+- Logging
+- Debugging
+- Analytics
+- Show/Hide Loader
+
+
+4. catchError()
+--------------------------------
+Purpose:
+- Handle observable errors.
+
+Example:
+
+this.http.get('/users')
+.pipe(
+  catchError(error => {
+    console.log(error);
+    return of([]);
+  })
+)
+.subscribe();
+
+Output:
+Returns [] if API fails
+
+Use Cases:
+- API error handling
+- Fallback values
+- Error notifications
+
+
+5. switchMap()
+--------------------------------
+Purpose:
+- Cancels previous observable.
+- Switches to latest observable.
+
+Example:
+
+searchControl.valueChanges
+.pipe(
+  switchMap(term =>
+    this.http.get(`/search?q=${term}`)
+  )
+)
+.subscribe();
+
+Real Example:
+
+A
+AB
+ABC
+ABCD
+
+A    Cancelled
+AB   Cancelled
+ABC  Cancelled
+ABCD Executed
+
+Best Use Case:
+- Search APIs
+- Autocomplete
+- Latest request only
+
+
+6. mergeMap()
+--------------------------------
+Purpose:
+- Executes all observables.
+- No cancellation.
+
+Example:
+
+of(1,2,3)
+.pipe(
+  mergeMap(id =>
+    this.http.get(`/users/${id}`)
+  )
+)
+.subscribe();
+
+Behavior:
+
+Request1 ✅
+Request2 ✅
+Request3 ✅
+
+All execute simultaneously.
+
+Best Use Case:
+- Parallel API calls
+- Batch Processing
+
+
+7. forkJoin()
+--------------------------------
+Purpose:
+- Waits for all observables to complete.
+- Returns final result together.
+
+Example:
+
+forkJoin({
+  users: this.http.get('/users'),
+  products: this.http.get('/products'),
+  orders: this.http.get('/orders')
+})
+.subscribe(result => {
+  console.log(result);
+});
+
+Output:
+
+{
+  users: [...],
+  products: [...],
+  orders: [...]
+}
+
+Best Use Case:
+- Dashboard loading
+- Initial page load
+- Multiple APIs together
+
+
+8. withLatestFrom()
+--------------------------------
+Purpose:
+- Get latest value from another observable.
+
+Example:
+
+buttonClick$
+.pipe(
+  withLatestFrom(userData$)
+)
+.subscribe(([click,user]) => {
+  console.log(user);
+});
+
+Example Output:
+
+Button Clicked
+Latest User Data Returned
+
+Best Use Case:
+- Button click + latest form data
+- Event + State combination
+
+
+9. combineLatest()
+--------------------------------
+Purpose:
+- Combines latest values from all observables.
+- Emits whenever any observable changes.
+
+Example:
+
+combineLatest([
+  name$,
+  city$
+])
+.subscribe(console.log);
+
+Output:
+
+['Abhinav', 'Pune']
+
+name$.next('Raj')
+
+Output:
+
+['Raj', 'Pune']
+
+city$.next('Bangalore')
+
+Output:
+
+['Raj', 'Bangalore']
+
+Best Use Case:
+- Filters
+- Search + Sort
+- Dynamic Forms
+
+10. concatMap()
+--------------------------------
+Purpose:
+- Executes observables one by one.
+- Maintains order.
+- Next request starts only after previous completes.
+
+Syntax:
+
+source$
+.pipe(
+  concatMap(value =>
+    someObservable(value)
+  )
+)
+
+Example:
+
+of(1, 2, 3)
+.pipe(
+  concatMap(id =>
+    this.http.get(`/users/${id}`)
+  )
+)
+.subscribe(console.log);
+
+Execution:
+
+Request 1 ✅ Complete
+Request 2 ✅ Complete
+Request 3 ✅ Complete
+
+Order Maintained:
+1 → 2 → 3
+
+Not Parallel Execution.
+
+
+Real Example:
+--------------------------------
+
+Orders:
+
+Order1
+Order2
+Order3
+
+Using concatMap:
+
+Create Order1 ✅
+Create Order2 ✅
+Create Order3 ✅
+
+Executed sequentially.
+
+Useful when order is important.
+
+
+Angular Example:
+--------------------------------
+
+from([101,102,103])
+.pipe(
+  concatMap(id =>
+    this.http.get(`/employee/${id}`)
+  )
+)
+.subscribe(console.log);
+
+Output:
+
+Employee 101
+Employee 102
+Employee 103
+
+Always in same order.
+
+
+Best Use Cases:
+--------------------------------
+
+✅ File Uploads
+✅ Payment Processing
+✅ Order Creation
+✅ Sequential API Calls
+✅ Database Updates
+
+
+==================================
+switchMap vs mergeMap vs concatMap
+==================================
+
+switchMap()
+--------------------------------
+- Cancels previous request
+- Keeps latest request only
+
+Example:
+
+A
+AB
+ABC
+ABCD
+
+Output:
+
+A     ❌
+AB    ❌
+ABC   ❌
+ABCD  ✅
+
+Best For:
+Search API
+
+
+mergeMap()
+--------------------------------
+- Executes all requests
+- Parallel execution
+- No cancellation
+
+Example:
+
+A ✅
+AB ✅
+ABC ✅
+ABCD ✅
+
+Best For:
+Parallel API Calls
+
+
+concatMap()
+--------------------------------
+- Executes one by one
+- Preserves order
+- Waits for previous completion
+
+Example:
+
+A ✅ Complete
+AB ✅ Complete
+ABC ✅ Complete
+ABCD ✅ Complete
+
+Execution Order:
+
+A → AB → ABC → ABCD
+
+Best For:
+Sequential Processing
+
+
+==================================
+INTERVIEW ANSWER
+==================================
+
+Q. Difference between switchMap(),
+mergeMap() and concatMap()?
+
+switchMap()
+- Cancels previous requests
+- Only latest request executes
+
+mergeMap()
+- Executes all requests simultaneously
+- No order guarantee
+
+concatMap()
+- Executes requests sequentially
+- Maintains order
+
+Memory Trick:
+
+switchMap = Switch to latest
+
+mergeMap = Merge everything together
+
+concatMap = Queue and execute one by one
+
+
+===============================
+INTERVIEW DIFFERENCES
+===============================
+
+map vs filter
+--------------------------------
 
 map()
+- Transforms data
+- Number → String
+- Lowercase → Uppercase
+
 filter()
-forkJoin()
-mergeMap()
+- Removes unwanted data
+- Returns matching values only
+
+
+switchMap vs mergeMap
+--------------------------------
+
 switchMap()
+- Cancels previous requests
+- Keeps latest request only
+- Best for Search APIs
+
+mergeMap()
+- Executes all requests
+- No cancellation
+- Best for Parallel APIs
+
+Example:
+
+Typing:
+A
+AB
+ABC
+ABCD
+
+switchMap
+
+A    ❌
+AB   ❌
+ABC  ❌
+ABCD ✅
+
+mergeMap
+
+A    ✅
+AB   ✅
+ABC  ✅
+ABCD ✅
+
+
+forkJoin vs combineLatest
+--------------------------------
+
+forkJoin()
+- Waits for all observables to complete
+- Emits once
+
+combineLatest()
+- Emits whenever any observable changes
+- Continuous updates
+
+forkJoin:
+
+API1 ✅
+API2 ✅
+API3 ✅
+
+Result emitted once
+
+combineLatest:
+
+Value1 Changed ✅
+Value2 Changed ✅
+
+Result emitted every time
+
+
+withLatestFrom vs combineLatest
+--------------------------------
+
+withLatestFrom()
+- Source observable controls emission
+- Gets latest value from another stream
+
+combineLatest()
+- Any observable can trigger emission
+
+Example:
+
+Button Click + Form Data
+
+withLatestFrom()
+Button click triggers output
+
+combineLatest()
+Button OR Form change triggers output
+
+
+=====================================
+MOST ASKED INTERVIEW ANSWERS
+=====================================
+
+Q. Why use switchMap in search?
+Ans:
+Cancels previous API calls and processes only
+the latest request.
+
+Q. Why use forkJoin?
+Ans:
+To execute multiple APIs and wait for all
+responses before proceeding.
+
+Q. Why use tap if subscribe can log?
+Ans:
+tap() performs side effects inside pipe()
+without changing the observable data.
+
+Q. Does mergeMap cancel requests?
+Ans:
+No. All requests execute concurrently.
+
+Q. Difference between map() and tap()?
+
+map()
+- Changes data
+
 tap()
-catchError()
-withLatestFrom
-combineLatest
+- Does not change data
+
+
+ANGULAR SUBSCRIPTION MANAGEMENT
+
+1. SUBSCRIPTION ARRAY
+
+Used to store multiple subscriptions in an array and unsubscribe them together.
+
+Example:
+
+import { Subscription } from 'rxjs';
+
+export class UserComponent implements OnInit, OnDestroy {
+
+  subscriptions: Subscription[] = [];
+
+  ngOnInit() {
+
+    const sub1 = this.userService.getUsers()
+      .subscribe(users => console.log(users));
+
+    const sub2 = this.userService.getRoles()
+      .subscribe(roles => console.log(roles));
+
+    this.subscriptions.push(sub1, sub2);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+}
+
+Advantages:
+- Easy to understand
+- No external library required
+
+Disadvantages:
+- More boilerplate code
+- Easy to forget adding subscriptions to array
+
+
+==================================================
+
+2. SUBSINK
+
+SubSink is a third-party library that manages multiple subscriptions.
+
+Installation:
+
+npm install subsink
+
+Example:
+
+import { SubSink } from 'subsink';
+
+export class UserComponent implements OnInit, OnDestroy {
+
+  private subs = new SubSink();
+
+  ngOnInit() {
+
+    this.subs.sink = this.userService.getUsers()
+      .subscribe(users => console.log(users));
+
+    this.subs.sink = this.userService.getRoles()
+      .subscribe(roles => console.log(roles));
+  }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
+}
+
+Alternative:
+
+this.subs.add(
+  this.userService.getUsers().subscribe(),
+  this.userService.getRoles().subscribe(),
+  this.userService.getDepartments().subscribe()
+);
+
+Advantages:
+- Cleaner than subscription array
+- Easy to manage multiple subscriptions
+
+Disadvantages:
+- Requires external dependency
+- Less preferred after Angular 16
+
+
+==================================================
+
+3. TAKEUNTIL()
+
+Most commonly used before Angular 16.
+
+Example:
+
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+export class UserComponent implements OnInit, OnDestroy {
+
+  private destroy$ = new Subject<void>();
+
+  ngOnInit() {
+
+    this.userService.getUsers()
+      .pipe(
+        takeUntil(this.destroy$)
+      )
+      .subscribe(users => console.log(users));
+
+    this.userService.getRoles()
+      .pipe(
+        takeUntil(this.destroy$)
+      )
+      .subscribe(roles => console.log(roles));
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+}
+
+Working:
+
+Observable
+    |
+takeUntil(destroy$)
+    |
+subscribe()
+
+destroy$.next()
+    |
+Auto Unsubscribe
+
+Advantages:
+- No need to keep subscription references
+- Widely used in Angular projects
+
+Disadvantages:
+- Need Subject
+- Need ngOnDestroy
+
+
+==================================================
+
+4. TAKEUNTILDESTROYED()
+
+Recommended in Angular 16+
+
+Example:
+
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+export class UserComponent {
+
+  ngOnInit() {
+
+    this.userService.getUsers()
+      .pipe(takeUntilDestroyed())
+      .subscribe(users => console.log(users));
+
+    this.userService.getRoles()
+      .pipe(takeUntilDestroyed())
+      .subscribe(roles => console.log(roles));
+  }
+}
+
+Using DestroyRef:
+
+import { DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+export class UserComponent {
+
+  private destroyRef = inject(DestroyRef);
+
+  ngOnInit() {
+
+    this.userService.getUsers()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(data => console.log(data));
+  }
+}
+
+Advantages:
+- Angular built-in
+- No Subject required
+- No ngOnDestroy required
+- Cleanest approach
+
+Disadvantages:
+- Available only in Angular 16+
+
+
+
+
+==================================================
+
+REAL-TIME EXAMPLE (FORM VALUE CHANGES)
+
+Wrong:
+
+this.form.get('name')?.valueChanges
+  .subscribe(value => {
+    console.log(value);
+  });
+
+If component reloads multiple times:
+
+Subscription 1 -> Active
+Subscription 2 -> Active
+Subscription 3 -> Active
+
+Memory Leak occurs.
+
+Correct:
+
+this.form.get('name')?.valueChanges
+  .pipe(takeUntilDestroyed())
+  .subscribe(value => {
+    console.log(value);
+  });
+
+Angular automatically unsubscribes when component is destroyed.
+
+
+5. ASYNC PIPE
+
+The Async Pipe automatically subscribes and unsubscribes from Observables.
+It is the best approach when data is used only in the HTML template.
+
+Component:
+
+import { Observable } from 'rxjs';
+
+export class UserComponent {
+
+  users$: Observable<User[]> =
+    this.userService.getUsers();
+}
+
+Template:
+
+<div *ngFor="let user of users$ | async">
+  {{ user.name }}
+</div>
+
+Flow:
+
+Observable
+    |
+ Async Pipe
+    |
+ Subscribe Automatically
+    |
+ Display Data
+    |
+ Component Destroyed
+    |
+ Unsubscribe Automatically
+
+Advantages:
+- No manual subscribe()
+- No unsubscribe()
+- No memory leaks
+- Cleaner code
+- Recommended for template data binding
+
+Disadvantages:
+- Cannot perform complex logic easily inside subscribe()
+- Mainly useful when displaying data in UI
+
+==================================================
+
+ASYNC PIPE WITH HTTP CALL
+
+Component:
+
+users$ = this.http.get<User[]>('/api/users');
+
+Template:
+
+<ul>
+  <li *ngFor="let user of users$ | async">
+    {{ user.name }}
+  </li>
+</ul>
+
+Angular automatically:
+- Subscribes
+- Receives data
+- Updates UI
+- Unsubscribes when component is destroyed
+
+==================================================
+
+ASYNC PIPE WITH LOADING STATE
+
+Component:
+
+users$ = this.userService.getUsers();
+
+Template:
+
+<ng-container *ngIf="users$ | async as users; else loading">
+
+  <div *ngFor="let user of users">
+    {{ user.name }}
+  </div>
+
+</ng-container>
+
+<ng-template #loading>
+  Loading...
+</ng-template>
+
+==================================================
+
+WHEN TO USE WHICH?
+
+1. Async Pipe
+   - For template data binding
+   - Best option
+
+2. takeUntilDestroyed()
+   - For subscriptions inside component TS file
+   - Angular 16+
+
+3. takeUntil()
+   - Older Angular projects
+
+4. SubSink
+   - Multiple subscriptions in legacy projects
+
+5. Subscription Array
+   - Simple projects
+
+==================================================
+
+INTERVIEW ANSWER
+
+Q. What are the ways to manage subscriptions in Angular?
+
+Ans:
+
+1. Subscription Array
+   - Store subscriptions in an array and unsubscribe in ngOnDestroy()
+
+2. SubSink
+   - Third-party library to manage multiple subscriptions
+
+3. takeUntil()
+   - Uses Subject and automatically unsubscribes in ngOnDestroy()
+
+4. takeUntilDestroyed()
+   - Angular 16+ built-in solution
+   - No Subject and no manual cleanup required
+
+5. Async Pipe
+   - Automatically subscribes and unsubscribes
+   - Best choice when data is only required in the template
+
+Preference Order:
+
+Async Pipe ✅
+    ↓
+takeUntilDestroyed() ✅
+    ↓
+takeUntil()
+    ↓
+SubSink
+    ↓
+Subscription Array
+
+==================================================
+
+INTERVIEW ANSWER
+
+Q. How do you manage subscriptions in Angular?
+
+Ans:
+
+There are multiple ways to manage subscriptions in Angular:
+
+1. Subscription Array
+   - Store subscriptions in an array and unsubscribe in ngOnDestroy()
+
+2. SubSink
+   - Use the SubSink library to manage multiple subscriptions and call unsubscribe() once
+
+3. takeUntil()
+   - Use a Subject and takeUntil() operator to automatically unsubscribe when the component is destroyed
+
+4. takeUntilDestroyed()
+   - Angular 16+ built-in solution
+   - No Subject and no ngOnDestroy required
+   - Recommended approach
+
+For template bindings, I prefer Async Pipe because Angular automatically handles subscription and unsubscription.
+
+
+Preference Order:
+
+Async Pipe
+    ↓
+takeUntilDestroyed() (Angular 16+)
+    ↓
+takeUntil()
+    ↓
+SubSink
+    ↓
+Subscription Array
+
 
 
 Subject:
@@ -825,23 +2352,296 @@ implements ErrorHandler{
  }
 }
 
+TYPES OF COMPONENTS IN ANGULAR
 
-Standalone Component
-No NgModule required.
+Angular does not officially classify components into strict types, but in real-world projects we commonly categorize them as follows:
+
+==================================================
+
+1. ROOT COMPONENT (APP COMPONENT)
+
+This is the first component loaded when the application starts.
+
+Example:
+
+app.component.ts
 
 @Component({
- standalone:true
+  selector: 'app-root',
+  templateUrl: './app.component.html'
 })
-export class UserComponent{}
+export class AppComponent {
+}
 
+app.component.html
 
-State Management in Angular
+<h1>Welcome to Angular</h1>
+<app-header></app-header>
 
-Popular solutions:
+Role:
+- Parent of all components
+- Entry point of Angular application
 
-BehaviorSubject
-NgRx
-Signals (Angular 16+)
+==================================================
+
+2. PRESENTATIONAL (DUMB) COMPONENT
+
+Used only for displaying data.
+Does not contain business logic.
+
+Example:
+
+@Component({
+  selector: 'app-user-list',
+  template: `
+    <div *ngFor="let user of users">
+      {{user.name}}
+    </div>
+  `
+})
+export class UserListComponent {
+
+  @Input()
+  users: any[] = [];
+}
+
+Responsibilities:
+- UI Rendering
+- Input data display
+- Emit events to parent
+
+Advantages:
+- Reusable
+- Easy to test
+
+==================================================
+
+3. CONTAINER (SMART) COMPONENT
+
+Responsible for fetching data and handling business logic.
+
+Example:
+
+@Component({
+  selector: 'app-user-container',
+  template: `
+    <app-user-list
+      [users]="users">
+    </app-user-list>
+  `
+})
+export class UserContainerComponent {
+
+  users: any[] = [];
+
+  ngOnInit() {
+    this.userService.getUsers()
+      .subscribe(data => {
+        this.users = data;
+      });
+  }
+}
+
+Responsibilities:
+- API Calls
+- Business Logic
+- State Management
+
+==================================================
+
+4. SHARED COMPONENT
+
+Reusable across multiple modules.
+
+Examples:
+- Header Component
+- Footer Component
+- Loader Component
+- Button Component
+
+Example:
+
+<app-loader></app-loader>
+
+<app-header></app-header>
+
+<app-footer></app-footer>
+
+Purpose:
+- Reusability
+- Avoid code duplication
+
+==================================================
+
+5. FEATURE COMPONENT
+
+Belongs to a specific feature/module.
+
+Examples:
+
+User Module
+ ├── UserListComponent
+ ├── UserAddComponent
+ └── UserEditComponent
+
+Product Module
+ ├── ProductListComponent
+ ├── ProductDetailsComponent
+ └── ProductEditComponent
+
+Purpose:
+- Implement business-specific functionality
+
+==================================================
+
+6. LAYOUT COMPONENT
+
+Used to define page structure.
+
+Example:
+
+@Component({
+ selector: 'app-layout',
+ template: `
+  <app-header></app-header>
+
+  <router-outlet></router-outlet>
+
+  <app-footer></app-footer>
+ `
+})
+export class LayoutComponent {}
+
+Purpose:
+- Common page layout
+- Navigation structure
+
+==================================================
+
+7. DYNAMIC COMPONENT
+
+Created dynamically at runtime.
+
+Example:
+
+constructor(
+  private viewContainerRef: ViewContainerRef
+) {}
+
+loadComponent() {
+
+  this.viewContainerRef.createComponent(
+    UserComponent
+  );
+
+}
+
+Use Cases:
+- Popups
+- Dialogs
+- Dynamic Forms
+
+==================================================
+
+8. STANDALONE COMPONENT (Angular 14+)
+
+Does not require NgModule.
+
+Example:
+
+@Component({
+  selector: 'app-user',
+  standalone: true,
+  imports: [CommonModule],
+  template: `<h2>User Component</h2>`
+})
+export class UserComponent {
+}
+
+Bootstrap:
+
+bootstrapApplication(AppComponent);
+
+Advantages:
+- Less boilerplate
+- Better tree shaking
+- Modern Angular approach
+
+==================================================
+
+9. ROUTED COMPONENT
+
+Loaded via Angular Router.
+
+Routes:
+
+const routes = [
+ {
+   path: 'users',
+   component: UserComponent
+ }
+];
+
+UserComponent becomes a routed component.
+
+Access URL:
+
+http://localhost:4200/users
+
+==================================================
+
+INTERVIEW ANSWER
+
+Q. What are the types of components in Angular?
+
+Ans:
+
+The commonly used component types in Angular are:
+
+1. Root Component
+   - Entry component of application
+
+2. Presentational (Dumb) Component
+   - Display data only
+
+3. Container (Smart) Component
+   - Handles business logic and API calls
+
+4. Shared Component
+   - Reusable across modules
+
+5. Feature Component
+   - Specific to a business feature
+
+6. Layout Component
+   - Defines page structure
+
+7. Dynamic Component
+   - Created at runtime
+
+8. Standalone Component
+   - Works without NgModule
+
+9. Routed Component
+   - Loaded through Angular Router
+
+REAL PROJECT EXAMPLE
+
+AppComponent (Root)
+      |
+DashboardComponent (Layout)
+      |
+-----------------------------
+|            |              |
+Header      User           Product
+Component   Component      Component
+(Shared)   (Feature)      (Feature)
+      |
+UserContainerComponent (Smart)
+      |
+UserListComponent (Dumb)
+
+This Smart + Dumb component architecture is one of the most commonly used patterns in Angular enterprise applications.
 
 
 Q1. How did you secure Angular application?
@@ -853,6 +2653,8 @@ Route Guards
 Interceptors
 HTTPS
 Role-based access control
+
+
 Q2. How did you improve Angular performance?
 
 Answer:
@@ -880,3 +2682,5 @@ Signals
 Standalone Components
 Change Detection
 Performance Optimization
+
+

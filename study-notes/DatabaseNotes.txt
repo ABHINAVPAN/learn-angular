@@ -1,0 +1,1055 @@
+DatabaseNotes:
+
+3. Difference between DBMS and RDBMS
+DBMS	                                     RDBMSStores
+data in files	                        Stores data in tables
+No relationships	                    Supports relationships
+Less secure	                            More secure
+Example: File System	                Example: MySQL
+
+
+Difference between DELETE, TRUNCATE, and DROP
+DELETE	                    TRUNCATE	                   DROP
+Removes selected rows	Removes all rows	       Removes entire table
+Can use WHERE clause	No WHERE clause	           Table deleted
+Can rollback	        Depends on DB	                   Cannot rollback
+
+
+Database Joins:
+
+Inner Join : returns matching records from both tables.
+
+select * from employee e
+INNER JOIN department d 
+where d.department_id = e.department_id;
+
+LEFT JOIN: returns all records from left and matching from right.
+
+select * from from employee e
+LEFT JOIN department data
+where d.department_id = e.department_id;
+
+RIGHT JOIN: returns all records from right and matching from left.
+
+select * from from employee e
+RIGHT JOIN department data
+where d.department_id = e.department_id;
+
+FULL JOIN :  returns all records from both tables.
+
+selct * from employee e 
+FULL JOIN department data
+where d.department_id = e.department_id;
+
+• CROSS JOIN: Produces a Cartesian product, combining every single row 
+of the first table with every single row of the second table. 
+If Table A has 10 rows and Table B has 10 rows, a CROSS JOIN yields 100 rows.
+• SELF JOIN: Joins a table to itself. This is ideal for querying
+ hierarchical structures stored in a single table, such as an Employees
+ table where a column points to a manager_id inside the same table.
+
+
+What is an Index?
+
+Index improves query performance by reducing table scans.
+
+create index idx_emp_id
+on employee(emp_id);
+
+
+What is Normalization?
+
+Process of reducing data redundancy.
+
+Benefits:
+
+Avoid duplicate data
+Improve consistency
+Better maintenance
+
+
+SQL NORMALIZATION
+
+Definition:
+Normalization is the process of organizing data in a database to reduce redundancy (duplicate data) and improve data integrity.
+
+Advantages:
+1. Eliminates duplicate data.
+2. Improves data consistency.
+3. Reduces storage usage.
+4. Avoids Insert, Update, and Delete anomalies.
+5. Makes database maintenance easier.
+
+----------------------------------------------------
+1NF (First Normal Form)
+----------------------------------------------------
+
+Rules:
+1. Each column should contain atomic (single) values.
+2. No repeating groups or multiple values in a single column.
+
+Not in 1NF:
+
+StudentId | StudentName | Subjects
+------------------------------------
+1         | Abhinav     | Java,SQL,Angular
+
+After converting to 1NF:
+
+StudentId | StudentName | Subject
+----------------------------------
+1         | Abhinav     | Java
+1         | Abhinav     | SQL
+1         | Abhinav     | Angular
+
+----------------------------------------------------
+2NF (Second Normal Form)
+----------------------------------------------------
+
+Rules:
+1. Must be in 1NF.
+2. Remove Partial Dependency.
+3. Non-key attributes must depend on the complete primary key.
+
+Example:
+
+Student_Course
+
+StudentId | CourseId | StudentName | CourseName
+------------------------------------------------
+1         | C101     | Abhinav     | Java
+2         | C102     | Rohit       | SQL
+
+Composite Key = (StudentId, CourseId)
+
+Issues:
+- StudentName depends only on StudentId.
+- CourseName depends only on CourseId.
+
+Convert to:
+
+Student
+--------
+StudentId | StudentName
+1         | Abhinav
+2         | Rohit
+
+Course
+-------
+CourseId | CourseName
+C101     | Java
+C102     | SQL
+
+Enrollment
+-----------
+StudentId | CourseId
+1         | C101
+2         | C102
+
+----------------------------------------------------
+3NF (Third Normal Form)
+----------------------------------------------------
+
+Rules:
+1. Must be in 2NF.
+2. Remove Transitive Dependency.
+3. Non-key attributes should depend only on the primary key.
+
+Example:
+
+Employee
+
+EmpId | EmpName | DeptId | DeptName
+------------------------------------
+101   | John    | D1     | HR
+102   | Smith   | D2     | IT
+
+Issue:
+EmpId -> DeptId
+DeptId -> DeptName
+
+DeptName indirectly depends on EmpId.
+
+Convert to:
+
+Employee
+---------
+EmpId | EmpName | DeptId
+101   | John    | D1
+
+Department
+-----------
+DeptId | DeptName
+D1     | HR
+D2     | IT
+
+----------------------------------------------------
+BCNF (Boyce-Codd Normal Form)
+----------------------------------------------------
+
+Rule:
+Every determinant must be a candidate key.
+
+Example:
+
+Teacher | Subject | Room
+-------------------------
+T1      | Java    | R1
+T2      | SQL     | R2
+
+Dependencies:
+Teacher -> Subject
+Subject -> Room
+
+Split into:
+
+Teacher_Subject
+---------------
+Teacher | Subject
+T1      | Java
+
+Subject_Room
+------------
+Subject | Room
+Java    | R1
+
+----------------------------------------------------
+4NF (Fourth Normal Form)
+----------------------------------------------------
+
+Rule:
+Remove Multi-Valued Dependencies.
+
+Example:
+
+Student | Skill | Hobby
+-------------------------
+A       | Java  | Cricket
+A       | SQL   | Cricket
+A       | Java  | Music
+A       | SQL   | Music
+
+Convert to:
+
+Student_Skill
+-------------
+A | Java
+A | SQL
+
+Student_Hobby
+-------------
+A | Cricket
+A | Music
+
+----------------------------------------------------
+5NF (Fifth Normal Form)
+----------------------------------------------------
+
+Rule:
+Remove Join Dependencies.
+
+Used in complex databases where data is reconstructed through multiple joins.
+
+Rarely used in real-world applications.
+
+----------------------------------------
+
+
+
+
+Difference between WHERE and HAVING
+
+WHERE                                                 HAVING 
+Filters rows                                      Filters groups
+Used before GROUP BY                            Used after GROUP BY
+
+
+Find Second Highest Salary
+
+SELECT *
+FROM
+(
+   SELECT salary,
+          DENSE_RANK() OVER(ORDER BY salary DESC) rnk
+   FROM Employee
+) x
+WHERE rnk = 2;
+
+
+Find Duplicate Records
+
+SELECT email, COUNT(*)
+FROM Employee
+GROUP BY email
+HAVING COUNT(*) > 1;
+
+
+Find Employees with Highest Salary in Each Department
+
+SELECT *
+FROM
+(
+SELECT e.*,
+DENSE_RANK() OVER(
+PARTITION BY dept_id
+ORDER BY salary DESC
+) rnk
+FROM Employee e
+) x
+WHERE rnk = 1;
+
+
+What is a Transaction?(exampple to be added)
+
+A sequence of operations performed as a single unit.
+
+Example:
+
+Debit account
+Credit account
+
+Both should succeed or fail together.
+
+
+What are ACID Properties?
+A - Atomicity
+
+All operations succeed or none.
+
+C - Consistency
+
+Database remains valid.
+
+I - Isolation
+
+Transactions don't interfere.
+
+D - Durability
+
+Committed data survives failures.
+
+What is Commit and Rollback?
+SQL
+COMMIT;
+Permanently saves data.
+
+SQL
+ROLLBACK;
+Undoes uncommitted changes.
+
+
+Locks and Concurrency
+23. What is Locking?
+
+Mechanism to prevent simultaneous conflicting operations.
+
+Types:
+
+Shared Lock
+Exclusive Lock
+24. What is Deadlock?
+
+Two transactions waiting for each other indefinitely.
+
+Example:
+
+Transaction 1 locks Table A and waits for Table B.
+
+Transaction 2 locks Table B and waits for Table A.
+
+Result → Deadlock.
+
+25. What are Isolation Levels?
+Read Uncommitted
+Read Committed
+Repeatable Read
+Serializable
+
+Interview favorite question.
+
+
+CTE (Common Table Expression)
+SQL
+WITH EmpCTE AS
+(
+SELECT *
+FROM Employee
+)
+SELECT *
+FROM EmpCTE;
+``
+28. Difference between DELETE and CASCADE DELETE
+
+DELETE:
+
+SQL
+DELETE FROM Employee
+WHERE id=1;
+
+CASCADE DELETE:
+
+Deletes child records automatically when parent is deleted.
+
+29. What is a Stored Procedure?
+
+A precompiled collection of SQL statements.
+
+SQL
+CREATE PROCEDURE GetEmployees()
+AS
+BEGIN
+SELECT * FROM Employee;
+END
+30. What is a View?
+
+Virtual table created from SQL query.
+
+SQL
+CREATE VIEW EmployeeView
+AS
+SELECT id,name
+FROM Employee;
+
+
+SQL Functions
+
+SQL functions are predefined methods used to perform calculations, manipulate data, and return values.
+
+
+1. Single Row Functions
+
+Operate on one row at a time and return one result per row.
+
+A. String Functions
+Function	                     Description	                           Example 
+UPPER()	                     Converts to uppercase	                SELECT UPPER('java');
+LOWER()	                     Converts to lowercase	                SELECT LOWER('JAVA');
+LENGTH()	                 Returns string length	                SELECT LENGTH('HELLO');
+SUBSTRING()	                 Extracts part of string	            SELECT SUBSTRING('HELLO',1,3);
+CONCAT()	                  Combines strings	                    SELECT CONCAT('Java',' Developer');
+TRIM()	                       Removes spaces	                        SELECT TRIM(' hello ');
+REPLACE()	                   Replaces text	                    SELECT REPLACE('JAVA','A','X');
+
+Example
+SQL:
+
+SELECT
+UPPER(name),
+LENGTH(name)
+FROM employee;
+
+
+
+B. Numeric Functions
+Function	                                  Description	                       Example
+ROUND()	                                      Rounds value	                 SELECT ROUND(10.567,2);
+CEIL() / CEILING()	                          Rounds upward	                 SELECT CEIL(10.1);
+FLOOR()	                                      Rounds downward	             SELECT FLOOR(10.9);
+MOD()	                                      Returns remainder	             SELECT MOD(10,3);
+ABS()	                                      Absolute value	             SELECT ABS(-10);
+
+Example
+SQL:
+
+SELECT salary,
+ROUND(salary,0)
+FROM employee;
+
+
+C. Date Functions
+Function	                                       Description
+CURRENT_DATE	                                   Current date
+CURRENT_TIMESTAMP	                               Current date and time
+YEAR()	                                           Extract year
+MONTH()	                                           Extract month
+DAY()	                                           Extract day
+DATEDIFF()	                                       Difference between dates
+DATEADD()	                                       Add days/months/years
+
+Example
+SQL:
+
+SELECT
+CURRENT_DATE,
+YEAR(CURRENT_DATE);
+SQL
+SELECT DATEDIFF('2026-12-31','2026-10-19');
+
+
+2. Aggregate Functions
+
+COUNT()
+SQL
+SELECT COUNT(*) FROM employee;
+
+SUM()
+SQL
+SELECT SUM(salary) FROM employee;
+
+AVG()
+SQL
+SELECT AVG(salary) FROM employee;
+
+MAX()
+SQL
+SELECT MAX(salary) FROM employee;
+
+MIN()
+SQL
+SELECT MIN(salary) FROM employee;
+
+
+3. GROUP BY with Aggregate Functions
+
+SELECT department_id,
+       AVG(salary)
+FROM employee
+GROUP BY department_id;
+
+4. HAVING Clause
+
+SELECT department_id,
+       AVG(salary)
+FROM employee
+GROUP BY department_id
+HAVING AVG(salary) > 50000;
+
+5. NULL Functions
+
+SELECT COALESCE(NULL, NULL, 'Java');
+
+IFNULL() / ISNULL() / NVL()
+
+SELECT IFNULL(commission,0)
+FROM employee;
+
+
+Windows Functions
+
+Window Functions perform calculations across a set of rows related
+to the current row without collapsing the result set (unlike GROUP BY).
+
+1. ROW_NUMBER()
+Assigns a unique number to each row.
+
+SELECT name,
+       salary,
+       ROW_NUMBER() OVER (ORDER BY salary DESC) AS row_num
+FROM employee;
+
+2. RANK()
+Gives same rank for ties and skips the next rank.
+
+SELECT name,
+       salary,
+       RANK() OVER (ORDER BY salary DESC) AS rank_num
+FROM employee;
+
+3. DENSE_RANK()
+Gives same rank for ties but does not skip ranks.
+
+SELECT name,
+       salary,
+       DENSE_RANK() OVER (ORDER BY salary DESC) AS dense_rank
+FROM employee;
+
+4. NTILE()
+Divides rows into groups.
+
+SELECT name,
+       salary,
+       NTILE(2) OVER (ORDER BY salary DESC) AS bucket
+FROM employee;
+
+Output divides data into 2 equal groups
+
+
+5. LAG()
+Accesses previous row value.
+
+SELECT name,
+       salary,
+       LAG(salary) OVER (ORDER BY salary) AS previous_salary
+FROM employee;
+
+6. LEAD()
+Accesses next row value.
+
+SELECT name,
+       salary,
+       LEAD(salary) OVER (ORDER BY salary) AS next_salary
+FROM employee;
+
+
+SQL Views
+
+A View is a virtual table created from one or more tables using a SQL query.
+
+It does not store data physically (except Materialized Views).
+It stores the SQL query.
+Whenever you query the view, data is fetched from the underlying tables.
+
+CREATE VIEW view_name AS
+SELECT column1, column2
+FROM table_name
+WHERE condition;
+
+
+Updating a View
+
+SQL
+CREATE OR REPLACE VIEW IT_EMPLOYEES AS
+SELECT empid,
+name,
+salary,
+dept
+FROM employee
+WHERE dept='IT';
+
+
+Drop View
+SQL
+DROP VIEW IT_EMPLOYEES;
+
+Advantages of Views
+
+1. Security
+Hide sensitive columns.
+
+
+2. Simplifies Complex Queries
+
+Instead of writing joins repeatedly:
+
+SQL
+CREATE VIEW EMPLOYEE_DETAILS AS
+SELECT e.empid,
+e.name,
+d.department_name
+FROM employee e
+JOIN department d
+ON e.dept_id = d.dept_id;
+ 
+Now simply:
+
+SQL
+SELECT * FROM EMPLOYEE_DETAILS;
+
+
+3. Data Abstraction
+
+Users don't need to know table structure.
+
+SQL
+SELECT * FROM EMPLOYEE_DETAILS;
+
+The underlying joins remain hidden.
+
+
+Materialized View
+
+A Materialized View stores the query result physically.
+
+SQL
+CREATE MATERIALIZED VIEW emp_mv AS
+SELECT *
+FROM employee;
+
+Difference
+View                                            Materialized View
+Stores query only	                             Stores data
+Always latest	                                Needs refresh
+Slow for complex queries	                    Faster reads
+
+
+
+SQL Query Optimization Techniques
+
+1. Use Indexes Properly
+
+2. Avoid SELECT *
+
+3. Use WHERE Clause Early
+
+4. Use EXISTS Instead of IN (For Large Data)
+
+5. Avoid Functions on Indexed Columns
+
+6. Use Proper Joins
+
+7. Use LIMIT When Needed
+
+8. Avoid Unnecessary DISTINCT
+Use only when duplicates actually exist.
+
+DISTINCT performs sorting/hashing operation.
+
+✅ Can be expensive on large tables.
+
+9. Prefer JOIN Instead of Subqueries
+
+10. Use Appropriate Data Types
+
+11. Use Composite Indexes
+
+12. Avoid Leading Wildcards
+
+13. Use UNION ALL Instead of UNION
+
+SELECT name FROM employee
+UNION ALL
+SELECT name FROM manager;
+✅ Faster because no duplicate check.
+
+14. Analyze Execution Plan
+
+EXPLAIN
+SELECT *
+FROM employee
+WHERE emp_id = 101;
+
+Full Table Scan
+Index Scan
+Cost
+Rows processed
+
+15. Batch Inserts Instead of Single Inserts
+INSERT INTO employee
+VALUES
+(1,'John'),
+(2,'Smith'),
+(3,'Alex');
+
+✅ Fewer database calls.
+
+SQL Pagination
+
+Pagination is used to fetch data in smaller chunks (pages) instead of retrieving all records at once.
+
+First Page
+SQL
+SELECT *
+FROM employee
+LIMIT 10;
+
+Second Page
+SQL
+SELECT *
+FROM employee
+LIMIT 10 OFFSET 10;//offset should not use for large data > or < should be used
+
+Spring Boot Pagination Example
+SQL
+
+SELECT *
+FROM employee
+ORDER BY empid
+LIMIT 10 OFFSET 20;
+
+
+Repository
+Java:
+
+Page<Employee> findAll(Pageable pageable);
+
+Service
+Java:
+
+Pageable pageable = PageRequest.of(2, 10);
+ 
+Page<Employee> employees =
+employeeRepository.findAll(pageable);
+
+Explanation:
+
+Plain Text
+Page 0 -> Records 1-10
+Page 1 -> Records 11-20
+Page 2 -> Records 21-30
+
+
+=========================
+SQL TRIGGERS - INTERVIEW NOTES
+=========================
+
+1. WHAT IS A TRIGGER?
+--------------------
+A Trigger is a special stored procedure that automatically executes when an event
+(INSERT, UPDATE, DELETE) occurs on a table or view.
+
+Uses:
+- Auditing changes
+- Data validation
+- Maintaining history tables
+- Enforcing business rules
+- Updating related tables automatically
+
+--------------------------------------------------
+
+2. TYPES OF TRIGGERS
+--------------------
+
+A. BEFORE TRIGGER
+   Executes before INSERT, UPDATE, or DELETE.
+
+B. AFTER TRIGGER
+   Executes after INSERT, UPDATE, or DELETE.
+
+--------------------------------------------------
+
+3. BEFORE INSERT TRIGGER EXAMPLE
+--------------------------------
+
+CREATE TRIGGER trg_check_salary
+BEFORE INSERT ON employee
+FOR EACH ROW
+BEGIN
+    IF NEW.salary < 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Salary cannot be negative';
+    END IF;
+END;
+
+Usage:
+
+INSERT INTO employee(id, name, salary)
+VALUES (1, 'John', -5000);
+
+Output:
+Error: Salary cannot be negative
+
+--------------------------------------------------
+
+4. AFTER INSERT TRIGGER EXAMPLE
+-------------------------------
+
+Employee Table:
+
+CREATE TABLE employee (
+    id INT,
+    name VARCHAR(50),
+    salary DECIMAL(10,2)
+);
+
+Audit Table:
+
+CREATE TABLE employee_audit (
+    emp_id INT,
+    action_type VARCHAR(20),
+    action_time TIMESTAMP
+);
+
+Trigger:
+
+CREATE TRIGGER trg_after_insert_emp
+AFTER INSERT ON employee
+FOR EACH ROW
+BEGIN
+    INSERT INTO employee_audit
+    VALUES (NEW.id, 'INSERT', NOW());
+END;
+
+Insert:
+
+INSERT INTO employee
+VALUES (1, 'John', 50000);
+
+Audit Table Entry:
+
+1 | INSERT | 2026-10-19 12:00:00
+
+--------------------------------------------------
+
+5. INSERT TRIGGER
+-----------------
+
+CREATE TRIGGER trg_insert
+AFTER INSERT ON employee
+FOR EACH ROW
+BEGIN
+    INSERT INTO log_table(msg)
+    VALUES(CONCAT('Employee Added : ', NEW.name));
+END;
+
+NEW Keyword:
+------------
+NEW.id
+NEW.name
+NEW.salary
+
+Represents the newly inserted row.
+
+--------------------------------------------------
+
+6. UPDATE TRIGGER
+-----------------
+
+CREATE TRIGGER trg_update_salary
+AFTER UPDATE ON employee
+FOR EACH ROW
+BEGIN
+    INSERT INTO employee_audit
+    VALUES(
+        NEW.id,
+        CONCAT(
+            'Salary changed from ',
+            OLD.salary,
+            ' to ',
+            NEW.salary
+        ),
+        NOW()
+    );
+END;
+
+Update:
+
+UPDATE employee
+SET salary = 60000
+WHERE id = 1;
+
+OLD.salary = 50000
+NEW.salary = 60000
+
+OLD -> Value before update
+NEW -> Value after update
+
+--------------------------------------------------
+
+7. DELETE TRIGGER
+-----------------
+
+CREATE TRIGGER trg_delete_emp
+AFTER DELETE ON employee
+FOR EACH ROW
+BEGIN
+    INSERT INTO employee_audit
+    VALUES(OLD.id, 'DELETE', NOW());
+END;
+
+Delete:
+
+DELETE FROM employee
+WHERE id = 1;
+
+Audit Table Entry:
+
+1 | DELETE | 2026-10-19 12:30:00
+
+--------------------------------------------------
+
+8. OLD VS NEW
+-------------
+
+OLD:
+- Available in UPDATE and DELETE triggers.
+- Represents data before modification.
+
+NEW:
+- Available in INSERT and UPDATE triggers.
+- Represents data after modification.
+
+Example:
+
+UPDATE employee
+SET salary = 70000
+WHERE id = 1;
+
+OLD.salary = 60000
+NEW.salary = 70000
+
+--------------------------------------------------
+
+9. TRIGGER VS STORED PROCEDURE
+------------------------------
+
+Trigger:
+- Executes automatically.
+- Event-driven.
+- Cannot be called directly.
+- Associated with a table/view.
+
+Stored Procedure:
+- Executed manually.
+- User/Application driven.
+- Can be called using CALL statement.
+- Independent database object.
+
+--------------------------------------------------
+
+10. CASCADING TRIGGERS
+----------------------
+
+One trigger causes another trigger to execute.
+
+Example:
+Trigger on Table A inserts data into Table B.
+Table B has another trigger.
+Both get executed automatically.
+
+--------------------------------------------------
+
+11. DISADVANTAGES OF TRIGGERS
+-----------------------------
+
+- Hidden business logic.
+- Can impact performance.
+- Hard to debug.
+- May lead to recursive/cascading execution.
+- Increased maintenance complexity.
+
+--------------------------------------------------
+
+12. REAL-TIME PROJECT EXAMPLE
+-----------------------------
+
+Orders Table:
+
+orders
+-------
+order_id
+customer_id
+amount
+status
+
+History Table:
+
+order_history
+--------------
+order_id
+status
+changed_time
+
+Trigger:
+
+CREATE TRIGGER trg_order_status
+AFTER UPDATE ON orders
+FOR EACH ROW
+BEGIN
+    IF OLD.status <> NEW.status THEN
+        INSERT INTO order_history
+        VALUES(
+            NEW.order_id,
+            NEW.status,
+            NOW()
+        );
+    END IF;
+END;
+
+Update:
+
+UPDATE orders
+SET status = 'DELIVERED'
+WHERE order_id = 100;
+
+Automatically Inserts:
+
+100 | DELIVERED | 2026-10-19 14:00:00
+
+--------------------------------------------------
+
+INTERVIEW ONE-LINER
+-------------------
+
+A Trigger is a database object that automatically executes when an
+INSERT, UPDATE, or DELETE event occurs on a table or view, mainly used
+for auditing, validation, and maintaining data integrity.

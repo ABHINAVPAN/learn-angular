@@ -1,5 +1,8 @@
+pincode : 411057
+
 Interview ralated prep:
 points to remember for completing: String Pool, Thread Pool and Patterns, memory leak and volatile keyword
+,Optional
 Q23. Explain a production issue you resolved.
 Structure:
 Problem
@@ -11,7 +14,7 @@ Need to see examples on synchronization, deadlock
 some common java problems
 
 JVM, Heap and stack
-Functional INterfaces
+Functional Interfaces
 
 
 
@@ -41,7 +44,7 @@ for(Integer i : list) {
  //ConcurrentModificationException
  
  
-internal working of HashMap():
+internal working of LinkedList():
 first
   |
   V
@@ -423,31 +426,45 @@ class Employee implements Comparable<Employee> {
 
     int id;
     String name;
+    double salary;
 
-    Employee(int id, String name) {
+    Employee(int id, String name, double salary) {
         this.id = id;
         this.name = name;
+        this.salary = salary;
     }
 
     @Override
     public int compareTo(Employee e) {
-        return this.id - e.id;
+        return Double.compare(this.salary, e.salary);
+    }
+
+    @Override
+    public String toString() {
+        return id + " " + name + " " + salary;
     }
 }
 
+import java.util.*;
 
-List<Employee> list = new ArrayList<>();
+public class ComparableExample {
 
-list.add(new Employee(103,"John"));
-list.add(new Employee(101,"David"));
-list.add(new Employee(102,"Sam"));
+    public static void main(String[] args) {
 
-Collections.sort(list);
+        List<Employee> employees = Arrays.asList(
+                new Employee(1, "John", 50000),
+                new Employee(2, "David", 70000),
+                new Employee(3, "Alex", 60000)
+        );
+
+        Collections.sort(employees);
+
+        System.out.println(employees);
+    }
+}
 
 Output:
-101 David
-102 Sam
-103 John
+[1 John 50000.0, 3 Alex 60000.0, 2 David 70000.0]
 
 How compareTo() Works
 
@@ -524,7 +541,8 @@ Collections.sort(
 
 What is a Lambda Expression in Java?
 
-A Lambda Expression is a feature introduced in Java 8 that allows you to write anonymous functions (functions without a name) in a concise way.
+A Lambda Expression is a feature introduced in Java 8 that allows you to write
+anonymous functions (functions without a name) in a concise way.
 
 It is mainly used to implement Functional Interfaces and enables functional programming in Java.
 
@@ -1375,6 +1393,8 @@ joining()
 groupingBy()
 partitioningBy()
 counting()
+summingInt()
+averageInt()
 
 --------------------------------------------------
 
@@ -2156,7 +2176,7 @@ Example:
 
 Thread-1 holds Lock-A and waits for Lock-B
 
-Thread-2 holds
+Thread-2 holds lock-B and waits for lock-A
 
 
 =========================================
@@ -3678,7 +3698,8 @@ FINALIZE() METHOD IN JAVA
 
 1. WHAT IS finalize()?
 
-finalize() is a method of the Object class that was originally designed to perform cleanup operations before an object is garbage collected.
+finalize() is a method of the Object class that was originally designed to perform
+cleanup operations before an object is garbage collected.
 
 Method:
 

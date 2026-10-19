@@ -1,0 +1,6 @@
+java Streams:
+
+Collectors in Java
+
+Collectors is a utility class (java.util.stream.Collectors) used with the Stream API to collect,
+transform, and summarize stream elements into different forms such as Lists, Sets, Maps, Strings, or statistical results.

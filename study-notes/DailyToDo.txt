@@ -1,0 +1,9 @@
+Daily To Do:
+
+1. Need to see comparable and comparator(with lambda and reduce terminal operator).
+2. Need to see HashTable.
+3. String methods.
+4. need to see java8 new features
+5. need to see set Interface
+6. JVM, Heap and Stack
+7. ReentrantLock methods need to see.

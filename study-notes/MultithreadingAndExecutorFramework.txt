@@ -1,0 +1,937 @@
+=========================
+THREAD METHODS IN JAVA
+=========================
+
+1. start()
+-------------------------
+Purpose:
+- Starts a new thread.
+- JVM internally calls run() method.
+
+Syntax:
+thread.start();
+
+Important:
+- Creates a separate call stack.
+- Can be called only once.
+
+Example:
+Thread t = new MyThread();
+t.start();
+
+==================================================
+
+2. run()
+-------------------------
+Purpose:
+- Contains actual task performed by thread.
+
+Syntax:
+public void run() {
+    // logic
+}
+
+Important:
+- Calling run() directly does NOT create a new thread.
+- Executes like a normal method call.
+
+Example:
+t.run(); // Executes in main thread
+
+==================================================
+
+3. sleep()
+-------------------------
+Purpose:
+- Pauses currently executing thread for specified time.
+
+Syntax:
+Thread.sleep(1000);
+
+Important:
+- Static method.
+- Does not release lock.
+- Throws InterruptedException.
+
+Example:
+Thread.sleep(2000);
+
+Use Case:
+- Delay execution.
+- Polling operations.
+
+==================================================
+
+4. join()
+-------------------------
+Purpose:
+- Makes one thread wait until another thread completes.
+
+Syntax:
+t.join();
+
+Example:
+t.start();
+t.join();
+
+System.out.println("Main Thread");
+
+Output:
+Child thread completes first,
+then main thread continues.
+
+Use Case:
+- Wait for background task completion.
+
+==================================================
+
+5. yield()
+-------------------------
+Purpose:
+- Suggests scheduler to give CPU to another thread.
+
+Syntax:
+Thread.yield();
+
+Important:
+- Static method.
+- Only a hint to scheduler.
+- No guarantee.
+
+Use Case:
+- Improve fairness among threads.
+
+==================================================
+
+6. currentThread()
+-------------------------
+Purpose:
+- Returns currently executing thread.
+
+Syntax:
+Thread.currentThread();
+
+Example:
+System.out.println(
+        Thread.currentThread().getName());
+
+Output:
+main
+
+Use Case:
+- Debugging and logging.
+
+==================================================
+
+7. getName()
+-------------------------
+Purpose:
+- Returns thread name.
+
+Syntax:
+thread.getName();
+
+Example:
+System.out.println(t.getName());
+
+Output:
+Thread-0
+
+==================================================
+
+8. setName()
+-------------------------
+Purpose:
+- Sets custom thread name.
+
+Syntax:
+thread.setName("Worker-1");
+
+Example:
+t.setName("Producer");
+
+==================================================
+
+9. getPriority()
+-------------------------
+Purpose:
+- Returns priority of thread.
+
+Syntax:
+thread.getPriority();
+
+Default Priority:
+5
+
+==================================================
+
+10. setPriority()
+-------------------------
+Purpose:
+- Sets thread priority.
+
+Syntax:
+thread.setPriority(10);
+
+Priority Range:
+
+Thread.MIN_PRIORITY = 1
+Thread.NORM_PRIORITY = 5
+Thread.MAX_PRIORITY = 10
+
+Important:
+- Priority is only a hint.
+- Scheduler may ignore it.
+
+==================================================
+
+11. isAlive()
+-------------------------
+Purpose:
+- Checks whether thread is still running.
+
+Syntax:
+thread.isAlive();
+
+Returns:
+true  -> Thread running
+false -> Thread completed
+
+==================================================
+
+12. interrupt()
+-------------------------
+Purpose:
+- Interrupts sleeping/waiting thread.
+
+Syntax:
+thread.interrupt();
+
+Example:
+t.start();
+t.interrupt();
+
+Use Case:
+- Graceful thread termination.
+
+==================================================
+
+13. isInterrupted()
+-------------------------
+Purpose:
+- Checks interrupt status.
+
+Syntax:
+thread.isInterrupted();
+
+Returns:
+true or false
+
+Important:
+- Does NOT clear interrupt flag.
+
+==================================================
+
+14. interrupted()
+-------------------------
+Purpose:
+- Checks interrupt status and clears it.
+
+Syntax:
+Thread.interrupted();
+
+Example:
+Thread.currentThread().interrupt();
+
+System.out.println(Thread.interrupted());
+System.out.println(Thread.interrupted());
+
+Output:
+true
+false
+
+==================================================
+
+15. getId()
+-------------------------
+Purpose:
+- Returns unique thread id.
+
+Syntax:
+thread.getId();
+
+Example:
+System.out.println(t.getId());
+
+==================================================
+
+16. isDaemon()
+-------------------------
+Purpose:
+- Checks whether thread is daemon thread.
+
+Syntax:
+thread.isDaemon();
+
+Returns:
+true or false
+
+==================================================
+
+17. setDaemon()
+-------------------------
+Purpose:
+- Converts thread into daemon thread.
+
+Syntax:
+thread.setDaemon(true);
+
+Important:
+- Must be called before start().
+
+Daemon Thread Examples:
+- Garbage Collector
+- Logger Thread
+- Monitoring Thread
+
+==================================================
+
+18. getState()
+-------------------------
+Purpose:
+- Returns current state of thread.
+
+Syntax:
+thread.getState();
+
+States:
+
+NEW
+RUNNABLE
+BLOCKED
+WAITING
+TIMED_WAITING
+TERMINATED
+
+==================================================
+
+THREAD LIFE CYCLE
+==================================================
+
+NEW
+ |
+start()
+ |
+RUNNABLE
+ |
+RUNNING
+ |
+----------------------------------
+|          |            |
+sleep()    wait()     lock issue
+|          |            |
+TIMED      WAITING    BLOCKED
+WAITING
+ |
+RUNNABLE
+ |
+TERMINATED
+
+==================================================
+
+DEPRECATED METHODS (DO NOT USE)
+==================================================
+
+1. stop()
+- Unsafe
+- Forcefully kills thread
+
+2. suspend()
+- Can cause deadlock
+
+3. resume()
+- Used with suspend()
+- Deprecated
+
+==================================================
+
+MOST ASKED INTERVIEW QUESTIONS
+==================================================
+
+1. Difference between start() and run()
+
+start()
+- Creates new thread
+- Executes concurrently
+- JVM invokes run()
+
+run()
+- Normal method call
+- No new thread
+- Executes in current thread
+
+--------------------------------------------------
+
+2. Difference between sleep() and wait()
+
+sleep()
+- Defined in Thread class
+- Does not release lock
+- Time based
+- Static method
+
+wait()
+- Defined in Object class
+- Releases lock
+- Notification based
+- Non-static method
+
+--------------------------------------------------
+
+3. Difference between isInterrupted() and interrupted()
+
+isInterrupted()
+- Instance method
+- Does not clear flag
+
+interrupted()
+- Static method
+- Clears interrupt flag
+
+==================================================
+
+QUICK REVISION
+==================================================
+
+start()          -> Start thread
+run()            -> Thread task
+sleep()          -> Pause thread
+join()           -> Wait for completion
+yield()          -> Give CPU chance
+currentThread()  -> Current thread
+setName()        -> Set thread name
+getName()        -> Get thread name
+setPriority()    -> Set priority
+getPriority()    -> Get priority
+isAlive()        -> Check running status
+interrupt()      -> Interrupt thread
+isInterrupted()  -> Check interrupt flag
+interrupted()    -> Check and clear flag
+setDaemon()      -> Make daemon thread
+isDaemon()       -> Check daemon thread
+getState()       -> Get thread state
+getId()          -> Get thread ID
+
+
+
+===========================
+THREAD POOLING IN JAVA
+===========================
+
+1. WHAT IS THREAD POOL?
+
+A Thread Pool is a collection of reusable worker threads managed by the Executor Framework.
+
+Instead of creating a new thread for every task, existing threads are reused.
+
+Benefits:
+- Better performance
+- Reduced thread creation overhead
+- Better memory utilization
+- Improved resource management
+- Suitable for concurrent applications
+
+
+===========================
+EXECUTOR FRAMEWORK HIERARCHY
+===========================
+
+Executor
+   |
+ExecutorService
+   |
+ScheduledExecutorService
+
+Implementations:
+- ThreadPoolExecutor
+- ScheduledThreadPoolExecutor
+- ForkJoinPool
+
+
+===========================
+TYPES OF THREAD POOLS
+===========================
+
+1. Fixed Thread Pool
+
+ExecutorService executor =
+        Executors.newFixedThreadPool(5);
+
+Characteristics:
+- Fixed number of threads
+- Extra tasks wait in queue
+- Suitable for web applications
+
+
+2. Cached Thread Pool
+
+ExecutorService executor =
+        Executors.newCachedThreadPool();
+
+Characteristics:
+- Creates threads as needed
+- Reuses idle threads
+- Can grow up to Integer.MAX_VALUE
+- Suitable for short-lived tasks
+
+
+3. Single Thread Executor
+
+ExecutorService executor =
+        Executors.newSingleThreadExecutor();
+
+Characteristics:
+- Only one worker thread
+- Executes tasks sequentially
+- Suitable for logging/file processing
+
+
+4. Scheduled Thread Pool
+
+ScheduledExecutorService executor =
+        Executors.newScheduledThreadPool(3);
+
+Characteristics:
+- Runs task after delay
+- Runs task periodically
+
+
+5. Work Stealing Pool (Java 8)
+
+ExecutorService executor =
+        Executors.newWorkStealingPool();
+
+Characteristics:
+- Uses ForkJoinPool
+- Best for parallel processing
+- Better CPU utilization
+
+
+===========================
+EXECUTOR METHODS
+===========================
+
+1. execute()
+
+executor.execute(() -> {
+    System.out.println("Task");
+});
+
+Return Type:
+void
+
+Features:
+- Executes Runnable task
+- No return value
+
+
+===========================
+EXECUTORSERVICE METHODS
+===========================
+
+1. submit()
+
+Future<String> future =
+        executor.submit(() -> "Hello");
+
+Features:
+- Returns Future object
+- Can execute Runnable and Callable
+
+
+2. shutdown()
+
+executor.shutdown();
+
+Features:
+- Stops accepting new tasks
+- Completes already submitted tasks
+
+
+3. shutdownNow()
+
+executor.shutdownNow();
+
+Features:
+- Attempts immediate shutdown
+- Interrupts running threads
+- Returns pending tasks
+
+
+4. isShutdown()
+
+executor.isShutdown();
+
+Return:
+true / false
+
+Checks whether shutdown() is called.
+
+
+5. isTerminated()
+
+executor.isTerminated();
+
+Return:
+true / false
+
+Checks whether all tasks are completed.
+
+
+6. awaitTermination()
+
+executor.awaitTermination(
+        10,
+        TimeUnit.SECONDS
+);
+
+Waits for thread pool termination.
+
+
+7. invokeAll()
+
+List<Future<Integer>> result =
+        executor.invokeAll(tasks);
+
+Features:
+- Executes multiple Callables
+- Returns list of Futures
+
+
+8. invokeAny()
+
+Integer result =
+        executor.invokeAny(tasks);
+
+Features:
+- Returns first successfully completed result
+
+
+===========================
+FUTURE METHODS
+===========================
+
+1. get()
+
+future.get();
+
+Features:
+- Waits for completion
+- Returns result
+
+
+2. get(timeout)
+
+future.get(5, TimeUnit.SECONDS);
+
+Features:
+- Waits for limited time
+
+
+3. cancel()
+
+future.cancel(true);
+
+Features:
+- Attempts to cancel task
+
+
+4. isDone()
+
+future.isDone();
+
+Checks task completion.
+
+
+5. isCancelled()
+
+future.isCancelled();
+
+Checks task cancellation.
+
+
+===========================
+CALLABLE VS RUNNABLE
+===========================
+
+Runnable
+---------
+- No return value
+- Cannot throw checked exception
+
+Example:
+
+Runnable task = () -> {
+    System.out.println("Hello");
+};
+
+
+Callable
+---------
+- Returns value
+- Can throw checked exception
+
+Example:
+
+Callable<Integer> task = () -> 100;
+
+
+===========================
+THREADPOOLEXECUTOR
+===========================
+
+ThreadPoolExecutor executor =
+    new ThreadPoolExecutor(
+        2,
+        5,
+        60,
+        TimeUnit.SECONDS,
+        new LinkedBlockingQueue<>(10)
+    );
+
+Parameters:
+
+1. corePoolSize
+   = Minimum threads always maintained
+
+2. maximumPoolSize
+   = Maximum threads allowed
+
+3. keepAliveTime
+   = Idle time before extra threads die
+
+4. TimeUnit
+   = Time unit
+
+5. workQueue
+   = Queue storing waiting tasks
+
+
+===========================
+THREADPOOLEXECUTOR WORKING
+===========================
+
+Example:
+
+ThreadPoolExecutor executor =
+    new ThreadPoolExecutor(
+        2,
+        4,
+        60,
+        TimeUnit.SECONDS,
+        new LinkedBlockingQueue<>(2)
+    );
+
+Task1 -> Thread1
+Task2 -> Thread2
+
+Core threads full
+
+Task3 -> Queue
+Task4 -> Queue
+
+Queue full
+
+Task5 -> Thread3
+Task6 -> Thread4
+
+Maximum threads reached
+
+Task7 -> Rejected
+
+
+===========================
+REJECTEDEXECUTIONHANDLER
+===========================
+
+1. AbortPolicy (Default)
+
+Throws:
+RejectedExecutionException
+
+
+2. CallerRunsPolicy
+
+Task executed by calling thread.
+
+
+3. DiscardPolicy
+
+Task silently discarded.
+
+
+4. DiscardOldestPolicy
+
+Removes oldest queued task and adds new task.
+
+
+===========================
+IMPORTANT THREAD METHODS
+===========================
+
+1. start()
+
+thread.start();
+
+Creates a new thread and calls run() internally.
+
+
+2. run()
+
+thread.run();
+
+Contains actual task logic.
+
+
+3. sleep()
+
+Thread.sleep(2000);
+
+Pauses current thread.
+
+
+4. join()
+
+thread.join();
+
+Waits for another thread to finish.
+
+
+5. yield()
+
+Thread.yield();
+
+Hints scheduler to give chance to other threads.
+
+
+6. interrupt()
+
+thread.interrupt();
+
+Interrupts thread execution.
+
+
+7. isAlive()
+
+thread.isAlive();
+
+Checks if thread is running.
+
+
+8. currentThread()
+
+Thread.currentThread();
+
+Returns current thread.
+
+
+9. getName()
+
+thread.getName();
+
+Returns thread name.
+
+
+10. setName()
+
+thread.setName("Worker");
+
+Changes thread name.
+
+
+11. getPriority()
+
+thread.getPriority();
+
+Returns priority.
+
+
+12. setPriority()
+
+thread.setPriority(Thread.MAX_PRIORITY);
+
+Sets priority.
+
+
+===========================
+THREAD LIFE CYCLE
+===========================
+
+NEW
+ |
+start()
+ |
+RUNNABLE
+ |
+Running
+ |
+Blocked/Waiting/Sleeping
+ |
+RUNNABLE
+ |
+TERMINATED
+
+
+===========================
+INTERVIEW QUESTIONS
+===========================
+
+1. Why use Thread Pool?
+- Reuse threads
+- Better performance
+- Reduced memory usage
+- Better resource management
+
+2. execute() vs submit()
+
+execute()
+- Returns void
+- Runnable only
+
+submit()
+- Returns Future
+- Runnable + Callable
+
+3. shutdown() vs shutdownNow()
+
+shutdown()
+- Graceful shutdown
+- Completes existing tasks
+
+shutdownNow()
+- Immediate shutdown
+- Interrupts tasks
+
+4. Callable vs Runnable
+
+Runnable
+- No return value
+
+Callable
+- Returns value
+- Throws checked exception
+
+5. What is Future?
+- Represents result of asynchronous computation
+
+6. What is ExecutorService?
+- Interface that manages thread pools and task execution
+
+7. What is ThreadPoolExecutor?
+- Core implementation of thread pooling in Java
+
+
+INTERVIEW ONE-LINER:
+
+"A Thread Pool is a collection of reusable worker threads managed by the Executor Framework,
+ which improves performance by avoiding repeated thread creation and provides efficient concurrent task execution."
