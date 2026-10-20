@@ -1,0 +1,2885 @@
+Docker and Kubernetes:
+
+==========================
+DAY 1 - DOCKER BASICS
+==========================
+
+1. WHAT IS DOCKER?
+------------------
+- Docker is an open-source containerization platform.
+- Used to package applications along with dependencies.
+- Ensures applications run consistently across environments.
+- Lightweight and faster than Virtual Machines.
+
+Formula:
+Application + Dependencies + Configuration = Container
+
+Benefits:
+- Consistent deployment
+- Easy scalability
+- Fast startup
+- Better resource utilization
+- CI/CD support
+
+Example:
+Spring Boot App + Java + Required Libraries
+=> Packaged into a Docker Container
+
+=================================================
+
+2. IMAGE VS CONTAINER
+----------------------
+
+Docker Image:
+- Read-only template
+- Blueprint for containers
+- Used to create containers
+
+Docker Container:
+- Running instance of an image
+- Executes the application
+- Has its own process
+
+Java Analogy:
+
+Image = Class
+
+class Car {
+}
+
+Container = Object
+
+Car c1 = new Car();
+Car c2 = new Car();
+
+Difference:
+
+Image
+- Blueprint
+- Static
+- Read-only
+
+Container
+- Running Application
+- Dynamic
+- Read/Write Layer
+
+Commands:
+
+Download Image:
+docker pull nginx
+
+List Images:
+docker images
+
+Create Container:
+docker run nginx
+
+Running Containers:
+docker ps
+
+All Containers:
+docker ps -a
+
+=================================================
+
+3. INSTALL DOCKER
+-----------------
+
+Windows:
+1. Download Docker Desktop
+2. Install Docker Desktop
+3. Enable WSL2
+4. Restart System
+
+Verify Installation:
+
+docker --version
+
+docker info
+
+Ubuntu Linux:
+
+sudo apt update
+
+sudo apt install docker.io -y
+
+sudo systemctl start docker
+
+sudo systemctl enable docker
+
+Check Version:
+
+docker --version
+
+Test Installation:
+
+docker run hello-world
+
+=================================================
+
+4. DOCKER ARCHITECTURE
+-----------------------
+
+Main Components:
+
+1. Docker Client
+   - Accepts user commands
+   - Communicates with Docker Daemon
+
+2. Docker Daemon (dockerd)
+   - Core Docker Engine
+   - Builds images
+   - Runs containers
+   - Manages networks and volumes
+
+3. Docker Registry
+   - Stores Docker Images
+   - Default Registry = Docker Hub
+
+4. Images
+   - Templates used to create containers
+
+5. Containers
+   - Running instances of images
+
+Architecture Flow:
+
+Docker Client
+      |
+      v
+Docker Daemon
+      |
+ --------------------
+ |        |         |
+ v        v         v
+Images Containers Networks
+
+=================================================
+
+DOCKER WORKFLOW
+---------------
+
+Step 1:
+docker pull nginx
+
+Step 2:
+docker run nginx
+
+Step 3:
+Docker Daemon creates container
+
+Step 4:
+Application starts running
+
+Flow:
+
+Docker Hub
+    |
+    v
+ Docker Image
+    |
+    v
+ Docker Container
+    |
+    v
+ Application Running
+
+=================================================
+
+IMPORTANT COMMANDS
+------------------
+
+docker --version
+
+docker info
+
+docker pull nginx
+
+docker images
+
+docker run nginx
+
+docker ps
+
+docker ps -a
+
+docker stop <container_id>
+
+docker rm <container_id>
+
+docker rmi <image_id>
+
+docker run hello-world
+
+=================================================
+
+INTERVIEW ONE-LINERS
+--------------------
+
+Docker:
+A containerization platform used to package and run applications with their dependencies.
+
+Image:
+A blueprint/template used to create containers.
+
+Container:
+A running instance of an image.
+
+Docker Hub:
+Default public registry for Docker images.
+
+Docker Daemon:
+Main service responsible for building and running containers.
+
+docker ps:
+Displays running containers.
+
+docker images:
+Displays available images.
+
+docker pull:
+Downloads image from registry.
+
+docker run:
+Creates and starts a container.
+
+=================================================
+
+REVISION
+--------
+
+✓ Docker Basics
+
+✓ Image vs Container
+
+✓ Docker Installation
+
+✓ Docker Architecture
+
+✓ Docker Workflow
+
+✓ Important Docker Commands
+
+✓ Interview Questions
+
+
+
+
+==========================
+DAY 2 - DOCKER COMMANDS
+==========================
+
+1. DOCKER COMMANDS OVERVIEW
+---------------------------
+
+Docker commands are used to:
+- Download images
+- Create containers
+- Start containers
+- Stop containers
+- Delete containers
+- Manage Docker resources
+
+General Syntax:
+
+docker <command>
+
+Example:
+
+docker images
+
+docker ps
+
+docker run nginx
+
+=================================================
+
+2. PULL IMAGE
+-------------
+
+Used to download an image from Docker Hub.
+
+Syntax:
+
+docker pull <image_name>
+
+Example:
+
+docker pull nginx
+
+docker pull mysql
+
+docker pull openjdk:17
+
+Verify Downloaded Images:
+
+docker images
+
+Sample Output:
+
+REPOSITORY    TAG      IMAGE ID
+nginx         latest   xxxxx
+mysql         latest   xxxxx
+
+Important:
+- If image is not available locally, Docker downloads it from Docker Hub.
+- Default registry is Docker Hub.
+
+=================================================
+
+3. RUN CONTAINER
+----------------
+
+Used to create and start a container.
+
+Syntax:
+
+docker run <image_name>
+
+Example:
+
+docker run nginx
+
+Flow:
+
+Image
+  |
+  v
+Container Created
+  |
+  v
+Application Starts
+
+Run Container in Background:
+
+docker run -d nginx
+
+-d = Detached Mode
+
+Run Container with Name:
+
+docker run --name mynginx nginx
+
+Run Container with Port Mapping:
+
+docker run -d -p 8080:80 nginx
+
+Meaning:
+
+Host Port : Container Port
+
+8080      : 80
+
+Access Application:
+
+http://localhost:8080
+
+=================================================
+
+4. START / STOP / REMOVE CONTAINER
+----------------------------------
+
+Check Running Containers:
+
+docker ps
+
+Check All Containers:
+
+docker ps -a
+
+-------------------------------------------------
+STOP CONTAINER
+-------------------------------------------------
+
+Syntax:
+
+docker stop <container_id>
+
+Example:
+
+docker stop a12345
+
+Stop by Name:
+
+docker stop mynginx
+
+-------------------------------------------------
+START CONTAINER
+-------------------------------------------------
+
+Syntax:
+
+docker start <container_id>
+
+Example:
+
+docker start a12345
+
+Start by Name:
+
+docker start mynginx
+
+-------------------------------------------------
+RESTART CONTAINER
+-------------------------------------------------
+
+Syntax:
+
+docker restart <container_id>
+
+Example:
+
+docker restart mynginx
+
+-------------------------------------------------
+REMOVE CONTAINER
+-------------------------------------------------
+
+Syntax:
+
+docker rm <container_id>
+
+Example:
+
+docker rm a12345
+
+Remove by Name:
+
+docker rm mynginx
+
+Note:
+Container must be stopped before removing.
+
+Correct Steps:
+
+docker stop mynginx
+
+docker rm mynginx
+
+=================================================
+
+USEFUL COMMANDS
+---------------
+
+List Images:
+
+docker images
+
+List Running Containers:
+
+docker ps
+
+List All Containers:
+
+docker ps -a
+
+Download Image:
+
+docker pull nginx
+
+Create Container:
+
+docker run nginx
+
+Run in Background:
+
+docker run -d nginx
+
+Run with Name:
+
+docker run --name mycontainer nginx
+
+Start Container:
+
+docker start mycontainer
+
+Stop Container:
+
+docker stop mycontainer
+
+Restart Container:
+
+docker restart mycontainer
+
+Remove Container:
+
+docker rm mycontainer
+
+Remove Image:
+
+docker rmi nginx
+
+=================================================
+
+INTERVIEW QUESTIONS
+-------------------
+
+Q1. How do you download an image?
+
+docker pull nginx
+
+-------------------------------------------------
+
+Q2. How do you see all downloaded images?
+
+docker images
+
+-------------------------------------------------
+
+Q3. How do you create a container?
+
+docker run nginx
+
+-------------------------------------------------
+
+Q4. How do you run a container in background?
+
+docker run -d nginx
+
+-------------------------------------------------
+
+Q5. How do you see running containers?
+
+docker ps
+
+-------------------------------------------------
+
+Q6. How do you see all containers?
+
+docker ps -a
+
+-------------------------------------------------
+
+Q7. How do you stop a container?
+
+docker stop <container_id>
+
+-------------------------------------------------
+
+Q8. How do you start a stopped container?
+
+docker start <container_id>
+
+-------------------------------------------------
+
+Q9. How do you restart a container?
+
+docker restart <container_id>
+
+-------------------------------------------------
+
+Q10. How do you remove a container?
+
+docker rm <container_id>
+
+=================================================
+
+ONE-LINE REVISION
+-----------------
+
+docker pull    -> Download Image
+
+docker images  -> List Images
+
+docker run     -> Create & Start Container
+
+docker ps      -> Running Containers
+
+docker ps -a   -> All Containers
+
+docker stop    -> Stop Container
+
+docker start   -> Start Container
+
+docker restart -> Restart Container
+
+docker rm      -> Remove Container
+
+docker rmi     -> Remove Image
+
+=================================================
+
+DAY 2 REVISION
+--------------
+
+✓ Docker Commands
+
+✓ Pull Image
+
+✓ Run Container
+
+✓ Start Container
+
+✓ Stop Container
+
+✓ Restart Container
+
+✓ Remove Container
+
+✓ Frequently Used Commands
+
+✓ Interview Questions
+
+
+
+=========================
+DAY 3 - DOCKERFILE & CUSTOM IMAGES
+=========================
+
+1. WHAT IS A DOCKERFILE?
+------------------------
+
+A Dockerfile is a text file that contains instructions
+to build a Docker Image automatically.
+
+It defines:
+- Base Image
+- Application Files
+- Commands to Execute
+- Ports to Expose
+- Startup Command
+
+Flow:
+
+Dockerfile
+     ↓
+docker build
+     ↓
+Docker Image
+     ↓
+docker run
+     ↓
+Container
+
+----------------------------------------------------------
+
+2. COMMON DOCKERFILE INSTRUCTIONS
+---------------------------------
+
+FROM
+- Specifies the base image.
+
+Example:
+FROM openjdk:17
+
+----------------------------------------------------------
+
+WORKDIR
+- Sets the working directory inside container.
+
+Example:
+WORKDIR /app
+
+----------------------------------------------------------
+
+COPY
+- Copies files from local machine to container.
+
+Example:
+COPY target/app.jar app.jar
+
+----------------------------------------------------------
+
+RUN
+- Executes command during image build.
+
+Example:
+RUN apt-get update
+
+----------------------------------------------------------
+
+EXPOSE
+- Documents which port application uses.
+
+Example:
+EXPOSE 8080
+
+----------------------------------------------------------
+
+CMD
+- Default command executed when container starts.
+
+Example:
+CMD ["java","-jar","app.jar"]
+
+----------------------------------------------------------
+
+3. SIMPLE JAVA SPRING BOOT DOCKERFILE
+-------------------------------------
+
+Dockerfile
+
+FROM openjdk:17
+
+WORKDIR /app
+
+COPY target/demo.jar demo.jar
+
+EXPOSE 8080
+
+CMD ["java","-jar","demo.jar"]
+
+----------------------------------------------------------
+
+Explanation:
+
+FROM openjdk:17
+-> Uses OpenJDK 17 as base image.
+
+WORKDIR /app
+-> Creates and switches to /app directory.
+
+COPY target/demo.jar demo.jar
+-> Copies application jar into container.
+
+EXPOSE 8080
+-> Application runs on port 8080.
+
+CMD ["java","-jar","demo.jar"]
+-> Starts Spring Boot application.
+
+----------------------------------------------------------
+
+4. BUILD CUSTOM IMAGE
+---------------------
+
+Syntax:
+
+docker build -t image-name .
+
+Example:
+
+docker build -t springboot-app .
+
+Breakdown:
+
+docker build
+-> Build image
+
+-t
+-> Tag image name
+
+springboot-app
+-> Custom image name
+
+.
+-> Current directory containing Dockerfile
+
+----------------------------------------------------------
+
+Verify image:
+
+docker images
+
+Example Output:
+
+REPOSITORY       TAG       IMAGE ID
+springboot-app   latest    abcd1234
+
+----------------------------------------------------------
+
+5. RUN CUSTOM IMAGE
+-------------------
+
+Run image:
+
+docker run springboot-app
+
+Run in background:
+
+docker run -d springboot-app
+
+Run with custom name:
+
+docker run -d --name app-container springboot-app
+
+Run with port mapping:
+
+docker run -d -p 8080:8080 --name app-container springboot-app
+
+----------------------------------------------------------
+
+Verify container:
+
+docker ps
+
+----------------------------------------------------------
+
+Access application:
+
+http://localhost:8080
+
+----------------------------------------------------------
+
+6. COMPLETE FLOW
+----------------
+
+Step 1: Create Dockerfile
+
+FROM openjdk:17
+
+WORKDIR /app
+
+COPY target/demo.jar demo.jar
+
+EXPOSE 8080
+
+CMD ["java","-jar","demo.jar"]
+
+----------------------------------------------------------
+
+Step 2: Build Image
+
+docker build -t springboot-app .
+
+----------------------------------------------------------
+
+Step 3: Verify Image
+
+docker images
+
+----------------------------------------------------------
+
+Step 4: Run Container
+
+docker run -d -p 8080:8080 --name app-container springboot-app
+
+----------------------------------------------------------
+
+Step 5: Verify Running Container
+
+docker ps
+
+----------------------------------------------------------
+
+Step 6: Check Logs
+
+docker logs app-container
+
+----------------------------------------------------------
+
+INTERVIEW QUESTIONS
+===================
+
+Q1. What is Dockerfile?
+
+A Dockerfile is a text file containing instructions
+to create a Docker image automatically.
+
+----------------------------------------------------------
+
+Q2. Difference between Docker Image and Dockerfile?
+
+Dockerfile
+- Contains build instructions.
+- Used to create images.
+
+Docker Image
+- Final packaged application.
+- Used to create containers.
+
+----------------------------------------------------------
+
+Q3. What is the purpose of FROM instruction?
+
+FROM specifies the base image for building
+a custom Docker image.
+
+Example:
+FROM openjdk:17
+
+----------------------------------------------------------
+
+Q4. What is WORKDIR?
+
+WORKDIR sets the working directory inside
+the container.
+
+Example:
+WORKDIR /app
+
+----------------------------------------------------------
+
+Q5. Difference between RUN and CMD?
+
+RUN
+- Executes during image build.
+- Creates image layers.
+
+Example:
+RUN apt-get update
+
+CMD
+- Executes when container starts.
+
+Example:
+CMD ["java","-jar","app.jar"]
+
+----------------------------------------------------------
+
+Q6. What does COPY do?
+
+Copies files from host machine to container.
+
+Example:
+COPY target/demo.jar demo.jar
+
+----------------------------------------------------------
+
+Q7. What is EXPOSE?
+
+Documents the port used by the application.
+
+Example:
+EXPOSE 8080
+
+----------------------------------------------------------
+
+Q8. How do you build a Docker image?
+
+docker build -t springboot-app .
+
+----------------------------------------------------------
+
+Q9. How do you run a custom Docker image?
+
+docker run -d -p 8080:8080 springboot-app
+
+----------------------------------------------------------
+
+Q10. How do you check built images?
+
+docker images
+
+----------------------------------------------------------
+
+REAL-TIME SPRING BOOT DEPLOYMENT
+================================
+
+1. Generate JAR
+
+mvn clean package
+
+2. Create Dockerfile
+
+FROM openjdk:17
+
+WORKDIR /app
+
+COPY target/demo.jar demo.jar
+
+EXPOSE 8080
+
+CMD ["java","-jar","demo.jar"]
+
+3. Build Image
+
+docker build -t springboot-app .
+
+4. Run Container
+
+docker run -d -p 8080:8080 --name app-container springboot-app
+
+5. Verify
+
+docker ps
+
+6. Check Logs
+
+docker logs app-container
+
+7. Access Application
+
+http://localhost:8080
+
+----------------------------------------------------------
+
+MOST IMPORTANT COMMANDS
+=======================
+
+docker build -t springboot-app .
+
+docker images
+
+docker run -d -p 8080:8080 springboot-app
+
+docker ps
+
+docker logs app-container
+
+docker stop app-container
+
+docker start app-container
+
+docker rm -f app-container
+
+docker rmi springboot-app
+
+
+=========================
+DAY 4 - SPRING BOOT DOCKERIZATION
+=========================
+
+WHAT IS SPRING BOOT DOCKERIZATION?
+==================================
+
+Spring Boot Dockerization is the process of packaging a
+Spring Boot application into a Docker Image and running
+it inside a Docker Container.
+
+Benefits:
+- Consistent deployment across environments
+- Easy scalability
+- Platform independent
+- Simplifies deployment on AWS, Kubernetes, EKS
+
+Flow:
+
+Spring Boot Code
+       ↓
+mvn clean package
+       ↓
+JAR File
+       ↓
+Dockerfile
+       ↓
+Docker Image
+       ↓
+Docker Container
+       ↓
+Deployment (AWS/EKS/EC2)
+
+----------------------------------------------------------
+
+STEP 1: CREATE SPRING BOOT APPLICATION
+======================================
+
+Project Structure
+
+demo-app
+│
+├── src
+├── pom.xml
+├── Dockerfile
+└── target
+      └── demo.jar
+
+Generate Jar File
+
+mvn clean package
+
+Output:
+
+target/demo.jar
+
+Verify:
+
+ls target
+
+----------------------------------------------------------
+
+STEP 2: CREATE DOCKERFILE
+=========================
+
+Dockerfile
+
+FROM openjdk:17
+
+WORKDIR /app
+
+COPY target/demo.jar demo.jar
+
+EXPOSE 8080
+
+CMD ["java","-jar","demo.jar"]
+
+----------------------------------------------------------
+
+DOCKERFILE EXPLANATION
+======================
+
+FROM openjdk:17
+- Base image with Java 17.
+
+WORKDIR /app
+- Creates and switches to /app folder.
+
+COPY target/demo.jar demo.jar
+- Copies application jar to container.
+
+EXPOSE 8080
+- Application listens on port 8080.
+
+CMD ["java","-jar","demo.jar"]
+- Starts Spring Boot application.
+
+----------------------------------------------------------
+
+STEP 3: BUILD DOCKER IMAGE
+==========================
+
+Command:
+
+docker build -t springboot-app .
+
+Verify Image:
+
+docker images
+
+Example Output:
+
+REPOSITORY        TAG
+springboot-app    latest
+
+----------------------------------------------------------
+
+STEP 4: RUN CONTAINER
+=====================
+
+docker run -d -p 8080:8080 --name springboot-container springboot-app
+
+Breakdown:
+
+-d
+-> Run in background
+
+-p 8080:8080
+-> Host Port : 8080
+-> Container Port : 8080
+
+--name springboot-container
+-> Container name
+
+springboot-app
+-> Image name
+
+----------------------------------------------------------
+
+STEP 5: VERIFY CONTAINER
+========================
+
+Check Running Containers:
+
+docker ps
+
+Expected Output:
+
+CONTAINER ID     IMAGE
+xxxxxxx          springboot-app
+
+----------------------------------------------------------
+
+STEP 6: ACCESS APPLICATION
+==========================
+
+Open Browser:
+
+http://localhost:8080
+
+----------------------------------------------------------
+
+STEP 7: VIEW LOGS
+=================
+
+docker logs springboot-container
+
+Live Logs:
+
+docker logs -f springboot-container
+
+----------------------------------------------------------
+
+STEP 8: ACCESS CONTAINER
+========================
+
+docker exec -it springboot-container bash
+
+----------------------------------------------------------
+
+STEP 9: STOP CONTAINER
+======================
+
+docker stop springboot-container
+
+----------------------------------------------------------
+
+STEP 10: START CONTAINER
+========================
+
+docker start springboot-container
+
+----------------------------------------------------------
+
+STEP 11: REMOVE CONTAINER
+=========================
+
+docker rm -f springboot-container
+
+----------------------------------------------------------
+
+STEP 12: REMOVE IMAGE
+=====================
+
+docker rmi springboot-app
+
+----------------------------------------------------------
+
+COMPLETE DEPLOYMENT FLOW
+========================
+
+1. Build Project
+
+mvn clean package
+
+2. Create Dockerfile
+
+FROM openjdk:17
+
+WORKDIR /app
+
+COPY target/demo.jar demo.jar
+
+EXPOSE 8080
+
+CMD ["java","-jar","demo.jar"]
+
+3. Build Image
+
+docker build -t springboot-app .
+
+4. Verify Image
+
+docker images
+
+5. Run Container
+
+docker run -d -p 8080:8080 --name springboot-container springboot-app
+
+6. Verify
+
+docker ps
+
+7. Check Logs
+
+docker logs springboot-container
+
+8. Access Application
+
+http://localhost:8080
+
+----------------------------------------------------------
+
+MULTI-STAGE DOCKERFILE (INTERVIEW FAVORITE)
+===========================================
+
+FROM maven:3.9.6-eclipse-temurin-17 AS build
+
+WORKDIR /app
+
+COPY . .
+
+RUN mvn clean package -DskipTests
+
+FROM openjdk:17
+
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
+
+EXPOSE 8080
+
+CMD ["java","-jar","app.jar"]
+
+Advantages:
+- Smaller Image Size
+- Faster Deployment
+- Production Ready
+- Preferred in Enterprises
+
+----------------------------------------------------------
+
+INTERVIEW QUESTIONS
+===================
+
+Q1. What is Spring Boot Dockerization?
+
+Packaging a Spring Boot application into a Docker Image
+and running it as a Docker Container.
+
+----------------------------------------------------------
+
+Q2. Why Dockerize a Spring Boot Application?
+
+- Consistent deployment
+- Easy scalability
+- Platform independence
+- Simplifies CI/CD pipelines
+
+----------------------------------------------------------
+
+Q3. What are the steps to Dockerize a Spring Boot application?
+
+1. Build Jar
+2. Create Dockerfile
+3. Build Docker Image
+4. Run Docker Container
+
+----------------------------------------------------------
+
+Q4. How do you build a Docker image?
+
+docker build -t springboot-app .
+
+----------------------------------------------------------
+
+Q5. How do you run a Dockerized Spring Boot application?
+
+docker run -d -p 8080:8080 springboot-app
+
+----------------------------------------------------------
+
+Q6. What is the purpose of EXPOSE 8080?
+
+It indicates that the application listens on port 8080.
+
+----------------------------------------------------------
+
+Q7. What is the purpose of CMD?
+
+CMD specifies the command executed when the container starts.
+
+Example:
+
+CMD ["java","-jar","app.jar"]
+
+----------------------------------------------------------
+
+Q8. What is a Multi-Stage Build?
+
+A Docker technique where separate stages are used for
+building and running the application to reduce image size.
+
+----------------------------------------------------------
+
+Q9. How do you view application logs?
+
+docker logs springboot-container
+
+----------------------------------------------------------
+
+Q10. How do you enter a running container?
+
+docker exec -it springboot-container bash
+
+----------------------------------------------------------
+
+REAL-TIME AWS INTERVIEW SCENARIO
+================================
+
+Question:
+How would you deploy a Spring Boot application to AWS EKS?
+
+Answer:
+
+1. Create Spring Boot Jar
+   mvn clean package
+
+2. Create Dockerfile
+
+3. Build Docker Image
+   docker build -t springboot-app .
+
+4. Push Image to AWS ECR
+   docker tag springboot-app <ecr-url>
+
+   docker push <ecr-url>
+
+5. Create Kubernetes Deployment
+
+6. Deploy to EKS Cluster
+
+7. Expose Service using LoadBalancer
+
+8. Access Application using Load Balancer URL
+
+----------------------------------------------------------
+
+MOST IMPORTANT COMMANDS
+=======================
+
+mvn clean package
+
+docker build -t springboot-app .
+
+docker images
+
+docker run -d -p 8080:8080 --name springboot-container springboot-app
+
+docker ps
+
+docker logs springboot-container
+
+docker exec -it springboot-container bash
+
+docker stop springboot-container
+
+docker start springboot-container
+
+docker rm -f springboot-container
+
+docker rmi springboot-app
+
+
+=========================
+DAY 5 - DOCKER VOLUMES & NETWORKING
+=========================
+
+1. DOCKER VOLUMES
+=================
+
+WHAT IS A VOLUME?
+-----------------
+
+A Docker Volume is used to store data outside the container.
+
+Why?
+- Container data is lost when container is removed.
+- Volumes provide persistent storage.
+- Data remains even after container restart/removal.
+
+Example:
+MySQL Container
+      ↓
+Docker Volume
+      ↓
+Database Data Stored Permanently
+
+----------------------------------------------------------
+
+WITHOUT VOLUME
+==============
+
+Container Removed
+        ↓
+Data Lost
+
+Example:
+
+docker run --name mysql-container mysql
+
+Remove Container:
+
+docker rm -f mysql-container
+
+Result:
+Database data is lost.
+
+----------------------------------------------------------
+
+WITH VOLUME
+===========
+
+Container Removed
+        ↓
+Volume Remains
+        ↓
+Data Preserved
+
+----------------------------------------------------------
+
+CREATE VOLUME
+=============
+
+Create Volume:
+
+docker volume create mysql-data
+
+Verify Volumes:
+
+docker volume ls
+
+Inspect Volume:
+
+docker volume inspect mysql-data
+
+----------------------------------------------------------
+
+USE VOLUME WITH CONTAINER
+=========================
+
+Syntax:
+
+docker run -v volume-name:container-path image
+
+Example:
+
+docker run -d \
+--name mysql-container \
+-v mysql-data:/var/lib/mysql \
+-e MYSQL_ROOT_PASSWORD=root \
+mysql:8
+
+Explanation:
+
+-v mysql-data:/var/lib/mysql
+
+mysql-data
+-> Volume Name
+
+/var/lib/mysql
+-> MySQL data directory
+
+----------------------------------------------------------
+
+CHECK VOLUMES
+=============
+
+List Volumes:
+
+docker volume ls
+
+Inspect Volume:
+
+docker volume inspect mysql-data
+
+----------------------------------------------------------
+
+REMOVE VOLUME
+=============
+
+docker volume rm mysql-data
+
+Remove Unused Volumes:
+
+docker volume prune
+
+----------------------------------------------------------
+
+INTERVIEW QUESTIONS - VOLUMES
+=============================
+
+Q1. What is a Docker Volume?
+
+A Docker Volume is a persistent storage mechanism
+used to store container data outside the container.
+
+----------------------------------------------------------
+
+Q2. Why use Volumes?
+
+- Data Persistence
+- Backup
+- Data Sharing
+- Database Storage
+
+----------------------------------------------------------
+
+Q3. What happens if a container is removed without a volume?
+
+All container data is lost.
+
+----------------------------------------------------------
+
+Q4. Which command creates a volume?
+
+docker volume create my-volume
+
+----------------------------------------------------------
+
+Q5. How do you attach a volume?
+
+docker run -v my-volume:/app/data image-name
+
+==========================================================
+2. DOCKER NETWORKING
+==========================================================
+
+WHAT IS DOCKER NETWORKING?
+--------------------------
+
+Docker Networking allows containers to communicate
+with each other and with external systems.
+
+Example:
+
+Spring Boot Container
+           ↓
+      Docker Network
+           ↓
+     MySQL Container
+
+----------------------------------------------------------
+
+WHY NETWORKING?
+===============
+
+Without Networking:
+
+Spring Boot ❌ Cannot connect to MySQL
+
+With Networking:
+
+Spring Boot ✅ Connects to MySQL
+
+----------------------------------------------------------
+
+LIST NETWORKS
+=============
+
+docker network ls
+
+Default Networks:
+
+bridge
+host
+none
+
+----------------------------------------------------------
+
+BRIDGE NETWORK
+==============
+
+Default Docker Network.
+
+Every container gets an internal IP.
+
+Example:
+
+docker run -d nginx
+
+Docker automatically connects it to
+the bridge network.
+
+Check Network:
+
+docker network inspect bridge
+
+----------------------------------------------------------
+
+CREATE CUSTOM NETWORK
+=====================
+
+docker network create app-network
+
+Verify:
+
+docker network ls
+
+----------------------------------------------------------
+
+CONNECT CONTAINERS USING NETWORK
+================================
+
+Step 1:
+
+Create Network
+
+docker network create app-network
+
+----------------------------------------------------------
+
+Step 2:
+
+Run MySQL Container
+
+docker run -d \
+--name mysql-container \
+--network app-network \
+-e MYSQL_ROOT_PASSWORD=root \
+mysql:8
+
+----------------------------------------------------------
+
+Step 3:
+
+Run Spring Boot Container
+
+docker run -d \
+--name springboot-container \
+--network app-network \
+springboot-app
+
+----------------------------------------------------------
+
+Result:
+
+springboot-container
+          ↓
+     app-network
+          ↓
+   mysql-container
+
+Containers communicate using names.
+
+----------------------------------------------------------
+
+SPRING BOOT DATABASE CONFIGURATION
+==================================
+
+application.properties
+
+spring.datasource.url=jdbc:mysql://mysql-container:3306/testdb
+
+Explanation:
+
+mysql-container
+-> Container Name
+
+Docker DNS resolves container names automatically.
+
+----------------------------------------------------------
+
+INSPECT NETWORK
+===============
+
+docker network inspect app-network
+
+----------------------------------------------------------
+
+REMOVE NETWORK
+==============
+
+docker network rm app-network
+
+----------------------------------------------------------
+
+INTERVIEW QUESTIONS - NETWORKING
+================================
+
+Q1. What is Docker Networking?
+
+Docker Networking allows communication
+between containers and external systems.
+
+----------------------------------------------------------
+
+Q2. What are Docker Network Types?
+
+1. Bridge
+2. Host
+3. None
+
+----------------------------------------------------------
+
+Q3. What is Bridge Network?
+
+Default Docker network where containers
+communicate through virtual networking.
+
+----------------------------------------------------------
+
+Q4. Why create a custom network?
+
+To allow containers to communicate using
+container names instead of IP addresses.
+
+----------------------------------------------------------
+
+Q5. How does Spring Boot connect to MySQL in Docker?
+
+Using Container Name.
+
+Example:
+
+spring.datasource.url=jdbc:mysql://mysql-container:3306/testdb
+
+----------------------------------------------------------
+
+Q6. How do you create a network?
+
+docker network create app-network
+
+----------------------------------------------------------
+
+Q7. How do you check networks?
+
+docker network ls
+
+----------------------------------------------------------
+
+Q8. How do you inspect a network?
+
+docker network inspect app-network
+
+==========================================================
+REAL-TIME SPRING BOOT + MYSQL SCENARIO
+==========================================================
+
+Create Network:
+
+docker network create app-network
+
+Run MySQL:
+
+docker run -d \
+--name mysql-container \
+--network app-network \
+-e MYSQL_ROOT_PASSWORD=root \
+mysql:8
+
+Run Spring Boot:
+
+docker run -d \
+--name springboot-container \
+--network app-network \
+-p 8080:8080 \
+springboot-app
+
+Database URL:
+
+spring.datasource.url=jdbc:mysql://mysql-container:3306/testdb
+
+Result:
+
+Spring Boot Container
+         ↓
+    app-network
+         ↓
+   MySQL Container
+
+==========================================================
+MOST IMPORTANT COMMANDS
+==========================================================
+
+docker volume create mysql-data
+
+docker volume ls
+
+docker volume inspect mysql-data
+
+docker volume rm mysql-data
+
+docker network ls
+
+docker network create app-network
+
+docker 
+
+
+=========================
+DAY 6 - DOCKER COMPOSE
+=========================
+
+WHAT IS DOCKER COMPOSE?
+=======================
+
+Docker Compose is a tool used to define and run
+multiple containers using a single YAML file.
+
+Instead of running multiple docker run commands,
+Docker Compose can start all containers together.
+
+Example:
+
+Spring Boot Container
+          +
+MySQL Container
+          +
+Redis Container
+
+Using:
+
+docker-compose.yml
+
+----------------------------------------------------------
+
+WHY DOCKER COMPOSE?
+===================
+
+Without Docker Compose:
+
+docker network create app-network
+
+docker run mysql ...
+
+docker run redis ...
+
+docker run springboot-app ...
+
+Multiple commands required.
+
+----------------------------------------------------------
+
+With Docker Compose:
+
+docker compose up
+
+Everything starts automatically.
+
+----------------------------------------------------------
+
+BENEFITS
+========
+
+1. Easy Multi-Container Management
+2. Single Configuration File
+3. Automatic Networking
+4. Easy Scaling
+5. Faster Local Development
+
+----------------------------------------------------------
+
+DOCKER COMPOSE FILE
+===================
+
+File Name:
+
+docker-compose.yml
+
+Basic Structure:
+
+version: '3.8'
+
+services:
+  service-name:
+    image: image-name
+
+----------------------------------------------------------
+
+SIMPLE NGINX EXAMPLE
+====================
+
+docker-compose.yml
+
+version: '3.8'
+
+services:
+
+  nginx:
+    image: nginx
+    ports:
+      - "8080:80"
+
+Start:
+
+docker compose up
+
+Stop:
+
+docker compose down
+
+----------------------------------------------------------
+
+SPRING BOOT + MYSQL EXAMPLE
+===========================
+
+docker-compose.yml
+
+version: '3.8'
+
+services:
+
+  mysql:
+
+    image: mysql:8
+
+    container_name: mysql-container
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: testdb
+
+    ports:
+      - "3306:3306"
+
+  springboot-app:
+
+    image: springboot-app
+
+    container_name: springboot-container
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      - mysql
+
+----------------------------------------------------------
+
+EXPLANATION
+===========
+
+services
+---------
+Defines all containers.
+
+mysql
+-----
+Creates MySQL container.
+
+springboot-app
+--------------
+Creates Spring Boot container.
+
+environment
+-----------
+Sets environment variables.
+
+depends_on
+----------
+Starts MySQL before Spring Boot.
+
+ports
+-----
+Maps host and container ports.
+
+----------------------------------------------------------
+
+START APPLICATION
+=================
+
+docker compose up
+
+Background Mode:
+
+docker compose up -d
+
+----------------------------------------------------------
+
+VERIFY CONTAINERS
+=================
+
+docker ps
+
+----------------------------------------------------------
+
+CHECK LOGS
+==========
+
+All Logs:
+
+docker compose logs
+
+Specific Service:
+
+docker compose logs mysql
+
+docker compose logs springboot-app
+
+----------------------------------------------------------
+
+STOP CONTAINERS
+===============
+
+docker compose down
+
+----------------------------------------------------------
+
+RESTART SERVICES
+================
+
+docker compose restart
+
+----------------------------------------------------------
+
+START PARTICULAR SERVICE
+========================
+
+docker compose up mysql
+
+docker compose up springboot-app
+
+----------------------------------------------------------
+
+BUILD IMAGE USING COMPOSE
+=========================
+
+version: '3.8'
+
+services:
+
+  springboot-app:
+
+    build: .
+
+    ports:
+      - "8080:8080"
+
+Build & Run:
+
+docker compose up --build
+
+----------------------------------------------------------
+
+SPRING BOOT + MYSQL + VOLUME
+============================
+
+version: '3.8'
+
+services:
+
+  mysql:
+
+    image: mysql:8
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: testdb
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  springboot-app:
+
+    image: springboot-app
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      - mysql
+
+volumes:
+
+  mysql-data:
+
+Result:
+- Database data persists.
+- Container removal does not remove data.
+
+----------------------------------------------------------
+
+AUTOMATIC NETWORK CREATION
+==========================
+
+Docker Compose automatically creates a network.
+
+Example:
+
+springboot-app
+        ↓
+docker-compose-network
+        ↑
+mysql
+
+Communication:
+
+spring.datasource.url=
+jdbc:mysql://mysql:3306/testdb
+
+Note:
+
+mysql
+-----
+Service name is used as hostname.
+
+No need to use IP addresses.
+
+----------------------------------------------------------
+
+INTERVIEW QUESTIONS
+===================
+
+Q1. What is Docker Compose?
+
+Docker Compose is a tool used to define and manage
+multiple containers using a single YAML file.
+
+----------------------------------------------------------
+
+Q2. What is the default compose file name?
+
+docker-compose.yml
+
+----------------------------------------------------------
+
+Q3. Which command starts all services?
+
+docker compose up
+
+----------------------------------------------------------
+
+Q4. Which command starts services in background?
+
+docker compose up -d
+
+----------------------------------------------------------
+
+Q5. Which command stops all services?
+
+docker compose down
+
+----------------------------------------------------------
+
+Q6. What is depends_on?
+
+depends_on specifies container startup dependency.
+
+Example:
+
+depends_on:
+  - mysql
+
+MySQL starts before Spring Boot.
+
+----------------------------------------------------------
+
+Q7. How do containers communicate in Docker Compose?
+
+Using service names.
+
+Example:
+
+jdbc:mysql://mysql:3306/testdb
+
+mysql = service name
+
+----------------------------------------------------------
+
+Q8. How do you view compose logs?
+
+docker compose logs
+
+----------------------------------------------------------
+
+Q9. What is the advantage of Docker Compose?
+
+- Single YAML file
+- Easy deployment
+- Automatic networking
+- Easy scaling
+- Multi-container management
+
+----------------------------------------------------------
+
+Q10. Difference between Docker and Docker Compose?
+
+Docker
+------
+Manages individual containers.
+
+Docker Compose
+--------------
+Manages multiple containers together.
+
+==========================================================
+REAL-TIME INTERVIEW SCENARIO
+==========================================================
+
+Question:
+How would you run a Spring Boot application with MySQL
+using Docker Compose?
+
+Answer:
+
+1. Create Dockerfile for Spring Boot
+
+2. Create docker-compose.yml
+
+3. Define MySQL service
+
+4. Define Spring Boot service
+
+5. Add depends_on
+
+6. Start all services
+
+docker compose up -d
+
+7. Verify
+
+docker ps
+
+8. Check logs
+
+docker compose logs
+
+9. Access application
+
+http://localhost:8080
+
+==========================================================
+MOST IMPORTANT COMMANDS
+==========================================================
+
+docker compose up
+
+docker compose up -d
+
+docker compose up --build
+
+docker compose down
+
+docker compose restart
+
+docker compose logs
+
+docker compose logs springboot-app
+
+docker compose logs mysql
+
+docker ps
+
+==========================================================
+AWS INTERVIEW POINT
+==========================================================
+
+Docker Compose is mainly used for:
+
+- Local Development
+- Integration Testing
+- Multi-container setup
+
+In Production:
+
+Docker Compose
+       ↓
+Kubernetes
+       ↓
+AWS EKS
+
+Docker Compose concepts map directly to Kubernetes:
+
+Service     → Deployment
+Network     → Service
+Volume      → Persistent Volume
+
+=========================
+DAY 7 - DOCKER HUB, AWS ECR & EKS DEPLOYMENT
+=========================
+
+1. PUSH IMAGE TO DOCKER HUB
+===========================
+
+WHAT IS DOCKER HUB?
+-------------------
+
+Docker Hub is a cloud-based Docker Registry
+used to store and share Docker Images.
+
+Similar To:
+
+GitHub -> Source Code
+Docker Hub -> Docker Images
+
+----------------------------------------------------------
+
+FLOW
+====
+
+Build Image
+      ↓
+Tag Image
+      ↓
+Push To Docker Hub
+      ↓
+Pull Anywhere
+
+----------------------------------------------------------
+
+STEP 1: LOGIN TO DOCKER HUB
+===========================
+
+docker login
+
+Enter:
+
+Username
+Password
+
+Verify:
+
+Login Succeeded
+
+----------------------------------------------------------
+
+STEP 2: BUILD IMAGE
+===================
+
+docker build -t springboot-app .
+
+Verify:
+
+docker images
+
+----------------------------------------------------------
+
+STEP 3: TAG IMAGE
+=================
+
+Syntax:
+
+docker tag local-image username/repository:tag
+
+Example:
+
+docker tag springboot-app abhinavp/springboot-app:v1
+
+Explanation:
+
+springboot-app
+-> Local Image
+
+abhinavp
+-> Docker Hub Username
+
+springboot-app
+-> Repository Name
+
+v1
+-> Version Tag
+
+----------------------------------------------------------
+
+STEP 4: PUSH IMAGE
+==================
+
+docker push abhinavp/springboot-app:v1
+
+Verify Image:
+
+https://hub.docker.com
+
+----------------------------------------------------------
+
+STEP 5: PULL IMAGE
+==================
+
+docker pull abhinavp/springboot-app:v1
+
+----------------------------------------------------------
+
+INTERVIEW QUESTION
+==================
+
+Q. Difference between Docker Hub and Docker Image?
+
+Docker Image
+------------
+Application Package
+
+Docker Hub
+----------
+Registry where images are stored
+
+=========================================================
+2. PUSH IMAGE TO AWS ECR
+=========================================================
+
+WHAT IS ECR?
+============
+
+ECR = Elastic Container Registry
+
+AWS managed Docker Registry used to store Docker images.
+
+Docker Hub
+      ↓
+Public Registry
+
+ECR
+      ↓
+AWS Private Registry
+
+----------------------------------------------------------
+
+FLOW
+====
+
+Build Image
+      ↓
+Push To ECR
+      ↓
+Deploy To EKS
+
+----------------------------------------------------------
+
+STEP 1: CREATE ECR REPOSITORY
+=============================
+
+AWS Console
+     ↓
+Elastic Container Registry
+     ↓
+Create Repository
+
+Repository Name:
+
+springboot-app
+
+Example URI:
+
+123456789012.dkr.ecr.ap-south-1.amazonaws.com/springboot-app
+
+----------------------------------------------------------
+
+STEP 2: LOGIN TO ECR
+====================
+
+aws ecr get-login-password \
+--region ap-south-1 | docker login \
+--username AWS \
+--password-stdin \
+123456789012.dkr.ecr.ap-south-1.amazonaws.com
+
+----------------------------------------------------------
+
+STEP 3: TAG IMAGE
+=================
+
+docker tag springboot-app:latest \
+123456789012.dkr.ecr.ap-south-1.amazonaws.com/springboot-app:latest
+
+----------------------------------------------------------
+
+STEP 4: PUSH IMAGE
+==================
+
+docker push \
+123456789012.dkr.ecr.ap-south-1.amazonaws.com/springboot-app:latest
+
+----------------------------------------------------------
+
+STEP 5: VERIFY IMAGE
+====================
+
+AWS Console
+      ↓
+ECR Repository
+      ↓
+Images
+
+----------------------------------------------------------
+
+INTERVIEW QUESTION
+==================
+
+Q. Why use ECR?
+
+- Fully managed by AWS
+- Secure
+- Private registry
+- Integration with EKS/ECS
+- IAM based access control
+
+=========================================================
+3. DEPLOY APPLICATION ON AWS EKS
+=========================================================
+
+WHAT IS EKS?
+============
+
+EKS = Elastic Kubernetes Service
+
+Managed Kubernetes Service provided by AWS.
+
+Used for:
+
+- Container Orchestration
+- Auto Scaling
+- High Availability
+- Production Deployments
+
+----------------------------------------------------------
+
+EKS ARCHITECTURE
+================
+
+Spring Boot Image
+          ↓
+        ECR
+          ↓
+    Kubernetes Deployment
+          ↓
+          EKS
+          ↓
+      Load Balancer
+          ↓
+        Users
+
+----------------------------------------------------------
+
+STEP 1: CREATE EKS CLUSTER
+==========================
+
+Using AWS Console
+
+EKS
+ ↓
+Create Cluster
+
+Cluster Name:
+
+springboot-cluster
+
+----------------------------------------------------------
+
+STEP 2: CONNECT KUBECTL
+=======================
+
+aws eks update-kubeconfig \
+--region ap-south-1 \
+--name springboot-cluster
+
+Verify:
+
+kubectl get nodes
+
+----------------------------------------------------------
+
+STEP 3: CREATE DEPLOYMENT YAML
+==============================
+
+deployment.yaml
+
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: springboot-app
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: springboot-app
+
+  template:
+
+    metadata:
+      labels:
+        app: springboot-app
+
+    spec:
+
+      containers:
+
+      - name: springboot-app
+
+        image:
+          123456789012.dkr.ecr.ap-south-1.amazonaws.com/springboot-app:latest
+
+        ports:
+        - containerPort: 8080
+
+----------------------------------------------------------
+
+DEPLOY APPLICATION
+==================
+
+kubectl apply -f deployment.yaml
+
+Verify:
+
+kubectl get deployments
+
+kubectl get pods
+
+----------------------------------------------------------
+
+STEP 4: CREATE SERVICE
+======================
+
+service.yaml
+
+apiVersion: v1
+
+kind: Service
+
+metadata:
+  name: springboot-service
+
+spec:
+
+  selector:
+    app: springboot-app
+
+  ports:
+
+  - protocol: TCP
+
+    port: 80
+
+    targetPort: 8080
+
+  type: LoadBalancer
+
+----------------------------------------------------------
+
+DEPLOY SERVICE
+==============
+
+kubectl apply -f service.yaml
+
+----------------------------------------------------------
+
+VERIFY SERVICE
+==============
+
+kubectl get svc
+
+Output:
+
+EXTERNAL-IP
+
+a1b2c3d4.ap-south-1.elb.amazonaws.com
+
+----------------------------------------------------------
+
+ACCESS APPLICATION
+==================
+
+http://EXTERNAL-IP
+
+=========================================================
+MOST IMPORTANT KUBERNETES COMMANDS
+=========================================================
+
+Check Nodes:
+
+kubectl get nodes
+
+Check Pods:
+
+kubectl get pods
+
+Check Deployments:
+
+kubectl get deployments
+
+Check Services:
+
+kubectl get svc
+
+Apply YAML:
+
+kubectl apply -f deployment.yaml
+
+Delete Deployment:
+
+kubectl delete -f deployment.yaml
+
+View Logs:
+
+kubectl logs pod-name
+
+Describe Pod:
+
+kubectl describe pod pod-name
+
+=========================================================
+INTERVIEW QUESTIONS
+=========================================================
+
+Q1. What is Docker Hub?
+
+Docker Hub is a public registry used to store and
+share Docker Images.
+
+----------------------------------------------------------
+
+Q2. What is AWS ECR?
+
+Elastic Container Registry is AWS managed Docker
+image repository.
+
+----------------------------------------------------------
+
+Q3. Difference between Docker Hub and ECR?
+
+Docker Hub
+-----------
+Public Registry
+
+ECR
+----
+AWS Managed Registry
+Private and Secure
+
+----------------------------------------------------------
+
+Q4. What is EKS?
+
+Elastic Kubernetes Service is AWS managed Kubernetes.
+
+----------------------------------------------------------
+
+Q5. What is Kubernetes Deployment?
+
+Deployment manages pod creation,
+updates and scaling.
+
+----------------------------------------------------------
+
+Q6. What is a Pod?
+
+Smallest deployable unit in Kubernetes.
+
+A Pod contains one or more containers.
+
+----------------------------------------------------------
+
+Q7. What is a Service?
+
+Provides stable networking and exposes pods.
+
+----------------------------------------------------------
+
+Q8. Why use LoadBalancer?
+
+To expose application to external users.
+
+----------------------------------------------------------
+
+Q9. How do you deploy an application to EKS?
+
+1. Build Image
+2. Push Image to ECR
+3. Create Deployment YAML
+4. Apply Deployment
+5. Create Service
+6. Expose using LoadBalancer
+
+----------------------------------------------------------
+
+Q10. Explain your project deployment flow.
+
+Spring Boot Code
+       ↓
+mvn clean package
+       ↓
+Docker Image
+       ↓
+Push to AWS ECR
+       ↓
+Create Kubernetes Deployment
+       ↓
+Deploy to AWS EKS
+       ↓
+Expose through LoadBalancer
+       ↓
+Access Application
+
+=========================================================
+REAL-TIME PROJECT DEPLOYMENT FLOW
+=========================================================
+
+Developer
+    ↓
+Git Push
+    ↓
+Jenkins Pipeline
+    ↓
+Maven Build
+    ↓
+Docker Build
+    ↓
+Push To ECR
+    ↓
+Deploy To EKS
+    ↓
+Load Balancer
+    ↓
+Users Access Application
+
+=========================================================
+ONE-LINE INTERVIEW ANSWER
+=========================================================
+
+"I package the Spring Boot application as a Docker image,
+push it to AWS ECR, create Kubernetes Deployment and
+Service manifests, deploy them on AWS EKS, and expose
+the application using a Load Balancer."
