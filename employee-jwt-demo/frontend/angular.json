@@ -25,7 +25,8 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
-            "buildTarget": "employee-jwt-demo:build"
+            "buildTarget": "employee-jwt-demo:build",
+            "proxyConfig": "proxy.conf.json"
           }
         }
       }

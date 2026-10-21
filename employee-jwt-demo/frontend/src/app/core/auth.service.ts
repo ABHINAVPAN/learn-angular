@@ -19,7 +19,7 @@ export class AuthService {
   readonly isAuthenticated = signal(this.getToken() !== null);
 
   login(payload: AuthPayload): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>('http://localhost:8080/api/auth/login', payload).pipe(
+    return this.http.post<AuthResponse>('/api/auth/login', payload).pipe(
       tap((response) => {
         sessionStorage.setItem(this.storageKey, response.token);
         this.isAuthenticated.set(true);
@@ -28,7 +28,7 @@ export class AuthService {
   }
 
   register(payload: AuthPayload): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>('http://localhost:8080/api/auth/register', payload).pipe(
+    return this.http.post<AuthResponse>('/api/auth/register', payload).pipe(
       tap((response) => {
         sessionStorage.setItem(this.storageKey, response.token);
         this.isAuthenticated.set(true);

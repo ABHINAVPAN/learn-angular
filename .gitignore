@@ -38,6 +38,10 @@ yarn-error.log
 testem.log
 /typings
 __screenshots__/
+/employee-jwt-demo/.env
+/employee-jwt-demo/frontend/dist/
+/employee-jwt-demo/frontend/node_modules/
+/employee-jwt-demo/frontend/.angular/
 
 # System files
 .DS_Store

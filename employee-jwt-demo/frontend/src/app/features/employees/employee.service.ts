@@ -8,18 +8,18 @@ export class EmployeeService {
   private readonly http = inject(HttpClient);
 
   getAll(): Observable<Employee[]> {
-    return this.http.get<Employee[]>('http://localhost:8080/api/employees');
+    return this.http.get<Employee[]>('/api/employees');
   }
 
   create(payload: Partial<Employee>): Observable<Employee> {
-    return this.http.post<Employee>('http://localhost:8080/api/employees', payload);
+    return this.http.post<Employee>('/api/employees', payload);
   }
 
   update(id: number, payload: Partial<Employee>): Observable<Employee> {
-    return this.http.put<Employee>(`http://localhost:8080/api/employees/${id}`, payload);
+    return this.http.put<Employee>(`/api/employees/${id}`, payload);
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`http://localhost:8080/api/employees/${id}`);
+    return this.http.delete<void>(`/api/employees/${id}`);
   }
 }
